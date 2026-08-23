@@ -44,6 +44,7 @@ export function AuthProvider({ children }) {
     const token = getAccessToken();
     if (!token){
       setLoading(false);
+      return;
     }
     const loadUser = async()=> {
       try {
