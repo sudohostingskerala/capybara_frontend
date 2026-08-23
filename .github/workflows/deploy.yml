@@ -34,3 +34,5 @@ jobs:
           aws-region: eu-north-1
 
       - run: aws s3 sync dist/ s3://capybarababy-frontend --delete
+
+      - run: aws cloudfront create-invalidation --distribution-id E3N3T5Q6JGTWM0 --paths "/*"
