@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getBanners } from '../services/bannerService';
 import { getCategories } from '../services/categoryService';
@@ -18,38 +18,73 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [featured, setFeatured] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [activeBanner, setActiveBanner] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [bannersRes, catsRes, featuredRes, newRes] = await Promise.all([
+        const [bannersRes, catsRes, featuredRes, productsRes] = await Promise.all([
           getBanners().catch(() => ({ results: [] })),
           getCategories().catch(() => ({ results: [] })),
           getFeaturedProducts().catch(() => ({ results: [] })),
-          getProducts({ ordering: '-created_at', page_size: 4 }).catch(() => ({ results: [] })),
+          getProducts({ ordering: '-created_at', page_size: 24 }).catch(() => ({ results: [] })),
         ]);
-        setBanners(bannersRes.results || bannersRes || []);
-        setCategories(catsRes.results || catsRes || []);
-        setFeatured(featuredRes.results || featuredRes || []);
-        setNewArrivals(newRes.results || newRes || []);
+
+        const bannerData = bannersRes.results || bannersRes || [];
+        const categoryData = catsRes.results || catsRes || [];
+        const featuredData = featuredRes.results || featuredRes || [];
+        const productData = productsRes.results || productsRes || [];
+
+        setBanners(bannerData);
+        setCategories(categoryData);
+        setFeatured(featuredData);
+        setAllProducts(productData);
+        setNewArrivals(productData.slice(0, 6));
       } catch (err) {
         console.error('Failed to load home data', err);
       } finally {
         setLoading(false);
       }
     };
+
     fetchData();
   }, []);
 
-  if (loading) return <Spinner />;
+  useEffect(() => {
+    if (banners.length <= 1) return undefined;
 
-  const heroBanner = banners[0] || null;
+    const timer = setInterval(() => {
+      setActiveBanner((current) => (current + 1) % banners.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [banners.length]);
+
+  const productPool = useMemo(
+    () => allProducts.length > 0 ? allProducts : [...featured, ...newArrivals],
+    [allProducts, featured, newArrivals]
+  );
+
+  const ethnicProducts = featured.slice(0, 6);
+  const birthdayProducts = productPool.slice(0, 6);
+  const hotProducts = productPool.slice(6, 12).length >= 3
+    ? productPool.slice(6, 12)
+    : productPool.slice(0, 6);
+  const dealProducts = productPool.slice(12, 18).length >= 3
+    ? productPool.slice(12, 18)
+    : featured.slice(0, 6);
+
+  const collectionCards = categories.slice(0, 6);
+  const featuredCollections = categories.slice(0, 3);
+
+  if (loading) return <Spinner />;
 
   return (
     <div className={styles.home}>
 
-    {/* Trust bar — scrolling marquee on mobile */}
+      {/* Announcement / offer strip */}
       <div className={styles['trust-bar']}>
         <div className={styles['trust-track']}>
           <span>🚚 Free Shipping on orders above ₹999</span>
@@ -57,7 +92,6 @@ export default function Home() {
           <span>⭐ Premium Quality — Trusted by 10,000+ customers</span>
           <span>🔒 Secure Payments</span>
           <span>📞 24/7 Support</span>
-          {/* Duplicate for seamless loop */}
           <span>🚚 Free Shipping on orders above ₹999</span>
           <span>🔄 Easy 10-day returns</span>
           <span>⭐ Premium Quality — Trusted by 10,000+ customers</span>
@@ -66,86 +100,181 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Category Circles */}
-      {categories.length > 0 && (
-        <section className={`${styles.categories} container`}>
-          {categories.map(c => (
-            <Link to={`/shop?category__slug=${c.slug}`} key={c.id} className={styles['cat-circle']}>
-              <div className={styles['cat-circle-img']}>
-                {c.image && <img src={c.image} alt={c.name} />}
-              </div>
-              <span>{c.name}</span>
-            </Link>
-          ))}
-        </section>
-      )}
-
-
-      {/* Hero Banner */}
-      {heroBanner && (
-        <section className={styles['hero-banner']}>
-          <Link to={heroBanner.button_url || '/shop'}>
-            <img src={heroBanner.image} alt={heroBanner.title || 'Promotional Banner'} />
+      {/* Fixed category shortcuts — intentionally independent of backend categories */}
+      <section className={`${styles.categories} container`}>
+        {[
+          { name: 'Birthday Dresses', image: '/cat-img/birthday.jpeg', url: '/shop' },
+          { name: 'First Birthday', image: '/cat-img/first%20birthday.jpeg', url: '/shop' },
+          { name: 'Theme Made Frocks', image: '/cat-img/theme%20made%20frocks.jpeg', url: '/shop' },
+          { name: 'Ethnic Collections', image: '/cat-img/ethinic.jpeg', url: '/shop' },
+          { name: 'Dreamscape Dress', image: '/cat-img/dream%20scape.jpeg', url: '/shop' },
+          { name: 'Ready to Dispatch', image: '/cat-img/ready%20to%20dispatch.jpeg', url: '/shop' },
+          { name: 'Trending Designs', image: '/cat-img/trending.jpeg', url: '/shop' },
+          { name: 'New Arrivals', image: '/cat-img/new%20arrivals.jpeg', url: '/shop' },
+          { name: 'Onam Collection', image: '/cat-img/festival.jpeg', url: '/shop' },
+        ].map((item) => (
+          <Link to={item.url} key={item.name} className={styles['cat-circle']}>
+            <div className={styles['cat-circle-img']}>
+              <img src={item.image} alt={item.name} />
+            </div>
+            <span>{item.name}</span>
           </Link>
+        ))}
+      </section>
+
+      {/* Hero carousel */}
+      {banners.length > 0 && (
+        <section className={styles['hero-banner']}>
+          <div className={styles['hero-track']} style={{ transform: `translateX(-${activeBanner * 100}%)` }}>
+            {banners.map((banner) => (
+              <Link
+                to={banner.button_url || '/shop'}
+                key={banner.id}
+                className={styles['hero-slide']}
+              >
+                <img src={banner.image} alt={banner.title || 'Promotional Banner'} />
+              </Link>
+            ))}
+          </div>
+
+          {banners.length > 1 && (
+            <div className={styles['hero-dots']} aria-label="Banner navigation">
+              {banners.map((banner, index) => (
+                <button
+                  type="button"
+                  key={banner.id || index}
+                  className={index === activeBanner ? styles['hero-dot-active'] : styles['hero-dot']}
+                  onClick={() => setActiveBanner(index)}
+                  aria-label={`Show banner ${index + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </section>
       )}
 
+      {/* Product rows — existing ProductCard is intentionally reused unchanged */}
+      {ethnicProducts.length > 0 && (
+        <section className={`${styles['product-section']} container`}>
+          <div className={styles['section-header']}>
+            <h2 className={styles['home-section-title']}>Ethnic Collections 🔥</h2>
+            <Link to="/shop" className={styles['view-all']}>View All</Link>
+          </div>
+          <div className={styles['products-grid']}>
+            {ethnicProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {birthdayProducts.length > 0 && (
+        <section className={`${styles['product-section']} container`}>
+          <div className={styles['section-header']}>
+            <h2 className={styles['home-section-title']}>Birthday Dresses 🔥</h2>
+            <Link to="/shop" className={styles['view-all']}>View All</Link>
+          </div>
+          <div className={styles['products-grid']}>
+            {birthdayProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Shop by Collection */}
-      {categories.length > 0 && (
-        <section className="section container">
-          <h2 className="section-title">Shop by Collection</h2>
+      {collectionCards.length > 0 && (
+        <section className={`${styles['collection-section']} container`}>
+          <h2 className={styles['center-title']}>Shop by Collection</h2>
           <div className={styles['collections-grid']}>
-            {categories.map(col => (
-              <Link to={`/shop?category__slug=${col.slug}`} key={col.id} className={styles['collection-card']}>
-                {col.image && <img src={col.image} alt={col.name} />}
-                <div className={styles['collection-overlay']}><span>{col.name}</span></div>
+            {collectionCards.map((category) => (
+              <Link
+                to={`/shop?category__slug=${category.slug}`}
+                key={category.id}
+                className={styles['collection-card']}
+              >
+                {category.image && <img src={category.image} alt={category.name} />}
+                <div className={styles['collection-label']}>{category.name}</div>
               </Link>
             ))}
           </div>
         </section>
       )}
 
-      {/* Featured Products */}
-      {featured.length > 0 && (
-        <section className="section container">
-          <h2 className="section-title">Featured Products ✨</h2>
-          <div className={styles['products-grid']}>
-            {featured.slice(0, 6).map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
-        </section>
-      )}
-
-      {/* New Arrivals */}
-      {newArrivals.length > 0 && (
-        <section className="section container">
+      {hotProducts.length > 0 && (
+        <section className={`${styles['product-section']} container`}>
           <div className={styles['section-header']}>
-            <h2 className="section-title" style={{ marginBottom: 0 }}>New Arrivals ✨</h2>
+            <h2 className={styles['home-section-title']}>Hot New Arrivals 🔥</h2>
             <Link to="/shop" className={styles['view-all']}>View All</Link>
           </div>
           <div className={styles['products-grid']}>
-            {newArrivals.slice(0, 4).map(p => <ProductCard key={p.id} product={p} />)}
+            {hotProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
           </div>
         </section>
       )}
 
-      {/* Testimonials */}
+      {dealProducts.length > 0 && (
+        <section className={`${styles['product-section']} container`}>
+          <div className={styles['section-header']}>
+            <h2 className={styles['home-section-title']}>Best Deals 🔥</h2>
+            <Link to="/shop" className={styles['view-all']}>View All</Link>
+          </div>
+          <div className={styles['products-grid']}>
+            {dealProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Featured collections */}
+      {featuredCollections.length > 0 && (
+        <section className={styles['featured-collections']}>
+          <div className="container">
+            <h2 className={styles['center-title']}>Featured Collections</h2>
+            <div className={styles['featured-grid']}>
+              {featuredCollections.map((category) => (
+                <Link
+                  to={`/shop?category__slug=${category.slug}`}
+                  key={category.id}
+                  className={styles['featured-card']}
+                >
+                  {category.image && <img src={category.image} alt={category.name} />}
+                  <div className={styles['featured-overlay']}>
+                    <h3>{category.name}</h3>
+                    <span>Shop Now →</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Existing customer trust section */}
       <section className={styles.testimonials}>
         <div className="container">
-          <h2 className="section-title">Thank You for Being a Part of Our Onam!</h2>
-          <p style={{ textAlign: 'center', color: 'var(--text-muted)', marginBottom: '32px' }}>We love our customers &amp; they love us</p>
+          <h2 className={styles['center-title']}>Thank You for Being a Part of Our Onam!</h2>
+          <p className={styles['testimonial-subtitle']}>We love our customers &amp; they love us</p>
+
           <div className={styles['testimonials-grid']}>
-            {testimonials.map(t => (
-              <div key={t.id} className={styles['testimonial-card']}>
+            {testimonials.map((testimonial) => (
+              <div key={testimonial.id} className={styles['testimonial-card']}>
                 <div className="stars" style={{ marginBottom: '8px' }}>
-                  {[1, 2, 3, 4, 5].map(s => <span key={s} className="star filled">★</span>)}
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <span key={star} className="star filled">★</span>
+                  ))}
                 </div>
-                <p>"{t.text}"</p>
+
+                <p>"{testimonial.text}"</p>
+
                 <div className={styles['testimonial-author']}>
-                  <div className={styles['testimonial-avatar']}>{t.name[0]}</div>
+                  <div className={styles['testimonial-avatar']}>{testimonial.name[0]}</div>
                   <div>
-                    <strong>{t.name}</strong>
-                    <span>{t.location} · Verified Buyer</span>
+                    <strong>{testimonial.name}</strong>
+                    <span>{testimonial.location} · Verified Buyer</span>
                   </div>
                 </div>
               </div>
@@ -154,7 +283,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Bar */}
       <div className={`${styles['features-bar']} container`}>
         <div className={styles.feature}><span>🚚</span><div><strong>Free Shipping</strong><p>On all orders above ₹999</p></div></div>
         <div className={styles.feature}><span>🔄</span><div><strong>Easy Returns</strong><p>10-day return &amp; exchange policy</p></div></div>
