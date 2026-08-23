@@ -102,11 +102,23 @@ export default function ProductDetail() {
   }, [product, selColor, selSize]);
 
   // Images for selected variant or first variant
+  // const images = useMemo(() => {
+  //   if (selectedVariant?.images?.length) return selectedVariant.images;
+  //   if (product?.variants?.[0]?.images?.length) return product.variants[0].images;
+  //   return [];
+  // }, [selectedVariant, product]);
+
   const images = useMemo(() => {
-    if (selectedVariant?.images?.length) return selectedVariant.images;
-    if (product?.variants?.[0]?.images?.length) return product.variants[0].images;
-    return [];
-  }, [selectedVariant, product]);
+    if (!product?.colors?.length) return[];
+
+    const selectedColor = product.colors.find(
+      pc => pc.color?.name == selColor
+    );
+    if (selectedColor?.images?.length) {
+      return selectedColor.images;
+    }
+    return product.colors[0]?.images || [];
+  }, [product,selColor]);
 
   const displayPrice = selectedVariant?.selling_price || selectedVariant?.discount_price || product?.variants?.[0]?.selling_price;
   const originalPrice = selectedVariant?.price || product?.variants?.[0]?.price;

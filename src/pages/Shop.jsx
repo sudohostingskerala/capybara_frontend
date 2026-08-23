@@ -21,7 +21,7 @@ export default function Shop() {
   const [loading, setLoading] = useState(true);
   const [filterOpen, setFilterOpen] = useState(false);
 
-  const selCat = params.get('category__slug') || '';
+  const selCat = params.get('category__slug') || params.get('category_slug') || '';
   const searchQuery = params.get('search') || '';
   const selColor = params.get('color') || '';
   const selSize = params.get('size') || '';
