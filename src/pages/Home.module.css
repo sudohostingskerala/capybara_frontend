@@ -3,12 +3,16 @@
   overflow: hidden;
 }
 
-/* Top promotional strip */
+
+/* =========================================================
+   TOP PROMOTIONAL STRIP
+========================================================= */
+
 .trust-bar {
   width: 100%;
   overflow: hidden;
   padding: 10px 0;
-  background: var(--bg-secondary);
+  background: var(--primary);
   border-bottom: 1px solid var(--border);
 }
 
@@ -23,26 +27,41 @@
 
 .trust-bar span {
   font-size: 0.8rem;
-  color: var(--text-primary);
+  color:white;
   font-weight: 600;
 }
 
-/* Circular category navigation */
+
+/* =========================================================
+   CIRCULAR CATEGORY NAVIGATION
+========================================================= */
+
 .categories {
   display: flex;
   justify-content: center;
   gap: 18px;
   padding: 24px 20px 28px;
-  /* flex-wrap: nowrap; */
-  overflow-x: show;
+
+  overflow-x: auto;
   overflow-y: hidden;
+
   -webkit-overflow-scrolling: touch;
+
   scroll-snap-type: x proximity;
-  min-width:100%;
+
+  min-width: 100%;
+
+  /*
+   * Hide scrollbar everywhere.
+   */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .categories::-webkit-scrollbar {
   display: none;
+  width: 0;
+  height: 0;
 }
 
 .cat-circle {
@@ -62,7 +81,9 @@
   overflow: hidden;
   border: 3px solid var(--border);
   background: var(--bg-secondary);
-  transition: border-color var(--transition), transform 0.25s;
+  transition:
+    border-color var(--transition),
+    transform 0.25s;
 }
 
 .cat-circle:hover .cat-circle-img {
@@ -85,22 +106,46 @@
   color: var(--text-secondary);
 }
 
-/* Hero carousel */
+
+/* =========================================================
+   HERO BANNER
+========================================================= */
+
 .hero-banner {
   position: relative;
   width: 100%;
   overflow: hidden;
   background: var(--bg-secondary);
+
+  /*
+   * Important for touch devices.
+   * Allows horizontal swipe while preventing
+   * unwanted browser gestures.
+   */
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+
+  cursor: grab;
+}
+
+.hero-banner:active {
+  cursor: grabbing;
 }
 
 .hero-track {
   display: flex;
   width: 100%;
-  transition: transform 0.55s ease;
+
+  transition:
+    transform 0.55s ease;
+
+  will-change: transform;
 }
 
 .hero-slide {
   min-width: 100%;
+  flex: 0 0 100%;
   display: block;
 }
 
@@ -109,15 +154,30 @@
   aspect-ratio: 30 / 9;
   display: block;
   object-fit: cover;
+
+  /*
+   * Prevent browser image dragging.
+   */
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
 }
+
+
+/* =========================================================
+   HERO DOTS
+========================================================= */
 
 .hero-dots {
   position: absolute;
   left: 50%;
   bottom: 14px;
   z-index: 2;
+
   display: flex;
+
   gap: 7px;
+
   transform: translateX(-50%);
 }
 
@@ -125,20 +185,37 @@
 .hero-dot-active {
   width: 8px;
   height: 8px;
+
   padding: 0;
+
   border: 0;
+
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.65);
+
+  background:
+    rgba(255, 255, 255, 0.65);
+
   cursor: pointer;
+
+  transition:
+    width 0.2s ease,
+    background 0.2s ease;
 }
 
 .hero-dot-active {
   width: 22px;
+
   border-radius: 10px;
-  background: var(--accent);
+
+  background:
+    var(--accent);
 }
 
-/* Product rows */
+
+/* =========================================================
+   PRODUCT SECTIONS
+========================================================= */
+
 .product-section {
   padding: 34px 24px 8px;
 }
@@ -153,18 +230,27 @@
 
 .home-section-title {
   margin: 0;
+
   font-size: 1.25rem;
+
   line-height: 1.2;
+
   font-weight: 600;
+
   color: var(--accent);
 }
 
 .view-all {
   flex: 0 0 auto;
+
   font-size: 0.86rem;
+
   font-weight: 600;
+
   color: var(--text-primary);
+
   text-decoration: underline;
+
   text-underline-offset: 3px;
 }
 
@@ -172,57 +258,144 @@
   color: var(--accent);
 }
 
+
+/* =========================================================
+   HORIZONTAL PRODUCT SCROLLER
+========================================================= */
+
 .products-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
+  display: flex;
+
+  flex-wrap: nowrap;
+
   gap: 14px;
+
+  width: 100%;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding:
+    2px 2px 8px;
+
+  /*
+   * Smooth touch scrolling.
+   */
+  -webkit-overflow-scrolling: touch;
+
+  /*
+   * Snap each product card.
+   */
+  scroll-snap-type: x proximity;
+
+  /*
+   * Hide scrollbar Firefox / IE / Edge.
+   */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* Shop by collection */
+
+/*
+ * Hide scrollbar Chrome / Safari / Opera.
+ */
+.products-grid::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+
+/*
+ * Product wrapper.
+ *
+ * The actual ProductCard remains untouched.
+ */
+.product-scroll-item {
+  flex: 0 0 calc(
+    (100% - 70px) / 6
+  );
+
+  min-width: 0;
+
+  scroll-snap-align: start;
+}
+
+
+/* =========================================================
+   SHOP BY COLLECTION
+========================================================= */
+
 .collection-section {
   padding: 42px 24px 30px;
 }
 
 .center-title {
   margin: 0 0 26px;
+
   text-align: center;
+
   color: var(--text-primary);
+
   font-size: 1.5rem;
+
   line-height: 1.2;
+
   font-weight: 500;
+
   text-transform: uppercase;
 }
 
 .collections-grid {
   display: flex;
+
   gap: 16px;
+
   overflow-x: auto;
   overflow-y: hidden;
+
   padding: 0 4px 4px;
+
   scroll-snap-type: x proximity;
+
   -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 .collections-grid::-webkit-scrollbar {
   display: none;
+  width: 0;
+  height: 0;
 }
 
 .collection-card {
   position: relative;
+
   flex: 0 0 220px;
+
   aspect-ratio: 4 / 5;
+
   overflow: hidden;
+
   border-radius: var(--radius-md);
+
   scroll-snap-align: start;
+
   background: var(--bg-secondary);
 }
 
 .collection-card img {
   width: 100%;
   height: 100%;
+
   display: block;
+
   object-fit: cover;
-  transition: transform 0.4s;
+
+  transition:
+    transform 0.4s;
 }
 
 .collection-card:hover img {
@@ -231,43 +404,72 @@
 
 .collection-label {
   position: absolute;
+
   left: 0;
   right: 0;
   bottom: 0;
-  padding: 34px 14px 14px;
+
+  padding:
+    34px 14px 14px;
+
   color: #fff;
+
   font-size: 0.9rem;
+
   font-weight: 600;
+
   text-align: center;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent);
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.72),
+      transparent
+    );
 }
 
-/* Large featured collections */
+
+/* =========================================================
+   FEATURED COLLECTIONS
+========================================================= */
+
 .featured-collections {
   padding: 42px 24px 54px;
 }
 
 .featured-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
   gap: 20px;
 }
 
 .featured-card {
   position: relative;
+
   display: block;
+
   aspect-ratio: 4 / 5;
+
   overflow: hidden;
+
   border-radius: var(--radius-md);
+
   background: var(--bg-secondary);
 }
 
 .featured-card img {
   width: 100%;
   height: 100%;
+
   display: block;
+
   object-fit: cover;
-  transition: transform 0.45s;
+
+  transition:
+    transform 0.45s;
 }
 
 .featured-card:hover img {
@@ -276,100 +478,161 @@
 
 .featured-overlay {
   position: absolute;
+
   inset: 0;
+
   display: flex;
+
   flex-direction: column;
+
   justify-content: flex-end;
+
   padding: 26px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.72), transparent 55%);
+
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.72),
+      transparent 55%
+    );
 }
 
 .featured-overlay h3 {
   margin: 0 0 7px;
+
   color: #fff;
+
   font-size: 1.35rem;
+
   font-weight: 600;
 }
 
 .featured-overlay span {
   color: #fff;
+
   font-size: 0.9rem;
+
   font-weight: 500;
 }
 
-/* Existing testimonials */
+
+/* =========================================================
+   TESTIMONIALS
+========================================================= */
+
 .testimonials {
   padding: 54px 0;
-  background: var(--bg-secondary);
+
+  background:
+    var(--bg-secondary);
 }
 
 .testimonial-subtitle {
   margin: -8px 0 30px;
+
   text-align: center;
+
   color: var(--text-muted);
 }
 
 .testimonials-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+
+  grid-template-columns:
+    repeat(3, 1fr);
+
   gap: 24px;
 }
 
 .testimonial-card {
   padding: 24px;
+
   background: #fff;
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-sm);
+
+  border-radius:
+    var(--radius-md);
+
+  box-shadow:
+    var(--shadow-sm);
 }
 
 .testimonial-card p {
   margin-bottom: 16px;
+
   color: var(--text-secondary);
+
   font-size: 0.875rem;
+
   line-height: 1.7;
 }
 
 .testimonial-author {
   display: flex;
+
   align-items: center;
+
   gap: 12px;
 }
 
 .testimonial-avatar {
   width: 40px;
   height: 40px;
+
   display: flex;
+
   flex-shrink: 0;
+
   align-items: center;
   justify-content: center;
+
   border-radius: 50%;
-  background: var(--accent);
+
+  background:
+    var(--accent);
+
   color: #fff;
+
   font-weight: 700;
 }
 
 .testimonial-author strong {
   display: block;
-  color: var(--text-primary);
+
+  color:
+    var(--text-primary);
+
   font-size: 0.875rem;
 }
 
 .testimonial-author span {
-  color: var(--text-muted);
+  color:
+    var(--text-muted);
+
   font-size: 0.78rem;
 }
 
-/* Bottom feature strip */
+
+/* =========================================================
+   BOTTOM FEATURE STRIP
+========================================================= */
+
 .features-bar {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+
+  grid-template-columns:
+    repeat(4, 1fr);
+
   gap: 24px;
-  padding: 40px 24px;
+
+  padding:
+    40px 24px;
 }
 
 .feature {
   display: flex;
+
   align-items: flex-start;
+
   gap: 16px;
 }
 
@@ -379,35 +642,65 @@
 
 .feature strong {
   display: block;
+
   margin-bottom: 4px;
-  color: var(--text-primary);
+
+  color:
+    var(--text-primary);
+
   font-size: 0.9rem;
 }
 
 .feature p {
   margin: 0;
-  color: var(--text-muted);
+
+  color:
+    var(--text-muted);
+
   font-size: 0.8rem;
 }
 
-/* Responsive */
+
+/* =========================================================
+   TABLET
+========================================================= */
+
 @media (max-width: 1200px) {
-  .products-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
 
   .categories {
     justify-content: flex-start;
   }
-}
 
-@media (max-width: 900px) {
-  .products-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  /*
+   * Four visible products.
+   */
+  .product-scroll-item {
+    flex-basis:
+      calc((100% - 42px) / 4);
   }
 
+}
+
+
+/* =========================================================
+   TABLET / SMALL LAPTOP
+========================================================= */
+
+@media (max-width: 900px) {
+
+  /*
+   * Three visible products.
+   */
+  .product-scroll-item {
+    flex-basis:
+      calc((100% - 28px) / 3);
+  }
+
+
   .featured-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .featured-card:last-child {
@@ -419,15 +712,23 @@
   }
 
   .features-bar {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns:
+      repeat(2, 1fr);
   }
 
   .hero-slide img {
     aspect-ratio: 16 / 8;
   }
+
 }
 
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
 @media (max-width: 640px) {
+
   .trust-bar {
     padding: 8px 0;
   }
@@ -440,9 +741,14 @@
     gap: 24px;
   }
 
+
+  /* Categories */
+
   .categories {
     gap: 14px;
-    padding: 18px 12px 22px;
+
+    padding:
+      18px 12px 22px;
   }
 
   .cat-circle-img {
@@ -452,25 +758,50 @@
 
   .cat-circle span {
     max-width: 92px;
+
     font-size: 0.68rem;
   }
+
+
+  /* Hero */
 
   .hero-slide img {
     aspect-ratio: 16 / 10;
   }
 
+
+  /* Product section */
+
   .product-section {
-    padding: 28px 12px 4px;
+    padding:
+      28px 12px 4px;
   }
 
-  .products-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+
+  /*
+   * TWO visible products on mobile.
+   *
+   * User can swipe to see the remaining products.
+   */
+  .product-scroll-item {
+    flex-basis:
+      calc((100% - 10px) / 2);
   }
+
+
+  .products-grid {
+    gap: 10px;
+
+    padding-bottom: 6px;
+  }
+
 
   .home-section-title {
     font-size: 1.05rem;
   }
+
+
+  /* Collection */
 
   .collection-section,
   .featured-collections {
@@ -486,6 +817,9 @@
     flex-basis: 155px;
   }
 
+
+  /* Featured */
+
   .featured-grid {
     grid-template-columns: 1fr;
   }
@@ -494,18 +828,55 @@
     grid-column: auto;
   }
 
+
+  /* Features */
+
   .features-bar {
     grid-template-columns: 1fr;
-    padding: 32px 16px;
+
+    padding:
+      32px 16px;
   }
+
 }
 
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 380px) {
+
+  /*
+   * Slightly narrower cards on very small screens
+   * so the next card is visibly peeking through.
+   */
+  .product-scroll-item {
+    flex-basis:
+      calc(78% - 5px);
+  }
+
+  .products-grid {
+    gap: 10px;
+  }
+
+}
+
+
+/* =========================================================
+   MARQUEE
+========================================================= */
+
 @keyframes marquee {
+
   0% {
-    transform: translateX(0);
+    transform:
+      translateX(0);
   }
 
   100% {
-    transform: translateX(-50%);
+    transform:
+      translateX(-50%);
   }
+
 }

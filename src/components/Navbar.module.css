@@ -1,63 +1,118 @@
+/* =========================================================
+   NAVBAR
+========================================================= */
+
 .navbar {
   position: sticky;
   top: 0;
+
   z-index: 1000;
+
   width: 100%;
-  background: var(--bg-primary, #fff);
-  box-shadow: var(--shadow-sm);
+
+  background:
+    var(--bg-primary, #fff);
+
+  box-shadow:
+    var(--shadow-sm);
 }
 
 .navbarVisible {
-  transform: translateY(0);
-  transition: transform 0.3s ease;
+  transform:
+    translateY(0);
+
+  transition:
+    transform 0.3s ease;
 }
 
 .navbarHidden {
-  transform: translateY(-100%);
-  transition: transform 0.3s ease;
+  transform:
+    translateY(-100%);
+
+  transition:
+    transform 0.3s ease;
 }
 
-/* Announcement */
+
+/* =========================================================
+   ANNOUNCEMENT BAR
+========================================================= */
+
 .announcement-bar {
   width: 100%;
+
   overflow: hidden;
+
   background: #050505;
+
   color: #fff;
+
   padding: 7px 0;
+
   white-space: nowrap;
 }
 
 .announcement-track {
   display: flex;
+
   width: max-content;
+
   align-items: center;
+
   gap: 60px;
-  animation: announcementMarquee 28s linear infinite;
+
+  animation:
+    announcementMarquee
+    28s linear infinite;
 }
 
 .announcement-track span {
   font-size: 0.76rem;
+
   font-weight: 600;
 }
 
-/* Utility row */
+
+/* =========================================================
+   UTILITY BAR
+========================================================= */
+
 .utility-bar {
   min-height: 34px;
-  padding: 0 58px;
+
+  padding:
+    0 58px;
+
   display: flex;
+
   align-items: center;
+
   justify-content: space-between;
+
   gap: 20px;
-  border-bottom: 1px solid var(--border-light, #e8e3de);
-  background: var(--bg-primary, #fff);
+
+  border-bottom:
+    1px solid
+    var(--border-light, #e8e3de);
+
+  background:
+    var(--bg-primary, #fff);
 }
 
 .utility-links {
   display: flex;
+
   align-items: center;
+
   gap: 25px;
+
   overflow-x: auto;
+
   white-space: nowrap;
+
+  scrollbar-width: none;
+
+  -ms-overflow-style: none;
 }
 
 .utility-links::-webkit-scrollbar {
@@ -65,151 +120,373 @@
 }
 
 .utility-links a {
-  color: var(--text-primary);
+  color:
+    var(--text-primary);
+
   text-decoration: none;
+
   font-size: 0.82rem;
+
   font-weight: 400;
 }
 
 .utility-links a:hover {
-  color: var(--accent);
+  color:
+    var(--accent);
 }
 
 .social-links {
   display: flex;
+
   align-items: center;
+
   gap: 13px;
+
   flex-shrink: 0;
-  color: var(--text-primary);
+
+  color:
+    var(--text-primary);
 }
 
 .social-links span {
   display: inline-flex;
+
   align-items: center;
+
   justify-content: center;
+
   min-width: 15px;
+
   height: 20px;
+
   font-size: 0.92rem;
+
   font-weight: 600;
 }
 
-/* Logo row */
+
+/* =========================================================
+   BRAND ROW
+========================================================= */
+
 .brand-row {
   position: relative;
+
   min-height: 132px;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
-  padding: 14px 70px 8px;
+
+  padding:
+    14px 70px 8px;
 }
+
+
+/* =========================================================
+   LOGO
+========================================================= */
 
 .navbar-logo {
   display: flex;
+
   align-items: center;
+
   justify-content: center;
 }
 
 .navbar-logo img {
   width: auto;
+
   height: 88px;
+
   max-width: 260px;
+
   object-fit: contain;
 }
 
-.brand-row > .icon-btn {
+
+/* =========================================================
+   SEARCH BUTTON
+========================================================= */
+
+.search-icon-btn {
   position: absolute;
+
   left: 58px;
+
+  width: 38px;
+
+  height: 38px;
+
+  padding: 0;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  border: 0;
+
+  background: transparent;
+
+  color:
+    var(--text-primary);
+
+  cursor: pointer;
+
+  z-index: 5;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
+
+.search-icon-btn:hover {
+  color:
+    var(--accent);
+
+  transform:
+    translateY(-1px);
+}
+
+
+/* =========================================================
+   RIGHT SIDE ACTIONS
+========================================================= */
 
 .brand-actions {
   position: absolute;
+
   right: 54px;
+
   display: flex;
+
   align-items: center;
-  gap: 18px;
+
+  gap: 10px;
+
+  z-index: 10;
 }
 
 .icon-btn {
   position: relative;
+
   width: 38px;
+
   height: 38px;
+
   padding: 0;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
+
   border: 0;
+
   background: transparent;
-  color: var(--text-primary);
+
+  color:
+    var(--text-primary);
+
+  text-decoration: none;
+
   cursor: pointer;
-  transition: color 0.2s ease, transform 0.2s ease;
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
 }
 
 .icon-btn:hover {
-  color: var(--accent);
-  transform: translateY(-1px);
+  color:
+    var(--accent);
+
+  transform:
+    translateY(-1px);
 }
 
 .cart-count {
   position: absolute;
+
   top: -2px;
+
   right: -4px;
+
   min-width: 17px;
+
   height: 17px;
-  padding: 0 4px;
-  border-radius: 50%;
+
+  padding:
+    0 4px;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
-  background: var(--accent);
+
+  border-radius: 50%;
+
+  background:
+    var(--accent);
+
   color: #fff;
+
   font-size: 0.62rem;
+
   font-weight: 700;
 }
 
-/* Main navigation */
+
+/* =========================================================
+   HAMBURGER
+========================================================= */
+
+.hamburger {
+  display: none;
+
+  width: 38px;
+
+  height: 38px;
+
+  padding: 0;
+
+  align-items: center;
+
+  justify-content: center;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+  border:
+    1px solid
+    var(--border-light, #e8e3de);
+
+  border-radius: 50%;
+
+  background:
+    rgba(255, 255, 255, 0.97);
+
+  color:
+    var(--text-primary);
+
+  cursor: pointer;
+
+  flex-shrink: 0;
+}
+
+.hamburger span {
+  display: block;
+
+  width: 17px;
+
+  height: 2px;
+
+  border-radius: 2px;
+
+  background:
+    var(--text-primary);
+}
+
+.hamburger:hover {
+  color:
+    var(--accent);
+}
+
+
+/* =========================================================
+   MAIN NAVIGATION
+========================================================= */
+
 .nav-row {
   width: 100%;
-  border-bottom: 1px solid var(--border-light, #e8e3de);
+
+  border-bottom:
+    1px solid
+    var(--border-light, #e8e3de);
 }
 
 .navbar-links {
   min-height: 51px;
+
   display: flex;
+
   align-items: center;
+
   justify-content: center;
-  gap: clamp(18px, 2.2vw, 42px);
-  padding: 0 25px;
+
+  gap:
+    clamp(
+      18px,
+      2.2vw,
+      42px
+    );
+
+  padding:
+    0 25px;
 }
 
 .navbar-links > a,
 .dropdown-trigger {
   position: relative;
+
   display: inline-flex;
+
   align-items: center;
+
   gap: 7px;
-  padding: 15px 0;
+
+  padding:
+    15px 0;
+
   border: 0;
+
   background: transparent;
-  color: var(--text-primary);
+
+  color:
+    var(--text-primary);
+
   text-decoration: none;
+
   white-space: nowrap;
+
   font-size: 0.79rem;
+
   font-weight: 500;
+
   letter-spacing: 0.19em;
+
   text-transform: uppercase;
+
   cursor: pointer;
 }
 
 .navbar-links > a::after,
 .dropdown-trigger::after {
   content: "";
+
   position: absolute;
+
   left: 0;
+
   right: 100%;
+
   bottom: 8px;
+
   height: 1px;
-  background: var(--text-primary);
-  transition: right 0.2s ease;
+
+  background:
+    var(--text-primary);
+
+  transition:
+    right 0.2s ease;
 }
 
 .navbar-links > a:hover::after,
@@ -219,90 +496,164 @@
 
 .chevron {
   font-size: 1rem;
+
   line-height: 1;
+
   margin-top: -3px;
 }
 
+
+/* =========================================================
+   DROPDOWN
+========================================================= */
+
 .nav-dropdown {
   position: relative;
+
   height: 51px;
+
   display: flex;
+
   align-items: center;
 }
 
 .dropdown-menu {
   position: absolute;
+
   z-index: 1100;
+
   top: 100%;
+
   left: 50%;
+
   min-width: 215px;
-  padding: 11px 0;
-  transform: translateX(-50%);
-  background: var(--bg-primary, #fff);
-  border: 1px solid var(--border-light, #e8e3de);
-  box-shadow: var(--shadow-md);
+
+  padding:
+    11px 0;
+
+  transform:
+    translateX(-50%);
+
+  background:
+    var(--bg-primary, #fff);
+
+  border:
+    1px solid
+    var(--border-light, #e8e3de);
+
+  box-shadow:
+    var(--shadow-md);
 }
 
 .dropdown-menu a {
   display: block;
-  padding: 9px 17px;
-  color: var(--text-primary);
+
+  padding:
+    9px 17px;
+
+  color:
+    var(--text-primary);
+
   text-decoration: none;
+
   font-size: 0.82rem;
+
   font-weight: 400;
+
   letter-spacing: 0;
+
   text-transform: none;
+
   white-space: nowrap;
 }
 
 .dropdown-menu a:hover {
-  background: var(--bg-secondary);
-  color: var(--accent);
+  background:
+    var(--bg-secondary);
+
+  color:
+    var(--accent);
 }
 
-/* Search */
+
+/* =========================================================
+   SEARCH BAR
+========================================================= */
+
 .search-bar {
-  padding: 13px 24px 16px;
-  border-top: 1px solid var(--border-light, #e8e3de);
-  background: var(--bg-primary, #fff);
+  position: relative;
+
+  z-index: 1150;
+
+  padding:
+    13px 24px 16px;
+
+  border-top:
+    1px solid
+    var(--border-light, #e8e3de);
+
+  background:
+    var(--bg-primary, #fff);
 }
 
 .search-bar form {
   display: flex;
+
   gap: 10px;
+
   max-width: 620px;
+
   margin: 0 auto;
 }
 
 .search-bar input {
   flex: 1;
+
   min-width: 0;
-  padding: 11px 15px;
-  border: 1px solid var(--border, #ddd);
-  border-radius: var(--radius-sm);
+
+  padding:
+    11px 15px;
+
+  border:
+    1px solid
+    var(--border, #ddd);
+
+  border-radius:
+    var(--radius-sm);
+
   font-size: 0.9rem;
+
   outline: none;
+
+  background:
+    var(--bg-primary, #fff);
+
+  color:
+    var(--text-primary);
 }
 
 .search-bar input:focus {
-  border-color: var(--accent);
+  border-color:
+    var(--accent);
 }
 
-/* Mobile */
-.hamburger {
-  display: none;
-}
+
+/* =========================================================
+   LARGE TABLET
+========================================================= */
 
 @media (max-width: 1100px) {
+
   .utility-bar {
-    padding: 0 25px;
+    padding:
+      0 25px;
   }
 
   .utility-links {
     gap: 17px;
   }
 
-  .brand-row > .icon-btn {
+  .search-icon-btn {
     left: 25px;
   }
 
@@ -317,13 +668,27 @@
   .navbar-links > a,
   .dropdown-trigger {
     font-size: 0.7rem;
-    letter-spacing: 0.13em;
+
+    letter-spacing:
+      0.13em;
   }
+
 }
 
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
 @media (max-width: 768px) {
+
+  /* -------------------------------------------------------
+     UTILITY
+  ------------------------------------------------------- */
+
   .utility-bar {
-    padding: 0 10px;
+    padding:
+      0 10px;
   }
 
   .utility-links {
@@ -338,29 +703,103 @@
     display: none;
   }
 
+
+  /* -------------------------------------------------------
+     BRAND ROW
+  ------------------------------------------------------- */
+
   .brand-row {
     min-height: 92px;
-    padding: 8px 60px;
+
+    padding:
+      8px 54px;
   }
 
   .navbar-logo img {
     height: 65px;
+
     max-width: 190px;
   }
 
-  .brand-row > .icon-btn {
+
+  /* -------------------------------------------------------
+     SEARCH ICON
+  ------------------------------------------------------- */
+
+  .search-icon-btn {
     left: 10px;
+
+    top: 50%;
+
+    transform:
+      translateY(-50%);
+
+    width: 35px;
+
+    height: 35px;
+
+    display: flex;
+
+    z-index: 20;
   }
 
+  .search-icon-btn:hover {
+    transform:
+      translateY(-50%);
+  }
+
+
+  /* -------------------------------------------------------
+     ACCOUNT / CART / HAMBURGER
+  ------------------------------------------------------- */
+
   .brand-actions {
-    right: 9px;
+    right: 8px;
+
     gap: 2px;
+
+    z-index: 20;
   }
 
   .brand-actions .icon-btn {
     width: 35px;
+
     height: 35px;
   }
+
+
+  /*
+   * Hamburger is now beside the cart.
+   *
+   * It is NOT fixed.
+   * It belongs to the header.
+   */
+
+  .hamburger {
+    display: flex;
+
+    width: 35px;
+
+    height: 35px;
+
+    margin-left: 1px;
+
+    border:
+      1px solid
+      var(--border-light, #e8e3de);
+  }
+
+
+  .hamburger span {
+    width: 16px;
+
+    height: 2px;
+  }
+
+
+  /* -------------------------------------------------------
+     MAIN NAVIGATION
+  ------------------------------------------------------- */
 
   .nav-row {
     position: relative;
@@ -368,32 +807,59 @@
 
   .navbar-links {
     display: none;
+
     position: absolute;
+
     z-index: 1050;
+
     top: 0;
+
     left: 0;
+
     right: 0;
+
     min-height: auto;
+
     flex-direction: column;
+
     align-items: stretch;
+
     gap: 0;
-    padding: 8px 18px 18px;
-    background: var(--bg-primary, #fff);
-    box-shadow: var(--shadow-md);
+
+    padding:
+      8px 18px 18px;
+
+    background:
+      var(--bg-primary, #fff);
+
+    box-shadow:
+      var(--shadow-md);
   }
 
   .navbar-links.open {
     display: flex;
   }
 
+
   .navbar-links > a,
   .dropdown-trigger {
     width: 100%;
-    justify-content: space-between;
-    padding: 13px 4px;
-    font-size: 0.78rem;
-    letter-spacing: 0.12em;
-    border-bottom: 1px solid var(--border-light, #eee);
+
+    justify-content:
+      space-between;
+
+    padding:
+      13px 4px;
+
+    font-size:
+      0.78rem;
+
+    letter-spacing:
+      0.12em;
+
+    border-bottom:
+      1px solid
+      var(--border-light, #eee);
   }
 
   .navbar-links > a::after,
@@ -401,57 +867,82 @@
     display: none;
   }
 
+
+  /* -------------------------------------------------------
+     DROPDOWNS
+  ------------------------------------------------------- */
+
   .nav-dropdown {
     width: 100%;
+
     height: auto;
+
     display: block;
   }
 
   .dropdown-menu {
     position: static;
+
     width: 100%;
+
     min-width: 0;
-    padding: 0 0 5px 12px;
+
+    padding:
+      0 0 5px 12px;
+
     transform: none;
+
     border: 0;
+
     box-shadow: none;
-    background: var(--bg-secondary);
+
+    background:
+      var(--bg-secondary);
   }
 
   .dropdown-menu a {
-    padding: 10px 12px;
-    font-size: 0.78rem;
+    padding:
+      10px 12px;
+
+    font-size:
+      0.78rem;
   }
 
-  .hamburger {
-    position: absolute;
-    left: 3rem;
-    bottom: 1.5rem;
-    z-index: 1200;
-    width: 38px;
-    height: 38px;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
-    border: 0;
-    background: transparent;
-    cursor: pointer;
+
+  /* -------------------------------------------------------
+     SEARCH BAR
+  ------------------------------------------------------- */
+
+  .search-bar {
+    position: relative;
+
+    z-index: 1150;
+
+    padding:
+      12px;
   }
 
-  .hamburger span {
-    width: 22px;
-    height: 2px;
-    display: block;
-    background: var(--text-primary);
-    border-radius: 2px;
+  .search-bar form {
+    max-width: none;
   }
+
+  .search-bar input {
+    font-size:
+      0.85rem;
+  }
+
 }
 
+
+/* =========================================================
+   SMALL MOBILE
+========================================================= */
+
 @media (max-width: 480px) {
+
   .announcement-track span {
-    font-size: 0.68rem;
+    font-size:
+      0.68rem;
   }
 
   .utility-links {
@@ -459,31 +950,64 @@
   }
 
   .utility-links a {
-    font-size: 0.66rem;
+    font-size:
+      0.66rem;
   }
+
 
   .brand-row {
     min-height: 82px;
+
+    padding:
+      8px 50px;
   }
 
   .navbar-logo img {
     height: 58px;
+
     max-width: 165px;
   }
 
-  .brand-row > .icon-btn svg,
+
+  .search-icon-btn svg,
   .brand-actions .icon-btn svg {
     width: 22px;
+
     height: 22px;
   }
+
+
+  .brand-actions .icon-btn,
+  .hamburger {
+    width: 32px;
+
+    height: 32px;
+  }
+
+
+  .hamburger span {
+    width: 15px;
+
+    height: 2px;
+  }
+
 }
 
+
+/* =========================================================
+   ANNOUNCEMENT ANIMATION
+========================================================= */
+
 @keyframes announcementMarquee {
+
   from {
-    transform: translateX(0);
+    transform:
+      translateX(0);
   }
 
   to {
-    transform: translateX(-50%);
+    transform:
+      translateX(-50%);
   }
+
 }
