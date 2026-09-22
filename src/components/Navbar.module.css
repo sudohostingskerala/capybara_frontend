@@ -205,7 +205,8 @@
 
   z-index: 0;
 
-background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='140' viewBox='0 0 1000 140'%3E%3Ctext x='35' y='28' font-size='20' fill='%23f58fa2'%3E♥%3C/text%3E%3Ctext x='125' y='18' font-size='15' fill='%23f6c45b'%3E♡%3C/text%3E%3Ctext x='230' y='34' font-size='18' fill='%23b99be8'%3E♥%3C/text%3E%3Ctext x='355' y='20' font-size='14' fill='%239dcc9d'%3E♡%3C/text%3E%3Ctext x='650' y='25' font-size='18' fill='%23f6c45b'%3E♥%3C/text%3E%3Ctext x='770' y='17' font-size='15' fill='%23f58fa2'%3E♡%3C/text%3E%3Ctext x='900' y='32' font-size='20' fill='%23b99be8'%3E♥%3C/text%3E%3Ctext x='970' y='18' font-size='14' fill='%239dcc9d'%3E♡%3C/text%3E%3Ctext x='55' y='78' font-size='14' fill='%23b99be8'%3E♡%3C/text%3E%3Ctext x='175' y='105' font-size='20' fill='%23f58fa2'%3E♥%3C/text%3E%3Ctext x='300' y='92' font-size='15' fill='%23f6c45b'%3E♡%3C/text%3E%3Ctext x='690' y='100' font-size='17' fill='%239dcc9d'%3E♥%3C/text%3E%3Ctext x='820' y='90' font-size='20' fill='%23f58fa2'%3E♡%3C/text%3E%3Ctext x='940' y='108' font-size='15' fill='%23f6c45b'%3E♥%3C/text%3E%3Ctext x='25' y='125' font-size='17' fill='%239dcc9d'%3E♥%3C/text%3E%3Ctext x='115' y='132' font-size='14' fill='%23f6c45b'%3E♡%3C/text%3E%3Ctext x='250' y='125' font-size='19' fill='%23f58fa2'%3E♥%3C/text%3E%3Ctext x='770' y='128' font-size='17' fill='%23b99be8'%3E♥%3C/text%3E%3Ctext x='880' y='125' font-size='14' fill='%239dcc9d'%3E♡%3C/text%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1000' height='140' viewBox='0 0 1000 140'%3E%3Ctext x='35' y='28' font-size='60' fill='%23f58fa2'%3E♥%3C/text%3E%3Ctext x='125' y='18' font-size='45' fill='%23f6c45b'%3E♡%3C/text%3E%3Ctext x='230' y='34' font-size='54' fill='%23b99be8'%3E♥%3C/text%3E%3Ctext x='355' y='20' font-size='42' fill='%239dcc9d'%3E♡%3C/text%3E%3Ctext x='650' y='25' font-size='54' fill='%23f6c45b'%3E♥%3C/text%3E%3Ctext x='770' y='17' font-size='45' fill='%23f58fa2'%3E♡%3C/text%3E%3Ctext x='900' y='32' font-size='60' fill='%23b99be8'%3E♥%3C/text%3E%3Ctext x='970' y='18' font-size='42' fill='%239dcc9d'%3E♡%3C/text%3E%3Ctext x='55' y='78' font-size='42' fill='%23b99be8'%3E♡%3C/text%3E%3Ctext x='175' y='105' font-size='60' fill='%23f58fa2'%3E♥%3C/text%3E%3Ctext x='300' y='92' font-size='45' fill='%23f6c45b'%3E♡%3C/text%3E%3Ctext x='690' y='100' font-size='51' fill='%239dcc9d'%3E♥%3C/text%3E%3Ctext x='820' y='90' font-size='60' fill='%23f58fa2'%3E♡%3C/text%3E%3Ctext x='940' y='108' font-size='45' fill='%23f6c45b'%3E♥%3C/text%3E%3Ctext x='25' y='125' font-size='51' fill='%239dcc9d'%3E♥%3C/text%3E%3Ctext x='115' y='132' font-size='42' fill='%23f6c45b'%3E♡%3C/text%3E%3Ctext x='250' y='125' font-size='57' fill='%23f58fa2'%3E♥%3C/text%3E%3Ctext x='770' y='128' font-size='51' fill='%23b99be8'%3E♥%3C/text%3E%3Ctext x='880' y='125' font-size='42' fill='%239dcc9d'%3E♡%3C/text%3E%3C/svg%3E");
+
   background-repeat: no-repeat;
 
   background-size: 100% 100%;
@@ -1059,4 +1060,79 @@ background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/s
       translateX(-50%);
   }
 
+}
+
+/* =========================================================
+   RELATED PRODUCTS
+   ========================================================= */
+
+.related-section {
+  margin-top: 48px;
+  width: 100%;
+  overflow: hidden;
+}
+
+.related-section .section-title {
+  margin-bottom: 20px;
+}
+
+.related-products {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  gap: 12px;
+
+  width: 100%;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  padding: 2px 2px 12px;
+
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+
+  -webkit-overflow-scrolling: touch;
+
+  scrollbar-width: none;
+}
+
+.related-products::-webkit-scrollbar {
+  display: none;
+}
+
+.related-product {
+  flex: 0 0 150px;
+  width: 150px;
+  min-width: 150px;
+  max-width: 150px;
+
+  scroll-snap-align: start;
+
+  overflow: hidden;
+}
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media (max-width: 480px) {
+  .related-section {
+    margin-top: 40px;
+  }
+
+  .related-products {
+    gap: 10px;
+
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .related-product {
+    flex: 0 0 135px;
+    width: 135px;
+    min-width: 135px;
+    max-width: 135px;
+  }
 }
