@@ -16,6 +16,8 @@ import Spinner from "../components/Spinner";
 import toast from "react-hot-toast";
 import styles from "./ProductDetail.module.css";
 
+import SizeChart from "../components/SizeChart";
+
 export default function ProductDetail() {
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -374,7 +376,10 @@ export default function ProductDetail() {
             {uniqueSizes.length > 0 && (
               <div className={styles["pd-option"]}>
                 <label>
-                  Size: <strong>{selSize || "Select"}</strong>
+                  Size: <strong>{selSize || "Select"} </strong>
+                  <SizeChart />
+                </label>
+                <label>
                 </label>
                 <div className={styles["size-options"]}>
                   {uniqueSizes.map((s) => (

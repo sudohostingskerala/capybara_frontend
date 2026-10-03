@@ -1,0 +1,130 @@
+.button {
+    padding: 10px 18px;
+    border: none;
+    background: none;
+    color: #6c4e06;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration:underline;
+}
+
+
+/* Blur background */
+.overlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+
+    z-index: 9999;
+}
+
+
+/* Modal */
+.modal {
+    position: relative;
+
+    width: min(700px, 95vw);
+    max-height: 90vh;
+
+    padding: 15px;
+
+    background: white;
+    border-radius: 14px;
+
+    overflow: auto;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+
+    animation: popup 0.2s ease;
+}
+
+
+/* Size chart image */
+.image {
+    display: block;
+
+    width: 100%;
+    height: auto;
+
+    border-radius: 8px;
+}
+
+
+/* Close button */
+.close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+
+    width: 35px;
+    height: 35px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: white;
+
+    font-size: 28px;
+    line-height: 30px;
+
+    cursor: pointer;
+
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+    z-index: 2;
+}
+
+.close:hover {
+    background: #f2f2f2;
+}
+
+
+/* Animation */
+@keyframes popup {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* Mobile */
+@media (max-width: 600px) {
+    .overlay {
+        padding: 10px;
+    }
+
+    .modal {
+        width: 95vw;
+        max-height: 90vh;
+        padding: 8px;
+        border-radius: 10px;
+    }
+
+    .close {
+        width: 30px;
+        height: 30px;
+
+        top: 5px;
+        right: 5px;
+
+        font-size: 24px;
+    }
+}
+
