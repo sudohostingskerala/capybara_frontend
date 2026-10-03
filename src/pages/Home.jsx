@@ -488,88 +488,74 @@ export default function Home() {
       </div>
 
 
-      {/* =====================================================
-          CATEGORY SHORTCUTS
-      ===================================================== */}
+     {/* =====================================================
+    CATEGORY SHORTCUTS
+===================================================== */}
 
-      <section
-        className={`${styles.categories} container`}
-      >
+<section className={`${styles.categories} container`}>
+  {[
+    {
+      name: 'Birthday Dresses',
+      search: 'birthday',
+      image: '/cat-img/birthday.jpeg',
+    },
+    {
+      name: 'First Birthday',
+      search: 'first birthday',
+      image: '/cat-img/first%20birthday.jpeg',
+    },
+    {
+      name: 'Theme Made Frocks',
+      search: 'theme made frocks',
+      image: '/cat-img/theme%20made%20frocks.jpeg',
+    },
+    {
+      name: 'Ethnic Collections',
+      search: 'ethnic',
+      image: '/cat-img/ethinic.jpeg',
+    },
+    {
+      name: 'Dreamscape Dress',
+      search: 'dreamscape',
+      image: '/cat-img/dream%20scape.jpeg',
+    },
+    {
+      name: 'Ready to Dispatch',
+      search: 'ready to dispatch',
+      image: '/cat-img/ready%20to%20dispatch.jpeg',
+    },
+    {
+      name: 'Trending Designs',
+      search: 'trending',
+      image: '/cat-img/trending.jpeg',
+    },
+    {
+      name: 'New Arrivals',
+      search: 'new',
+      image: '/cat-img/new%20arrivals.jpeg',
+    },
+    {
+      name: 'Onam Collection',
+      search: 'onam',
+      image: '/cat-img/festival.jpeg',
+    },
+  ].map(item => (
+    <Link
+      key={item.name}
+      to={`/shop?search=${encodeURIComponent(item.search)}`}
+      className={styles['cat-circle']}
+    >
+      <div className={styles['cat-circle-img']}>
+        <img
+          src={item.image}
+          alt={item.name}
+        />
+      </div>
 
-        {[
-          {
-            name: 'Birthday Dresses',
-            image: '/cat-img/birthday.jpeg',
-            url: '/shop'
-          },
-          {
-            name: 'First Birthday',
-            image: '/cat-img/first%20birthday.jpeg',
-            url: '/shop'
-          },
-          {
-            name: 'Theme Made Frocks',
-            image: '/cat-img/theme%20made%20frocks.jpeg',
-            url: '/shop'
-          },
-          {
-            name: 'Ethnic Collections',
-            image: '/cat-img/ethinic.jpeg',
-            url: '/shop'
-          },
-          {
-            name: 'Dreamscape Dress',
-            image: '/cat-img/dream%20scape.jpeg',
-            url: '/shop'
-          },
-          {
-            name: 'Ready to Dispatch',
-            image: '/cat-img/ready%20to%20dispatch.jpeg',
-            url: '/shop'
-          },
-          {
-            name: 'Trending Designs',
-            image: '/cat-img/trending.jpeg',
-            url: '/shop'
-          },
-          {
-            name: 'New Arrivals',
-            image: '/cat-img/new%20arrivals.jpeg',
-            url: '/shop'
-          },
-          {
-            name: 'Onam Collection',
-            image: '/cat-img/festival.jpeg',
-            url: '/shop'
-          },
-        ].map(item => (
-
-          <Link
-            to={item.url}
-            key={item.name}
-            className={styles['cat-circle']}
-          >
-
-            <div
-              className={styles['cat-circle-img']}
-            >
-
-              <img
-                src={item.image}
-                alt={item.name}
-              />
-
-            </div>
-
-            <span>
-              {item.name}
-            </span>
-
-          </Link>
-
-        ))}
-
-      </section>
+      <span>{item.name}</span>
+    </Link>
+  ))}
+</section>
 
 
       {/* =====================================================
