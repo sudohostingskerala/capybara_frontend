@@ -488,7 +488,64 @@ export default function Home() {
       </div>
 
 
-     {/* =====================================================
+{/* =====================================================
+    STATIC TOP BANNER + BENEFITS
+===================================================== */}
+
+<section className={styles['static-banner-section']}>
+
+  {/* Banner */}
+  <Link
+    to="/shop"
+    className={styles['static-banner-link']}
+  >
+    <img
+      src="/assets/static_banner.webp"
+      alt="Capybara"
+      draggable={false}
+    />
+  </Link>
+
+  {/* Benefits */}
+  <div className={styles['static-benefits']}>
+
+    <div className={styles['static-benefit']}>
+      <span>👥</span>
+      <div>
+        <strong>10,000+</strong>
+        <small>Happy Customers</small>
+      </div>
+    </div>
+
+    <div className={styles['static-benefit']}>
+      <span>🛡️</span>
+      <div>
+        <strong>Secure</strong>
+        <small>Payments</small>
+      </div>
+    </div>
+
+    <div className={styles['static-benefit']}>
+      <span>🎧</span>
+      <div>
+        <strong>24/7</strong>
+        <small>Support</small>
+      </div>
+    </div>
+
+    <div className={styles['static-benefit']}>
+      <span>🚚</span>
+      <div>
+        <strong>Free</strong>
+        <small>Shipping</small>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+{/* =====================================================
     CATEGORY SHORTCUTS
 ===================================================== */}
 

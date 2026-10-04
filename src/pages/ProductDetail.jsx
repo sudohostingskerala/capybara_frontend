@@ -647,20 +647,15 @@ export default function ProductDetail() {
 
         {/* Related */}
         {related.length > 0 && (
-          <section style={{ marginTop: "48px" }}>
-            <h2 className="section-title">You May Also Like</h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(4,1fr)",
-                gap: "20px",
-              }}
-            >
-              {related.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </div>
-          </section>
+          <section className={styles["related-section"]}>
+  <h2 className="section-title">You May Also Like</h2>
+
+  <div className={styles["related-grid"]}>
+    {related.map((p) => (
+      <ProductCard key={p.id} product={p} />
+    ))}
+  </div>
+</section>
         )}
       </div>
     </div>
