@@ -3,18 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import styles from './Navbar.module.css';
+import { getCategories } from '../services/categoryService';
 
-const collectionItems = [
-  { label: 'All Collections', to: '/shop' },
-  { label: 'Best Sellers', to: '/shop' },
-  { label: 'Ethnic Collections', to: '/shop' },
-  { label: 'Dreamscape Dresses', to: '/shop' },
-  { label: 'Ready to Dispatch', to: '/shop' },
-  { label: 'Partywear Frocks', to: '/shop' },
-  { label: 'Onam Collection', to: '/shop' },
-  { label: 'Full Frocks', to: '/shop' },
-  { label: 'Lehengas Choli', to: '/shop' },
-];
 
 const birthdayItems = [
   { label: 'All Birthday Dresses', to: '/shop' },
@@ -40,8 +30,23 @@ export default function Navbar() {
   const [navbarVisible, setNavbarVisible] =
     useState(true);
 
+  const [collections, setCollections] = useState([]);
+
   const navigate = useNavigate();
 
+  useEffect(() => {
+  const fetchCollections = async () => {
+    try {
+      const data = await getCategories();
+      setCollections(data.results || data || []);
+    } catch (error) {
+      console.error('Failed to load collections:', error);
+      setCollections([]);
+    }
+  };
+
+  fetchCollections();
+}, []);
 
   // =========================================================
   // SEARCH
@@ -72,56 +77,48 @@ export default function Navbar() {
   // NAVBAR SCROLL
   // =========================================================
 
-  useEffect(() => {
+useEffect(() => {
+  let lastScrollY = window.scrollY;
 
-    let lastScrollY =
-      window.scrollY;
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+    const scrollDifference = currentScrollY - lastScrollY;
 
-    const handleScroll = () => {
+    // Always show at the very top
+    if (currentScrollY <= 10) {
+      setNavbarVisible(true);
+      lastScrollY = currentScrollY;
+      return;
+    }
 
-      const currentScrollY =
-        window.scrollY;
+    // If a dropdown is open, keep navbar visible
+    if (collectionsOpen || birthdayOpen || menuOpen) {
+      setNavbarVisible(true);
+      lastScrollY = currentScrollY;
+      return;
+    }
 
-      if (
-        currentScrollY <= 10 ||
-        currentScrollY < lastScrollY
-      ) {
+    // Hide only after a meaningful downward movement
+    if (scrollDifference > 8) {
+      setNavbarVisible(false);
+    }
 
-        setNavbarVisible(true);
+    // Show when scrolling upward
+    else if (scrollDifference < -4) {
+      setNavbarVisible(true);
+    }
 
-      } else {
+    lastScrollY = currentScrollY;
+  };
 
-        setNavbarVisible(false);
+  window.addEventListener('scroll', handleScroll, {
+    passive: true
+  });
 
-        setMenuOpen(false);
-
-      }
-
-      lastScrollY =
-        currentScrollY;
-
-    };
-
-
-    window.addEventListener(
-      'scroll',
-      handleScroll,
-      {
-        passive: true
-      }
-    );
-
-
-    return () => {
-
-      window.removeEventListener(
-        'scroll',
-        handleScroll
-      );
-
-    };
-
-  }, []);
+  return () => {
+    window.removeEventListener('scroll', handleScroll);
+  };
+}, [collectionsOpen, birthdayOpen, menuOpen]);
 
 
   // =========================================================
@@ -258,31 +255,31 @@ export default function Navbar() {
           }
         >
 
-          <Link to="/shop">
+          <Link to="">
             Exchange Orders
           </Link>
 
-          <Link to="/shop">
+          <Link to="">
             Shipping Charges
           </Link>
 
-          <Link to="/shop">
+          <Link to="">
             Exchange &amp; Cancellation
           </Link>
 
-          <Link to="/shop">
+          <Link to="">
             Reviews
           </Link>
 
-          <Link to="/shop">
+          <Link to="">
             FAQs
           </Link>
 
-          <Link to="/shop">
+          <Link to="">
             Brand Story
           </Link>
 
-          <Link to="/shop">
+          <Link to="">
             Contact Us
           </Link>
 
@@ -550,11 +547,11 @@ export default function Navbar() {
 
 
           <Link
-            to="/shop"
-            onClick={closeMenus}
-          >
-            Ethnic Collections
-          </Link>
+  to="/shop?search=ethnic"
+  onClick={closeMenus}
+>
+  Ethnic Collections
+</Link>
 
 
           {/* COLLECTIONS */}
@@ -604,19 +601,30 @@ export default function Navbar() {
                 }
               >
 
-                {collectionItems.map(
-                  item => (
+                {collectionsOpen && (
+  <div className={styles['dropdown-menu']}>
 
-                    <Link
-                      key={item.label}
-                      to={item.to}
-                      onClick={closeMenus}
-                    >
-                      {item.label}
-                    </Link>
+    {/* Hard-coded option */}
+    <Link
+      to="/shop"
+      onClick={closeMenus}
+    >
+      All Collections
+    </Link>
 
-                  )
-                )}
+    {/* Dynamic collections */}
+    {collections.map((category) => (
+      <Link
+        key={category.id}
+        to={`/shop?category__slug=${category.slug}`}
+        onClick={closeMenus}
+      >
+        {category.name}
+      </Link>
+    ))}
+
+  </div>
+)}
 
               </div>
 
@@ -625,7 +633,7 @@ export default function Navbar() {
           </div>
 
 
-          {/* BIRTHDAY DRESSES */}
+          {/* BIRTHDAY DRESSES
 
           <div
             className={
@@ -690,7 +698,7 @@ export default function Navbar() {
 
             )}
 
-          </div>
+          </div> */}
 
 
           <Link
@@ -710,7 +718,7 @@ export default function Navbar() {
 
 
           <Link
-            to="/shop"
+            to=""
             onClick={closeMenus}
           >
             Contact Us
@@ -718,7 +726,7 @@ export default function Navbar() {
 
 
           <Link
-            to="/shop"
+            to=""
             onClick={closeMenus}
           >
             About

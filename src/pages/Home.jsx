@@ -506,7 +506,7 @@ export default function Home() {
     />
   </Link>
 
-  {/* Benefits */}
+  {/* Benefits
   <div className={styles['static-benefits']}>
 
     <div className={styles['static-benefit']}>
@@ -541,7 +541,7 @@ export default function Home() {
       </div>
     </div>
 
-  </div>
+  </div> */}
 
 </section>
 
