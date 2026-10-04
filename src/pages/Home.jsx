@@ -494,7 +494,7 @@ export default function Home() {
 
 <section className={styles['static-banner-section']}>
 
-  {/* Banner */}
+  {/* Existing Banner */}
   <Link
     to="/shop"
     className={styles['static-banner-link']}
@@ -505,6 +505,20 @@ export default function Home() {
       draggable={false}
     />
   </Link>
+
+  {/* New Benefits Banner */}
+  <Link
+    to="/shop"
+    className={styles['benefits-banner-link']}
+  >
+    <img
+      src="/assets/st_bt3.webp"
+      alt="Little Dresses, Premium Quality, Easy Returns and Special Moments"
+      draggable={false}
+    />
+  </Link>
+
+  
 
   {/* Benefits
   <div className={styles['static-benefits']}>

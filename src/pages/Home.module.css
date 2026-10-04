@@ -36,10 +36,14 @@
 
 .static-banner-section {
   width: 100%;
-  background: #fff;
+  background: #fffaf7;
+  overflow: hidden;
 }
 
-/* Banner */
+
+/* =========================================================
+   EXISTING STATIC BANNER
+========================================================= */
 
 .static-banner-link {
   display: block;
@@ -50,64 +54,79 @@
 }
 
 .static-banner-link img {
+  display: block;
   width: 100%;
   height: auto;
-  display: block;
-  object-fit: cover;
+
   user-select: none;
   -webkit-user-drag: none;
 }
 
 
-/* Benefits */
+/* =========================================================
+   NEW CAPYBARA BENEFITS BANNER
+========================================================= */
 
-.static-benefits {
-  width: calc(100% - 96px);
-  max-width: 1340px;
-  margin: 0 auto;
-  min-height: 82px;
-
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  align-items: center;
-
-  background: #fff1f3;
-  border-radius: 0 0 10px 10px;
-}
-
-.static-benefit {
-  min-height: 48px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-
-  border-right: 1px solid #d8bfc3;
-}
-
-.static-benefit:last-child {
-  border-right: none;
-}
-
-.static-benefit > span {
-  font-size: 28px;
-  line-height: 1;
-}
-
-.static-benefit strong {
+.benefits-banner-link {
   display: block;
-  font-size: 15px;
-  font-weight: 700;
-  color: #222;
-  line-height: 1.2;
+  width: 100%;
+
+  line-height: 0;
+  overflow: hidden;
+
+  background: #fffaf7;
+
+  cursor: pointer;
 }
 
-.static-benefit small {
+.benefits-banner-link img {
   display: block;
-  margin-top: 3px;
-  font-size: 12px;
-  color: #555;
+
+  width: 100%;
+  height: auto;
+
+  max-width: 100%;
+
+  object-fit: contain;
+
+  user-select: none;
+  -webkit-user-drag: none;
+
+  transition: transform 0.25s ease;
+}
+
+
+/* =========================================================
+   DESKTOP
+========================================================= */
+
+@media (min-width: 1024px) {
+
+  .benefits-banner-link {
+    padding: 8px 0;
+  }
+
+  .benefits-banner-link img {
+    width: 100%;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (min-width: 641px) and (max-width: 1023px) {
+
+  .benefits-banner-link {
+    padding: 6px 0;
+  }
+
+  .benefits-banner-link img {
+    width: 100%;
+  }
+
 }
 
 
@@ -117,36 +136,18 @@
 
 @media (max-width: 640px) {
 
-  .static-banner-link img {
+  .benefits-banner-link {
+    padding: 4px 0;
+  }
+
+  .benefits-banner-link img {
     width: 100%;
     height: auto;
   }
 
-  .static-benefits {
-    width: 100%;
-    min-height: 82px;
-    border-radius: 0;
-
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .static-benefit {
-    gap: 5px;
-    padding: 8px 4px;
-  }
-
-  .static-benefit > span {
-    font-size: 20px;
-  }
-
-  .static-benefit strong {
-    font-size: 10px;
-  }
-
-  .static-benefit small {
-    font-size: 8px;
-  }
 }
+
+
 /* =========================================================
    CIRCULAR CATEGORY NAVIGATION
 ========================================================= */
