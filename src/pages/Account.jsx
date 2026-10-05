@@ -17,7 +17,6 @@ const navItems = [
 
 export default function Account() {
   const { user, logout, isAuthenticated } = useAuth();
-  console.log("User data in Account.jsx:", user); // Debugging line
   const { wishlist } = useWishlist();
   const location = useLocation();
   const navigate = useNavigate();

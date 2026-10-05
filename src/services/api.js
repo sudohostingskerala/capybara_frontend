@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://api.capybarababy.com/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.capybarababy.com/api';
 //fixed some bugs and hell yeah
 
 const api = axios.create({
@@ -27,6 +27,18 @@ export const clearTokens = () => {
 // ─── Request interceptor — attach access token ──────────────
 api.interceptors.request.use(
   (config) => {
+    if (config.guestBearerToken) {
+      config.headers.Authorization = `Bearer ${config.guestBearerToken}`;
+      config._skipAuthRefresh = true;
+      delete config.guestBearerToken;
+      return config;
+    }
+    if (config.skipUserAuth) {
+      delete config.skipUserAuth;
+      delete config.headers.Authorization;
+      config._skipAuthRefresh = true;
+      return config;
+    }
     const token = getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -58,6 +70,7 @@ api.interceptors.response.use(
 
     if (
       error.response?.status === 401 &&
+      !originalRequest._skipAuthRefresh &&
       !originalRequest._retry &&
       getRefreshToken()
     ) {

@@ -20,8 +20,8 @@ export function WishlistProvider({ children }) {
       const data = await wishlistService.getWishlist();
       // Handle paginated or plain array response
       setWishlist(data.results || data);
-    } catch (err) {
-      console.error('Failed to fetch wishlist', err);
+    } catch {
+      console.error('Failed to fetch wishlist.');
     } finally {
       setLoading(false);
     }

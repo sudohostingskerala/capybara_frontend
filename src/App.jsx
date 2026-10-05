@@ -15,6 +15,7 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
 import OrderSuccess from './pages/OrderSuccess';
+import GuestOrderStatus from './pages/GuestOrderStatus';
 
 import Account from './pages/Account';
 import OrderHistory from './pages/OrderHistory';
@@ -90,6 +91,8 @@ export default function App() {
               <Route path="/shop" element={<Layout><Shop /></Layout>} />
               <Route path="/product/:slug" element={<Layout><ProductDetail /></Layout>} />
               <Route path="/cart" element={<Layout><Cart /></Layout>} />
+              <Route path="/guest-checkout" element={<Layout><Checkout /></Layout>} />
+              <Route path="/guest-order-status" element={<Layout><GuestOrderStatus /></Layout>} />
 
               {/* Protected Checkout */}
               <Route

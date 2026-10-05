@@ -55,8 +55,8 @@ export default function Shop() {
         const data = await getProducts(queryParams);
         setProducts(data.results || data || []);
         setTotalCount(data.count || (data.results || data || []).length);
-      } catch (err) {
-        console.error('Failed to fetch products', err);
+      } catch {
+        console.error('Failed to fetch products.');
         setProducts([]);
       } finally {
         setLoading(false);

@@ -39,8 +39,8 @@ export default function Navbar() {
     try {
       const data = await getCategories();
       setCollections(data.results || data || []);
-    } catch (error) {
-      console.error('Failed to load collections:', error);
+    } catch {
+      console.error('Failed to load collections.');
       setCollections([]);
     }
   };

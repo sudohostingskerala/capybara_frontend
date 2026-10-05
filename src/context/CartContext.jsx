@@ -23,8 +23,8 @@ export function CartProvider({ children }) {
       setLoading(true);
       const data = await cartService.getCart();
       setCart(data);
-    } catch (err) {
-      console.error('Failed to fetch cart', err);
+    } catch {
+      console.error('Failed to fetch cart.');
     } finally {
       setLoading(false);
     }

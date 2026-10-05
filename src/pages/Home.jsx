@@ -126,11 +126,10 @@ export default function Home() {
           productData.slice(0, 6)
         );
 
-      } catch (err) {
+      } catch {
 
         console.error(
-          'Failed to load home data',
-          err
+          'Failed to load home data.'
         );
 
       } finally {

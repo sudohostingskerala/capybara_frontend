@@ -66,8 +66,8 @@ export default function ProductDetail() {
             })
             .catch(() => setRelated([]));
         }
-      } catch (err) {
-        console.error("Product not found", err);
+      } catch {
+        console.error("Product not found.");
         setProduct(null);
       } finally {
         setLoading(false);
@@ -187,14 +187,9 @@ export default function ProductDetail() {
       toast.error("Select color & size");
       return;
     }
-    if (!isAuthenticated) {
-      toast.error("Please login");
-      navigate("/login");
-      return;
-    }
-    navigate("/checkout", {
-      state: {
+    const pendingBuyNow = {
         buyNow: true,
+        product_variant: selectedVariant.id,
         variantId: selectedVariant.id,
         quantity: qty,
         productName: product.name,
@@ -202,7 +197,9 @@ export default function ProductDetail() {
         size: selSize,
         price: displayPrice,
         image: images[0]?.image || "",
-      },
+    };
+    navigate(isAuthenticated ? "/checkout" : "/login", {
+      state: isAuthenticated ? pendingBuyNow : { pendingBuyNow },
     });
   };
 

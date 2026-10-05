@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
@@ -11,13 +11,22 @@ export default function Login() {
   const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const pendingBuyNow = location.state?.pendingBuyNow || location.state?.from?.state?.pendingBuyNow || (location.state?.from?.state?.buyNow ? location.state.from.state : null);
+  const returnTo = location.state?.from;
 
   const onSubmit = async (data) => {
     setSubmitting(true);
     try {
       await login(data.email, data.password);
       toast.success('Welcome back!');
-      navigate('/account');
+      if (returnTo?.pathname) {
+        navigate(returnTo.pathname, { state: returnTo.state, replace: true });
+      } else if (pendingBuyNow?.product_variant && pendingBuyNow?.quantity > 0) {
+        navigate('/checkout', { state: pendingBuyNow, replace: true });
+      } else {
+        navigate('/account');
+      }
     } catch (err) {
       const detail = err.response?.data?.detail || 'Invalid email or password.';
       toast.error(detail);
@@ -29,7 +38,7 @@ export default function Login() {
   return (
     <div className={styles['login-page']}>
       <div className={styles['login-logo']}>
-        <img src="/main-logo.svg" alt="Capybara"/>
+        <img src="/main-logo.svg" alt="Capybara" />
       </div>
       <div className={styles['login-card']}>
         <h1>Welcome Back</h1>
@@ -63,6 +72,20 @@ export default function Login() {
           </div>
           <button type="submit" className={`btn-primary ${styles['login-btn']}`} disabled={submitting}>
             {submitting ? 'Logging in...' : 'Login to My Account →'}
+          </button>
+          <button
+            type="button"
+            className="btn-secondary"
+            style={{ width: '100%', marginTop: '14px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+            onClick={() => {
+              if (pendingBuyNow?.product_variant && pendingBuyNow?.quantity > 0) {
+                navigate('/guest-checkout', { state: pendingBuyNow });
+              } else {
+                navigate('/shop');
+              }
+            }}
+          >
+            Continue as Guest
           </button>
           <p className={styles['forgot-txt']}>Forgot Password? <Link to="/forgot-password" className={styles['forgot-link']}>Click here</Link> to reset password.</p>
         </form>

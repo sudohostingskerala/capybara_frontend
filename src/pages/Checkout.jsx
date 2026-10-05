@@ -8,6 +8,8 @@ import {
   buyNow,
   createRazorpayOrder,
   verifyRazorpayPayment,
+  createGuestBuyNowOrder,
+  saveGuestOrder,
 } from "../services/orderService";
 import Spinner from "../components/Spinner";
 import toast from "react-hot-toast";
@@ -19,10 +21,11 @@ export default function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
   const buyNowData = location.state?.buyNow ? location.state : null;
+  const guestCheckout = location.pathname === "/guest-checkout";
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddr, setSelectedAddr] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!guestCheckout);
   const [placing, setPlacing] = useState(false);
   const [showNewAddr, setShowNewAddr] = useState(false);
   const [newAddr, setNewAddr] = useState({
@@ -37,10 +40,21 @@ export default function Checkout() {
     pincode: "",
     address_type: "HOME",
   });
+  const [guestDetails, setGuestDetails] = useState({
+    full_name: "", email: "", phone_number: "", house_name: "", street: "",
+    landmark: "", city: "", district: "", state: "", pincode: "",
+  });
 
   useEffect(() => {
+    if (guestCheckout) {
+      if (!buyNowData?.product_variant || !buyNowData?.quantity) {
+        navigate("/shop", { replace: true });
+        return;
+      }
+      return;
+    }
     if (!isAuthenticated) {
-      navigate("/login");
+      navigate("/login", { state: { from: location }, replace: true });
       return;
     }
     getAddresses()
@@ -52,7 +66,7 @@ export default function Checkout() {
       })
       .catch(() => setAddresses([]))
       .finally(() => setLoading(false));
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, navigate, guestCheckout, buyNowData, location]);
 
   const handleNewAddress = async (e) => {
     e.preventDefault();
@@ -87,7 +101,6 @@ export default function Checkout() {
         fetchCart();
       }
       const razorpayOrder = await createRazorpayOrder(order.id);
-      console.log("Razorpay Order:", razorpayOrder);
       const options = {
         key: razorpayOrder.key_id, // Enter the Key ID generated from the Dashboard
         amount: razorpayOrder.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -96,14 +109,16 @@ export default function Checkout() {
         description: "Order Payment",
         order_id: razorpayOrder.razorpay_order_id, //This is a sample Order ID. Pass the `id` obtained in the response of createOrder().
         handler: async function (response) {
-          console.log("Payment successful:", response);
-          const verification = await verifyRazorpayPayment(order.id, response);
-          console.log("Payment verification:", verification);
-          navigate("/order-success", { state: { order } });
+          try {
+            await verifyRazorpayPayment(order.id, response);
+            navigate("/order-success", { state: { order } });
+          } catch {
+            navigate("/order-success", { state: { order } });
+          }
         },
         modal: {
           ondismiss: function () {
-            console.log("Checkout form closed");
+            // The order remains pending until Razorpay's signed webhook arrives.
           },
         },
         prefill: {
@@ -127,7 +142,122 @@ export default function Checkout() {
     }
   };
 
+  const handleGuestCheckout = async (event) => {
+    event.preventDefault();
+    if (!buyNowData?.product_variant || !buyNowData?.quantity) {
+      toast.error("Please select a product before continuing.");
+      navigate("/shop", { replace: true });
+      return;
+    }
+    setPlacing(true);
+    let localOrder = null;
+    try {
+      const order = await createGuestBuyNowOrder({
+        ...guestDetails,
+        product_variant: buyNowData.product_variant,
+        quantity: buyNowData.quantity,
+      });
+      localOrder = order;
+      const token = order.guest_access_token;
+      if (!order.id || !token) throw new Error("Guest order credentials were not returned.");
+      saveGuestOrder(order.id, token);
+      const razorpayOrder = await createRazorpayOrder(order.id, token);
+      const checkout = new window.Razorpay({
+        key: razorpayOrder.key_id,
+        amount: razorpayOrder.amount,
+        currency: razorpayOrder.currency,
+        name: "Capybara",
+        description: "Order Payment",
+        order_id: razorpayOrder.razorpay_order_id,
+        prefill: {
+          name: guestDetails.full_name,
+          email: guestDetails.email,
+          contact: guestDetails.phone_number,
+        },
+        theme: { color: "#3399cc" },
+        handler: async (response) => {
+          // LOCAL DEBUG ONLY: remove after capturing the Razorpay TEST response.
+          if (
+            import.meta.env.DEV &&
+            ["localhost", "127.0.0.1"].includes(window.location.hostname) &&
+            razorpayOrder.key_id?.startsWith("rzp_test_")
+          ) {
+            console.info("Local Razorpay TEST checkout response", {
+              razorpay_payment_id: response?.razorpay_payment_id,
+              razorpay_order_id: response?.razorpay_order_id,
+              razorpay_signature: response?.razorpay_signature,
+            });
+          }
+          try {
+            await verifyRazorpayPayment(order.id, {
+              ...response,
+              guest_access_token: token,
+            });
+          } catch {
+            // The signed backend webhook remains authoritative even if this call fails.
+          }
+          navigate("/guest-order-status", { state: { paymentSubmitted: true } });
+        },
+        modal: {
+          ondismiss: () => navigate("/guest-order-status"),
+        },
+      });
+      checkout.open();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || error.message || "Unable to start checkout.");
+      if (localOrder?.id) navigate("/guest-order-status");
+    } finally {
+      setPlacing(false);
+    }
+  };
+
   if (loading) return <Spinner />;
+
+  if (guestCheckout && (!buyNowData?.product_variant || !buyNowData?.quantity)) {
+    return <div className="container" style={{ padding: "48px 20px", textAlign: "center" }}>Returning to the shop…</div>;
+  }
+
+  if (guestCheckout) {
+    const fields = [
+      ["full_name", "Full Name", true], ["email", "Email", true, "email"],
+      ["phone_number", "Phone Number", true, "tel"], ["house_name", "House / Building", true],
+      ["street", "Street", false], ["landmark", "Landmark", false],
+      ["city", "City", true], ["district", "District", true],
+      ["state", "State", true], ["pincode", "PIN Code", true],
+    ];
+    return (
+      <div className={`${styles["checkout-page"]} container`}>
+        <h1>Guest Checkout</h1>
+        <div className={styles["checkout-layout"]}>
+          <form className={styles["checkout-form"]} onSubmit={handleGuestCheckout}>
+            <h2>Contact and Shipping Details</h2>
+            {fields.map(([name, label, required, type]) => (
+              <div className="form-group" key={name}>
+                <label htmlFor={`guest-${name}`}>{label}</label>
+                <input
+                  id={`guest-${name}`}
+                  name={name}
+                  type={type || "text"}
+                  required={required}
+                  value={guestDetails[name]}
+                  onChange={(event) => setGuestDetails((current) => ({ ...current, [name]: event.target.value }))}
+                />
+              </div>
+            ))}
+            <button className={`btn-accent ${styles["checkout-continue"]}`} disabled={placing}>
+              {placing ? "Preparing Payment..." : "Continue to Payment"}
+            </button>
+          </form>
+          <div className={styles["checkout-summary"]}>
+            <h2>Order Summary</h2>
+            <p>{buyNowData.productName}</p>
+            <p>{buyNowData.color} • {buyNowData.size} · Qty: {buyNowData.quantity}</p>
+            <div className="summary-total">₹{(Number(buyNowData.price) * buyNowData.quantity).toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const items = buyNowData
     ? [
