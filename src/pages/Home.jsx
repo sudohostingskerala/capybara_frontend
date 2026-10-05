@@ -432,7 +432,21 @@ export default function Home() {
   return (
 
     <div className={styles.home}>
-
+      {/* =====================================================
+          Whatsapp button
+      ===================================================== */}
+      <a
+     href="https://wa.me/919526591498"
+  target="_blank"
+  rel="noopener noreferrer"
+  className={styles.whatsappFloat}
+  aria-label="Chat with us on WhatsApp"
+>
+  <img
+    src="/assets/whatsapp.png"
+    alt="WhatsApp"
+  />
+</a>
 
       {/* =====================================================
           ANNOUNCEMENT BAR
