@@ -7,15 +7,11 @@ import {
 } from "react";
 import { Link } from "react-router-dom";
 import { getVideoAds } from "../services/videoAdService";
+import { getProductUrl } from "../utils/productUrl";
 import styles from "./VideoCarousel.module.css";
 
 function getVideoUrl(item) {
   return item.video_url || item.video || "";
-}
-
-function getProductUrl(product) {
-  // Change this if your existing product route is different.
-  return `/products/${product.slug}`;
 }
 
 function formatPrice(value) {
