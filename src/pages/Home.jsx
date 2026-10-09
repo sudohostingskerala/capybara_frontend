@@ -759,17 +759,6 @@ export default function Home() {
 
       )}
 
-      
-{/* =====================================================
-    SHOP VIDEOS
-===================================================== */}
-
-<VideoCarousel
-  heading="Shop the look"
-  subtitle="Discover our collection in motion"
-/>
-
-
 
       {/* =====================================================
           ETHNIC COLLECTIONS
@@ -972,6 +961,15 @@ export default function Home() {
         </section>
 
       )}
+
+      {/* =====================================================
+    SHOP VIDEOS
+===================================================== */}
+
+<VideoCarousel
+  // heading="Shop the look"
+  // subtitle="Discover our collection in motion"
+/>
 
 
       {/* =====================================================

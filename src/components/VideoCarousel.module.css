@@ -15,24 +15,28 @@
 
 .sectionHeader {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
+  justify-content: center;
+  align-items: center;
   gap: 16px;
   margin-bottom: 20px;
 }
 
 .heading {
   margin: 0;
-  color: #292524;
+  color: #df3910;
   font-size: clamp(1.5rem, 3vw, 2rem);
   font-weight: 650;
   letter-spacing: -0.03em;
+  text-align:center;
+  width:100%;
 }
 
 .subtitle {
   margin: 6px 0 0;
   color: #78716c;
   font-size: 0.95rem;
+  text-align:center;
+  width:100%;
 }
 
 .carousel {
