@@ -6,6 +6,7 @@ import { getFeaturedProducts, getProducts } from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import Spinner from '../components/Spinner';
 import styles from './Home.module.css';
+import VideoCarousel from '../components/VideoCarousel';
 
 const testimonials = [
   {
@@ -757,6 +758,17 @@ export default function Home() {
         </section>
 
       )}
+
+      
+{/* =====================================================
+    SHOP VIDEOS
+===================================================== */}
+
+<VideoCarousel
+  heading="Shop the look"
+  subtitle="Discover our collection in motion"
+/>
+
 
 
       {/* =====================================================
