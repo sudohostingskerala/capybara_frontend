@@ -8,11 +8,8 @@ import {
 import { Link } from "react-router-dom";
 import { getVideoAds } from "../services/videoAdService";
 import { getProductUrl } from "../utils/productUrl";
+import { getVideoUrl, previewPlaybackProps } from "../utils/videoAd";
 import styles from "./VideoCarousel.module.css";
-
-function getVideoUrl(item) {
-  return item.video_url || item.video || "";
-}
 
 function formatPrice(value) {
   if (value == null || value === "") return null;
@@ -106,11 +103,7 @@ function VideoCard({ item, onOpen, registerVideo }) {
         <video
           ref={(node) => registerVideo(item.id, node)}
           src={getVideoUrl(item)}
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="metadata"
+          {...previewPlaybackProps}
           className={styles.previewVideo}
         />
 

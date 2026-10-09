@@ -12,6 +12,7 @@ import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
 import StarRating from "../components/StarRating";
 import ProductCard from "../components/ProductCard";
+import VideoCarousel from "../components/VideoCarousel";
 import Spinner from "../components/Spinner";
 import toast from "react-hot-toast";
 import styles from "./ProductDetail.module.css";
@@ -655,6 +656,10 @@ export default function ProductDetail() {
 </section>
         )}
       </div>
+      <VideoCarousel
+        heading="Shop the look"
+        subtitle="Discover our collection in motion"
+      />
     </div>
   );
 }
