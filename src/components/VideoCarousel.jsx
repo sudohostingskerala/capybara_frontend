@@ -1,4 +1,3 @@
-
 import {
   useCallback,
   useEffect,
@@ -8,7 +7,10 @@ import {
 import { Link } from "react-router-dom";
 import { getVideoAds } from "../services/videoAdService";
 import { getProductUrl } from "../utils/productUrl";
-import { getVideoUrl, previewPlaybackProps } from "../utils/videoAd";
+import {
+  getVideoUrl,
+  previewPlaybackProps,
+} from "../utils/videoAd";
 import styles from "./VideoCarousel.module.css";
 
 function formatPrice(value) {
@@ -50,14 +52,21 @@ function ProductCard({ product, compact = false }) {
       )}
 
       <div className={styles.productInfo}>
-        <p className={styles.productName}>{product.name}</p>
+        <p className={styles.productName}>
+          {product.name}
+        </p>
 
         {price && (
-          <p className={styles.productPrice}>{price}</p>
+          <p className={styles.productPrice}>
+            {price}
+          </p>
         )}
       </div>
 
-      <span className={styles.productArrow} aria-hidden="true">
+      <span
+        className={styles.productArrow}
+        aria-hidden="true"
+      >
         →
       </span>
     </Link>
@@ -97,18 +106,28 @@ function VideoCard({ item, onOpen, registerVideo }) {
         className={styles.videoPreviewButton}
         onClick={() => onOpen(item)}
         aria-label={`Watch ${
-          item.title || item.product_details?.name || "video"
+          item.title ||
+          item.product_details?.name ||
+          "video"
         }`}
       >
         <video
-          ref={(node) => registerVideo(item.id, node)}
+          ref={(node) => {
+            videoRef.current = node;
+            registerVideo(item.id, node);
+          }}
           src={getVideoUrl(item)}
           {...previewPlaybackProps}
           className={styles.previewVideo}
         />
 
-        <span className={styles.watchLabel}>▶ Watch</span>
-        <span className={styles.expandLabel}>⛶</span>
+        <span className={styles.watchLabel}>
+          ▶ Watch
+        </span>
+
+        <span className={styles.expandLabel}>
+          ⛶
+        </span>
       </button>
 
       <ProductCard
@@ -129,9 +148,12 @@ export default function VideoCarousel({
   const [activeIndex, setActiveIndex] = useState(-1);
   const [muted, setMuted] = useState(true);
   const [playing, setPlaying] = useState(true);
+  const [slideDirection, setSlideDirection] = useState("next");
 
   const fullscreenVideoRef = useRef(null);
   const previewRefs = useRef(new Map());
+  const touchStartRef = useRef(null);
+  const changeLockRef = useRef(false);
 
   const activeItem =
     activeIndex >= 0 ? videos[activeIndex] : null;
@@ -144,6 +166,7 @@ export default function VideoCarousel({
     }
   }, []);
 
+  // Load public video ads.
   useEffect(() => {
     let isMounted = true;
 
@@ -153,6 +176,7 @@ export default function VideoCarousel({
         setError("");
 
         const data = await getVideoAds();
+
         const items = Array.isArray(data)
           ? data
           : data.results || [];
@@ -188,12 +212,21 @@ export default function VideoCarousel({
     };
   }, []);
 
+  // Close the viewer and reset its state.
   const closeViewer = useCallback(() => {
+    if (fullscreenVideoRef.current) {
+      fullscreenVideoRef.current.pause();
+    }
+
     setActiveIndex(-1);
     setMuted(true);
     setPlaying(true);
+
+    touchStartRef.current = null;
+    changeLockRef.current = false;
   }, []);
 
+  // Open the selected video.
   const openViewer = useCallback(
     (item) => {
       const index = videos.findIndex(
@@ -202,8 +235,14 @@ export default function VideoCarousel({
 
       if (index < 0) return;
 
-      previewRefs.current.forEach((video) => video?.pause());
+      previewRefs.current.forEach((video) => {
+        video?.pause();
+      });
 
+      touchStartRef.current = null;
+      changeLockRef.current = false;
+
+      setSlideDirection("next");
       setActiveIndex(index);
       setMuted(true);
       setPlaying(true);
@@ -211,20 +250,98 @@ export default function VideoCarousel({
     [videos]
   );
 
+  // Move to a video without wrapping around the list.
   const changeVideo = useCallback(
     (direction) => {
-      if (!videos.length) return;
+      if (!videos.length || changeLockRef.current) {
+        return;
+      }
 
-      setActiveIndex((current) =>
-        (current + direction + videos.length) % videos.length
+      const nextIndex = activeIndex + direction;
+
+      // No previous video before the first one.
+      if (nextIndex < 0) return;
+
+      // No next video after the final one.
+      if (nextIndex >= videos.length) return;
+
+      changeLockRef.current = true;
+
+      setSlideDirection(
+        direction > 0 ? "next" : "previous"
       );
 
+      setActiveIndex(nextIndex);
       setMuted(true);
       setPlaying(true);
+
+      // Prevent a single gesture from triggering repeatedly.
+      window.setTimeout(() => {
+        changeLockRef.current = false;
+      }, 250);
     },
-    [videos.length]
+    [activeIndex, videos.length]
   );
 
+  // WhatsApp-style swipe gestures.
+  const handleTouchStart = useCallback((event) => {
+    if (event.touches.length !== 1) return;
+
+    const touch = event.touches[0];
+
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+    };
+  }, []);
+
+  const handleTouchEnd = useCallback(
+    (event) => {
+      if (!touchStartRef.current) return;
+
+      const start = touchStartRef.current;
+      const touch = event.changedTouches[0];
+
+      const deltaX = touch.clientX - start.x;
+      const deltaY = touch.clientY - start.y;
+
+      touchStartRef.current = null;
+
+      const threshold = 60;
+
+      // Ignore short movements.
+      if (
+        Math.max(
+          Math.abs(deltaX),
+          Math.abs(deltaY)
+        ) < threshold
+      ) {
+        return;
+      }
+
+      // Vertical gesture.
+      if (Math.abs(deltaY) > Math.abs(deltaX)) {
+        // Swipe down closes the viewer.
+        if (deltaY > threshold) {
+          closeViewer();
+        }
+
+        return;
+      }
+
+      // Horizontal gesture.
+      if (deltaX < -threshold) {
+        // Swipe left: next video.
+        changeVideo(1);
+      } else if (deltaX > threshold) {
+        // Swipe right: previous video.
+        changeVideo(-1);
+      }
+    },
+    [changeVideo, closeViewer]
+  );
+
+  // Lock background scrolling and handle keyboard navigation.
   useEffect(() => {
     if (!activeItem) return;
 
@@ -232,9 +349,17 @@ export default function VideoCarousel({
     document.body.style.overflow = "hidden";
 
     function handleKeyDown(event) {
-      if (event.key === "Escape") closeViewer();
-      if (event.key === "ArrowRight") changeVideo(1);
-      if (event.key === "ArrowLeft") changeVideo(-1);
+      if (event.key === "Escape") {
+        closeViewer();
+      }
+
+      if (event.key === "ArrowRight") {
+        changeVideo(1);
+      }
+
+      if (event.key === "ArrowLeft") {
+        changeVideo(-1);
+      }
     }
 
     window.addEventListener("keydown", handleKeyDown);
@@ -245,35 +370,79 @@ export default function VideoCarousel({
     };
   }, [activeItem, closeViewer, changeVideo]);
 
+  // Play/pause and mute handling.
   useEffect(() => {
     const video = fullscreenVideoRef.current;
+
     if (!activeItem || !video) return;
 
     video.muted = muted;
 
     if (playing) {
-      video.play().catch(() => setPlaying(false));
+      video.play().catch(() => {
+        setPlaying(false);
+      });
     } else {
       video.pause();
     }
   }, [activeItem, muted, playing]);
+
+  // Reset playback position when changing videos.
+  useEffect(() => {
+    const video = fullscreenVideoRef.current;
+
+    if (!activeItem || !video) return;
+
+    video.currentTime = 0;
+
+    if (playing) {
+      video.play().catch(() => {
+        setPlaying(false);
+      });
+    }
+  }, [activeIndex, activeItem, playing]);
+
+  // Automatically advance when a video finishes.
+  const handleVideoEnded = useCallback(() => {
+    if (activeIndex < videos.length - 1) {
+      changeVideo(1);
+    } else {
+      // Close after the last video instead of looping.
+      closeViewer();
+    }
+  }, [
+    activeIndex,
+    videos.length,
+    changeVideo,
+    closeViewer,
+  ]);
 
   return (
     <section className={styles.section}>
       <div className={styles.container}>
         <header className={styles.sectionHeader}>
           <div>
-            <h2 className={styles.heading}>{heading}</h2>
-            <p className={styles.subtitle}>{subtitle}</p>
+            <h2 className={styles.heading}>
+              {heading}
+            </h2>
+
+            <p className={styles.subtitle}>
+              {subtitle}
+            </p>
           </div>
         </header>
 
         {loading && (
-          <p className={styles.message}>Loading videos...</p>
+          <p className={styles.message}>
+            Loading videos...
+          </p>
         )}
 
         {error && !loading && (
-          <p className={styles.errorMessage} role="alert">
+          <p
+            className={styles.errorMessage}
+            role="alert"
+          >
             {error}
           </p>
         )}
@@ -322,14 +491,21 @@ export default function VideoCarousel({
               event.stopPropagation();
               changeVideo(-1);
             }}
+            disabled={activeIndex === 0}
             aria-label="Previous video"
           >
             ‹
           </button>
 
           <div
-            className={styles.viewer}
+            className={`${styles.viewer} ${
+              slideDirection === "next"
+                ? styles.slideNext
+                : styles.slidePrevious
+            }`}
             onClick={(event) => event.stopPropagation()}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             <video
               key={activeItem.id}
@@ -337,12 +513,14 @@ export default function VideoCarousel({
               src={getVideoUrl(activeItem)}
               autoPlay
               muted={muted}
-              loop
               playsInline
               className={styles.fullscreenVideo}
-              onClick={() => setPlaying((value) => !value)}
+              onClick={() => {
+                setPlaying((value) => !value);
+              }}
               onPlay={() => setPlaying(true)}
               onPause={() => setPlaying(false)}
+              onEnded={handleVideoEnded}
             />
 
             <div className={styles.viewerHeader}>
@@ -360,14 +538,18 @@ export default function VideoCarousel({
               <div className={styles.videoControls}>
                 <button
                   type="button"
-                  onClick={() => setPlaying((value) => !value)}
+                  onClick={() => {
+                    setPlaying((value) => !value);
+                  }}
                 >
                   {playing ? "Pause" : "Play"}
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setMuted((value) => !value)}
+                  onClick={() => {
+                    setMuted((value) => !value);
+                  }}
                 >
                   {muted ? "Unmute" : "Mute"}
                 </button>
@@ -380,10 +562,19 @@ export default function VideoCarousel({
               </div>
 
               <div className={styles.mobileNavigation}>
-                <button onClick={() => changeVideo(-1)}>
+                <button
+                  type="button"
+                  disabled={activeIndex === 0}
+                  onClick={() => changeVideo(-1)}
+                >
                   ← Previous
                 </button>
-                <button onClick={() => changeVideo(1)}>
+
+                <button
+                  type="button"
+                  disabled={activeIndex === videos.length - 1}
+                  onClick={() => changeVideo(1)}
+                >
                   Next →
                 </button>
               </div>
@@ -397,6 +588,7 @@ export default function VideoCarousel({
               event.stopPropagation();
               changeVideo(1);
             }}
+            disabled={activeIndex === videos.length - 1}
             aria-label="Next video"
           >
             ›
