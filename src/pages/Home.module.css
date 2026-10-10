@@ -318,7 +318,7 @@
 
 .hero-slide img {
   width: 100%;
-  aspect-ratio: 16 / 10;
+  aspect-ratio: 16 / 6;
   display: block;
   object-fit: cover;
 
