@@ -204,7 +204,7 @@ export default function Account() {
                 )} */}
 
                  {/* Related newly added*/}
-                        {related.length > 0 && (
+                        {topPicks.length > 0 && (
                           <section className={styles["related-section"]}>
                   <h2 className="section-title">You May Also Like</h2>
                 
