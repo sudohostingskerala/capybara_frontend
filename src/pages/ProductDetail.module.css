@@ -72,9 +72,12 @@
   align-items: center;
   gap: 12px;
   margin: 16px 0;
+  font-weight:700;
+  font-size:larger;
 }
 .price-original{
     text-decoration: line-through;
+    color:#3a3939e8
 }
 .pd-discount {
   background: var(--accent);
