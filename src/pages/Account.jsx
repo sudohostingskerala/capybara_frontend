@@ -187,7 +187,7 @@ export default function Account() {
                     </p>
                   )}
                 </div>
-                {topPicks.length > 0 && (
+                {/* {topPicks.length > 0 && (
                   <div className={styles["account-section"]}>
                     <div className={styles["section-header"]}>
                       <h2>Top Picks For You</h2>
@@ -201,7 +201,20 @@ export default function Account() {
                       ))}
                     </div>
                   </div>
-                )}
+                )} */}
+
+                 {/* Related newly added*/}
+                        {related.length > 0 && (
+                          <section className={styles["related-section"]}>
+                  <h2 className="section-title">You May Also Like</h2>
+                
+                  <div className={styles["related-grid"]}>
+                    {topPicks.map((p) => (
+                      <ProductCard key={p.id} product={p} />
+                    ))}
+                  </div>
+                </section>
+                        )}
               </>
             )
           ) : (
