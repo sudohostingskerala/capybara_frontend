@@ -16,6 +16,8 @@ import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
 import OrderSuccess from './pages/OrderSuccess';
 import GuestOrderStatus from './pages/GuestOrderStatus';
+import AboutUs from "./pages/AboutUs";
+import ShippingPolicy from "./pages/ShippingPolicy";
 
 import Account from './pages/Account';
 import OrderHistory from './pages/OrderHistory';
@@ -93,6 +95,23 @@ export default function App() {
               <Route path="/cart" element={<Layout><Cart /></Layout>} />
               <Route path="/guest-checkout" element={<Layout><Checkout /></Layout>} />
               <Route path="/guest-order-status" element={<Layout><GuestOrderStatus /></Layout>} />
+              <Route
+  path="/about-us"
+  element={
+    <Layout>
+      <AboutUs />
+    </Layout>
+  }
+/>
+
+<Route
+  path="/shipping-policy"
+  element={
+    <Layout>
+      <ShippingPolicy />
+    </Layout>
+  }
+/>
 
               {/* Protected Checkout */}
               <Route

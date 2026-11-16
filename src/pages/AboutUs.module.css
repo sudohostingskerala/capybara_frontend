@@ -1,0 +1,253 @@
+/* About Us page — all styles are scoped through this CSS module. */
+.page {
+  width: 100%;
+  color: var(--text-primary, #332d2b);
+  background: var(--bg, #fff);
+  overflow: hidden;
+}
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: clamp(250px, 31vw, 390px);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(48px, 8vw, 94px) 24px;
+  overflow: hidden;
+  text-align: center;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255,255,255,.75), transparent 25%),
+    radial-gradient(circle at 85% 85%, rgba(255,255,255,.65), transparent 24%),
+    #fff2ed;
+}
+
+.eyebrow,
+.sectionLabel {
+  display: inline-block;
+  color: var(--accent, #b96c65);
+  font-size: .74rem;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 850px;
+  margin: 14px 0 12px;
+  color: #493936;
+  font-size: clamp(2rem, 5vw, 3.65rem);
+  font-weight: 650;
+  line-height: 1.08;
+}
+
+.heroText {
+  max-width: 600px;
+  margin: 0;
+  color: #765f5a;
+  font-size: clamp(.98rem, 1.7vw, 1.15rem);
+  line-height: 1.7;
+}
+
+.heroDecoration {
+  position: absolute;
+  z-index: -1;
+  right: 9%;
+  bottom: -80px;
+  color: rgba(185, 108, 101, .12);
+  font-family: Georgia, serif;
+  font-size: clamp(180px, 30vw, 360px);
+  line-height: 1;
+}
+
+.content {
+  width: min(1100px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(48px, 7vw, 84px) 0;
+}
+
+.intro {
+  display: grid;
+  grid-template-columns: minmax(100px, 180px) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(28px, 6vw, 72px);
+  padding-bottom: clamp(48px, 7vw, 82px);
+}
+
+.introMark {
+  display: grid;
+  width: min(100%, 170px);
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid #f0d8d1;
+  border-radius: 50%;
+  background: #fff7f3;
+  color: #c27b72;
+  font-family: Georgia, serif;
+  font-size: clamp(4rem, 9vw, 7rem);
+  box-shadow: 0 16px 40px rgba(107, 70, 61, .07);
+}
+
+.intro h2,
+.valueCard h2 {
+  margin: 9px 0 18px;
+  color: #493936;
+  font-size: clamp(1.65rem, 3vw, 2.25rem);
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.intro p,
+.valueCard p {
+  margin: 0 0 14px;
+  color: var(--text-secondary, #6f6663);
+  font-size: 1rem;
+  line-height: 1.85;
+}
+
+.thankYou {
+  padding-top: 5px;
+  color: #a65f59 !important;
+  font-weight: 650;
+}
+
+.thankYou span {
+  font-size: 1.2em;
+}
+
+.values {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.valueCard {
+  min-width: 0;
+  padding: clamp(25px, 4vw, 42px);
+  border: 1px solid #f0e4df;
+  border-radius: 18px;
+  background: #fffaf8;
+  box-shadow: 0 12px 34px rgba(79, 53, 45, .045);
+}
+
+.missionCard {
+  background: #fff7f5;
+}
+
+.valueIcon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  margin-bottom: 24px;
+  place-items: center;
+  border-radius: 16px;
+  background: #f8e8e2;
+  font-size: 1.55rem;
+}
+
+.valueCard h2 {
+  margin-bottom: 14px;
+}
+
+.missionList {
+  display: grid;
+  gap: 13px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.missionList li {
+  position: relative;
+  padding-left: 27px;
+  color: var(--text-secondary, #6f6663);
+  font-size: .98rem;
+  line-height: 1.65;
+}
+
+.missionList li::before {
+  position: absolute;
+  top: .05em;
+  left: 0;
+  color: #c27b72;
+  content: "✓";
+  font-weight: 800;
+}
+
+.closing {
+  margin-top: clamp(42px, 7vw, 76px);
+  padding: clamp(32px, 5vw, 54px) 24px;
+  border-radius: 20px;
+  background: #f9eee9;
+  text-align: center;
+}
+
+.closing > span {
+  color: #c27b72;
+  font-size: 2rem;
+}
+
+.closing h2 {
+  margin: 10px 0;
+  color: #493936;
+  font-size: clamp(1.35rem, 3vw, 2rem);
+}
+
+.closing p {
+  margin: 0;
+  color: #765f5a;
+  line-height: 1.7;
+}
+
+@media (max-width: 700px) {
+  .content {
+    width: min(100% - 32px, 560px);
+    padding: 42px 0;
+  }
+
+  .intro {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .introMark {
+    width: 104px;
+    font-size: 4.2rem;
+  }
+
+  .values {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .valueCard {
+    padding: 26px 22px;
+  }
+}
+
+@media (max-width: 380px) {
+  .hero {
+    padding-inline: 17px;
+  }
+
+  .content {
+    width: calc(100% - 28px);
+  }
+
+  .intro p,
+  .valueCard p,
+  .missionList li {
+    font-size: .94rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+  }
+}

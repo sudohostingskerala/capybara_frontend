@@ -259,7 +259,7 @@ useEffect(() => {
             Exchange Orders
           </Link>
 
-          <Link to="">
+          <Link to="/shipping-policy">
             Shipping Charges
           </Link>
 
@@ -726,7 +726,7 @@ useEffect(() => {
 
 
           <Link
-            to=""
+            to="/about-us"
             onClick={closeMenus}
           >
             About
