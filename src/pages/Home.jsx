@@ -580,50 +580,50 @@ export default function Home() {
 <section className={`${styles.categories} container`}>
   {[
     {
-      name: 'Birthday Dresses',
-      search: 'birthday',
-      image: '/cat-img/birthday.jpeg',
+      name: 'Party Wear',
+      search: 'Party',
+      image: '/cat-img/party-wear.jpeg',
     },
     {
-      name: 'First Birthday',
-      search: 'first birthday',
-      image: '/cat-img/first%20birthday.jpeg',
+      name: 'Lehenga',
+      search: 'lehenga',
+      image: '/cat-img/lehenga.jpeg',
     },
     {
-      name: 'Theme Made Frocks',
-      search: 'theme made frocks',
-      image: '/cat-img/theme%20made%20frocks.jpeg',
-    },
-    {
-      name: 'Ethnic Collections',
-      search: 'ethnic',
-      image: '/cat-img/ethinic.jpeg',
-    },
-    {
-      name: 'Dreamscape Dress',
-      search: 'dreamscape',
-      image: '/cat-img/dream%20scape.jpeg',
-    },
-    {
-      name: 'Ready to Dispatch',
-      search: 'ready to dispatch',
-      image: '/cat-img/ready%20to%20dispatch.jpeg',
+      name: 'Frock',
+      search: 'frock',
+      image: '/cat-img/Frock.jpeg',
     },
     {
       name: 'Trending Designs',
-      search: 'trending',
-      image: '/cat-img/trending.jpeg',
+      search: 'lehenga frock',
+      image: '/cat-img/Trending.jpeg',
     },
     {
-      name: 'New Arrivals',
-      search: 'new',
-      image: '/cat-img/new%20arrivals.jpeg',
+      name: 'Embroidered Frocks',
+      search: 'embroidered frocks',
+      image: '/cat-img/Embroid.jpeg',
     },
     {
-      name: 'Onam Collection',
-      search: 'onam',
-      image: '/cat-img/festival.jpeg',
+      name: 'Birthday Wear',
+      search: 'birthday',
+      image: '/cat-img/Birthday.jpeg',
     },
+    // {
+    //   name: 'Trending Designs',
+    //   search: 'trending',
+    //   image: '/cat-img/trending.jpeg',
+    // },
+    // {
+    //   name: 'New Arrivals',
+    //   search: 'new',
+    //   image: '/cat-img/new%20arrivals.jpeg',
+    // },
+    // {
+    //   name: 'Onam Collection',
+    //   search: 'onam',
+    //   image: '/cat-img/festival.jpeg',
+    // },
   ].map(item => (
     <Link
       key={item.name}
