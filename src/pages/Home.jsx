@@ -436,7 +436,7 @@ export default function Home() {
       {/* =====================================================
           Whatsapp button
       ===================================================== */}
-      <a
+      {/* <a
      href="https://wa.me/919526591498"
   target="_blank"
   rel="noopener noreferrer"
@@ -447,7 +447,7 @@ export default function Home() {
     src="/assets/whatsapp.png"
     alt="WhatsApp"
   />
-</a>
+</a> */}
 
       {/* =====================================================
           ANNOUNCEMENT BAR

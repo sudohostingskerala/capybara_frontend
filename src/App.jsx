@@ -29,6 +29,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import WhatsAppButton from './components/WhatsAppButton';
 
 import { Toaster } from 'react-hot-toast';
 
@@ -45,6 +46,7 @@ function Layout({ children }) {
       <Navbar />
       <main style={{ flex: 1 }}>{children}</main>
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 }
