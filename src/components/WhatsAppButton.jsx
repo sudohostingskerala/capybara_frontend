@@ -10,8 +10,11 @@ export default function WhatsAppButton() {
       className="whatsappFloat"
       aria-label="Chat with us on WhatsApp"
     >
-      <span>Chat With Us On</span>
-      <img src="/assets/whatsapp.png" alt="WhatsApp" />
+      <span className="whatsappIcon">
+        <img src="/assets/whatsapp.png" alt="WhatsApp" />
+      </span>
+
+      <span className="whatsappText">Chat With WhatsApp</span>
     </a>
   );
 }
