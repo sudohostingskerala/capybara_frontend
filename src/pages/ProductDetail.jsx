@@ -42,6 +42,8 @@ export default function ProductDetail() {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
   const [editingReview, setEditingReview] = useState(null);
+  // Store the starting touch position for image swiping
+  const touchStartX = useRef(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -280,7 +282,6 @@ export default function ProductDetail() {
   };
 
   // Store the starting touch position for image swiping
-const touchStartX = useRef(0);
 
 const showPreviousImage = () => {
   if (images.length <= 1) return;
