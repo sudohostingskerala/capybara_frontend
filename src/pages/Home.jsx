@@ -597,7 +597,7 @@ export default function Home() {
     {
       name: 'Trending Designs',
       search: 'lehenga frock',
-      image: '/cat-img/Trending.jpeg',
+      image: '/cat-img/Trending-designs.jpeg',
     },
     {
       name: 'Embroidered Frocks',
@@ -607,7 +607,7 @@ export default function Home() {
     {
       name: 'Birthday Wear',
       search: 'birthday',
-      image: '/cat-img/Birthday.jpeg',
+      image: '/cat-img/Birthday-wear.jpeg',
     },
     // {
     //   name: 'Trending Designs',
