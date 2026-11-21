@@ -43,7 +43,7 @@ export default function Footer() {
         </div> */}
         <section className={styles['footer-col']} aria-labelledby="map-heading">
                   <div className={styles.sectionHeading}>
-                    <span className={styles.sectionLabel}>FIND US</span>
+                    {/* <span className={styles.sectionLabel}>FIND US</span> */}
                     <h2 id="map-heading">Our Location</h2>
                     <p>You can find us using the map below.</p>
                   </div>
