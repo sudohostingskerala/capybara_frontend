@@ -82,7 +82,7 @@
   align-items: center;
   gap: 8px;
   margin-top: 6px;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap;
 }
 .price-current {
   font-size: 1rem;
@@ -95,7 +95,7 @@
   text-decoration: line-through;
 }
 .price-discount {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   font-weight: 600;
   color: var(--success);
 }
