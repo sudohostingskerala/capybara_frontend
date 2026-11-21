@@ -9,7 +9,7 @@ export default function Footer() {
       <div className={`${styles['footer-main']} container`}>
         <div className={styles['footer-col']}>
           <div className={styles['footer-brand']}>
-            <img src="/assets/logo.jpeg" alt="Capybara" className={styles['footer-logo']} />
+            <img src="/capy-logo-landscape.svg" alt="Capybara" className={styles['footer-logo']} />
             <p>Sustainable, soft, and adorable clothing for your little ones. We believe in quality that lasts through every adventure.</p>
           </div>
         </div>
