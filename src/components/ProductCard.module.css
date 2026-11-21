@@ -90,7 +90,7 @@
   color: var(--primary);
 }
 .price-original {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   color: var(--text-muted);
   text-decoration: line-through;
 }
