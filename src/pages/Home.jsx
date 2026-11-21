@@ -781,7 +781,7 @@ export default function Home() {
                 styles['home-section-title']
               }
             >
-              Ethnic Collections 🔥
+              Ethnic Collections 
             </h2>
 
             <Link
@@ -847,7 +847,7 @@ export default function Home() {
                 styles['home-section-title']
               }
             >
-              Birthday Dresses 🔥
+              Birthday Dresses 
             </h2>
 
             <Link
@@ -993,7 +993,7 @@ export default function Home() {
                 styles['home-section-title']
               }
             >
-              Hot New Arrivals 🔥
+              Hot New Arrivals
             </h2>
 
             <Link
@@ -1059,7 +1059,7 @@ export default function Home() {
                 styles['home-section-title']
               }
             >
-              Best Deals 🔥
+              Best Deals
             </h2>
 
             <Link
@@ -1311,7 +1311,7 @@ export default function Home() {
           FEATURES
       ===================================================== */}
 
-      <div
+      {/* <div
         className={`${styles['features-bar']} container`}
       >
 
@@ -1406,7 +1406,7 @@ export default function Home() {
 
         </div>
 
-      </div>
+      </div> */}
 
     </div>
 

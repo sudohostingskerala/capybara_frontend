@@ -19,6 +19,7 @@ import GuestOrderStatus from './pages/GuestOrderStatus';
 import AboutUs from "./pages/AboutUs";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import ContactUs from "./pages/ContactUs";
+import Reviews from "./pages/Reviews"
 
 import Account from './pages/Account';
 import OrderHistory from './pages/OrderHistory';
@@ -121,6 +122,15 @@ export default function App() {
   element={
     <Layout>
       <ContactUs />
+    </Layout>
+  }
+/>
+
+<Route
+  path="/Reviews"
+  element={
+    <Layout>
+      <Reviews />
     </Layout>
   }
 />

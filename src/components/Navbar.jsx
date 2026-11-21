@@ -267,7 +267,7 @@ useEffect(() => {
             Exchange &amp; Cancellation
           </Link>
 
-          <Link to="">
+          <Link to="/Reviews">
             Reviews
           </Link>
 

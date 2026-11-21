@@ -95,7 +95,7 @@
   text-decoration: line-through;
 }
 .price-discount {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: var(--success);
 }

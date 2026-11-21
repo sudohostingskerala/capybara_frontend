@@ -132,7 +132,7 @@ export default function ShippingPolicy() {
           </div>
         </section>
 
-        <section className={styles.policySection}>
+        {/* <section className={styles.policySection}>
           <div className={styles.sectionHeading}>
             <span className={styles.number}>05</span>
             <div>
@@ -152,12 +152,12 @@ export default function ShippingPolicy() {
               </a>
             </div>
           </div>
-        </section>
+        </section> */}
 
         <section className={styles.refund}>
           <div className={styles.refundIcon} aria-hidden="true">↩</div>
           <div>
-            <h2>06. Shipping Charge Refund Policy</h2>
+            <h2>05. Shipping Charge Refund Policy</h2>
             <p>
               Please note that self-shipping charges and shipping charges paid
               to us are non-refundable.
