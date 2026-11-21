@@ -18,6 +18,7 @@ import OrderSuccess from './pages/OrderSuccess';
 import GuestOrderStatus from './pages/GuestOrderStatus';
 import AboutUs from "./pages/AboutUs";
 import ShippingPolicy from "./pages/ShippingPolicy";
+import ContactUs from "./pages/ContactUs";
 
 import Account from './pages/Account';
 import OrderHistory from './pages/OrderHistory';
@@ -111,6 +112,15 @@ export default function App() {
   element={
     <Layout>
       <ShippingPolicy />
+    </Layout>
+  }
+/>
+
+<Route
+  path="/contact-us"
+  element={
+    <Layout>
+      <ContactUs />
     </Layout>
   }
 />

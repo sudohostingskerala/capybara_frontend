@@ -255,9 +255,9 @@ useEffect(() => {
           }
         >
 
-          <Link to="">
+          {/* <Link to="">
             Exchange Orders
-          </Link>
+          </Link> */}
 
           <Link to="/shipping-policy">
             Shipping Charges
@@ -279,7 +279,7 @@ useEffect(() => {
             Brand Story
           </Link>
 
-          <Link to="">
+          <Link to="/contact-us">
             Contact Us
           </Link>
 
@@ -718,7 +718,7 @@ useEffect(() => {
 
 
           <Link
-            to=""
+            to="/contact-us"
             onClick={closeMenus}
           >
             Contact Us
