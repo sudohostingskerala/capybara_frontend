@@ -29,7 +29,7 @@ export default function ContactUs() {
     event.preventDefault();
 
     const message = [
-      "Hello Neeharika,",
+      "Hello Capybara,",
       "",
       "I would like to contact you.",
       `Name: ${form.name.trim()}`,
