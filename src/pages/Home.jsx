@@ -7,6 +7,7 @@ import ProductCard from '../components/ProductCard';
 import Spinner from '../components/Spinner';
 import styles from './Home.module.css';
 import VideoCarousel from '../components/VideoCarousel';
+import TrustTextBar from '../components/TrustTextBar';
 
 const testimonials = [
   {
@@ -449,57 +450,7 @@ export default function Home() {
   />
 </a>
 
-      {/* =====================================================
-          ANNOUNCEMENT BAR
-      ===================================================== */}
-
-      <div className={styles['trust-bar']}>
-
-        <div className={styles['trust-track']}>
-
-          <span>
-            🚚 Free Shipping on orders above ₹999
-          </span>
-
-          <span>
-            🔄 Easy 10-day returns
-          </span>
-
-          <span>
-            ⭐ Premium Quality — Trusted by 10,000+ customers
-          </span>
-
-          <span>
-            🔒 Secure Payments
-          </span>
-
-          <span>
-            📞 24/7 Support
-          </span>
-
-          <span>
-            🚚 Free Shipping on orders above ₹999
-          </span>
-
-          <span>
-            🔄 Easy 10-day returns
-          </span>
-
-          <span>
-            ⭐ Premium Quality — Trusted by 10,000+ customers
-          </span>
-
-          <span>
-            🔒 Secure Payments
-          </span>
-
-          <span>
-            📞 24/7 Support
-          </span>
-
-        </div>
-
-      </div>
+      <TrustTextBar />
 
 
 {/* =====================================================

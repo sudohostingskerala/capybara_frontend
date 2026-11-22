@@ -56,32 +56,6 @@
 }
 
 /* =========================================================
-   TOP PROMOTIONAL STRIP
-========================================================= */
-
-.trust-bar {
-  width: 100%;
-  overflow: hidden;
-  padding: 10px 0;
-  background: var(--primary);
-  border-bottom: 1px solid var(--border);
-}
-
-.trust-track {
-  display: flex;
-  align-items: center;
-  gap: 42px;
-  width: max-content;
-  white-space: nowrap;
-  animation: marquee 26s linear infinite;
-}
-
-.trust-bar span {
-  font-size: 0.8rem;
-  color:white;
-  font-weight: 600;
-}
-/* =========================================================
    STATIC TOP BANNER + BENEFITS
 ========================================================= */
 
@@ -896,19 +870,6 @@
 
 @media (max-width: 640px) {
 
-  .trust-bar {
-    padding: 8px 0;
-  }
-
-  .trust-bar span {
-    font-size: 0.68rem;
-  }
-
-  .trust-track {
-    gap: 24px;
-  }
-
-
   /* Categories */
 
   .categories {
@@ -1025,25 +986,6 @@
 
   .products-grid {
     gap: 10px;
-  }
-
-}
-
-
-/* =========================================================
-   MARQUEE
-========================================================= */
-
-@keyframes marquee {
-
-  0% {
-    transform:
-      translateX(0);
-  }
-
-  100% {
-    transform:
-      translateX(-50%);
   }
 
 }

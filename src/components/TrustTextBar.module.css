@@ -1,0 +1,57 @@
+.bar {
+  width: 100%;
+  overflow: hidden;
+  padding: 10px 0;
+  background: var(--primary);
+  border-bottom: 1px solid var(--border);
+  color: #fff;
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  align-items: center;
+}
+
+.track.scrolling {
+  animation: trustMarquee var(--duration, 30s) linear infinite;
+}
+
+.group {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: clamp(24px, 4vw, 52px);
+  padding-right: clamp(24px, 4vw, 52px);
+  white-space: nowrap;
+}
+
+.item {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.icon {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+@keyframes trustMarquee {
+  to { transform: translateX(var(--marquee-distance)); }
+}
+
+@media (max-width: 640px) {
+  .bar { padding: 8px 0; }
+  .group { gap: 24px; padding-right: 24px; }
+  .item { gap: 6px; font-size: 0.68rem; }
+  .icon { width: 14px; height: 14px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track.scrolling { animation: none; }
+}
