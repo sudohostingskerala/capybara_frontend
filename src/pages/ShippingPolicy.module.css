@@ -1,0 +1,419 @@
+/* Shipping policy page — responsive and scoped to this CSS module. */
+.page {
+  width: 100%;
+  overflow: hidden;
+  color: var(--text-primary, #332d2b);
+  background: var(--bg, #fff);
+}
+
+.hero {
+  position: relative;
+  display: flex;
+  min-height: 245px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 55px 24px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(255,255,255,.8), transparent 24%),
+    radial-gradient(circle at 90% 90%, rgba(255,255,255,.65), transparent 25%),
+    #fff2ed;
+  text-align: center;
+}
+
+.eyebrow,
+.sectionLabel {
+  color: var(--accent, #b96c65);
+  font-size: .73rem;
+  font-weight: 750;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  z-index: 1;
+  margin: 13px 0 8px;
+  color: #493936;
+  font-size: clamp(1.85rem, 4.5vw, 3.1rem);
+  font-weight: 650;
+  line-height: 1.15;
+}
+
+.hero > p {
+  z-index: 1;
+  margin: 0;
+  color: #765f5a;
+  font-size: 1rem;
+}
+
+.heroIcon {
+  position: absolute;
+  right: max(7%, calc((100% - 1100px) / 2));
+  bottom: -17px;
+  opacity: .13;
+  font-size: clamp(7rem, 17vw, 12rem);
+  transform: rotate(-10deg);
+}
+
+.content {
+  width: min(920px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: clamp(35px, 6vw, 66px) 0 70px;
+}
+
+.intro {
+  margin: 0 0 38px;
+  color: var(--text-secondary, #6f6663);
+  font-size: 1.02rem;
+  line-height: 1.8;
+}
+
+.policySection {
+  margin: 0 0 42px;
+}
+
+.sectionHeading {
+  display: flex;
+  align-items: flex-start;
+  gap: 17px;
+  margin-bottom: 18px;
+}
+
+.number {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  place-items: center;
+  border-radius: 13px;
+  background: #f9eae5;
+  color: #a9655e;
+  font-size: .88rem;
+  font-weight: 750;
+}
+
+.sectionHeading h2,
+.infoCard h2,
+.refund h2 {
+  margin: 0 0 6px;
+  color: #493936;
+  font-size: clamp(1.2rem, 2.5vw, 1.55rem);
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.sectionHeading p {
+  margin: 0;
+  color: var(--text-muted, #817571);
+  font-size: .91rem;
+  line-height: 1.6;
+}
+
+.tableWrap {
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid #eee2dd;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 8px 25px rgba(79, 53, 45, .035);
+}
+
+.rateTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.rateTable th {
+  padding: 15px 20px;
+  background: #fbf2ee;
+  color: #594440;
+  font-size: .82rem;
+  font-weight: 750;
+  letter-spacing: .025em;
+}
+
+.rateTable td {
+  padding: 15px 20px;
+  border-top: 1px solid #f1e9e5;
+  color: var(--text-secondary, #6f6663);
+  font-size: .94rem;
+  line-height: 1.5;
+}
+
+.rateTable tbody tr:hover {
+  background: #fffaf8;
+}
+
+.charge {
+  color: #9b5e57;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.unavailable {
+  color: #9a625c;
+  font-size: .9rem;
+  font-weight: 650;
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 14px;
+  padding: 15px 17px;
+  border: 1px solid #f0dfc9;
+  border-radius: 12px;
+  background: #fffaf1;
+}
+
+.noteIcon {
+  flex: 0 0 auto;
+  color: #a77a3d;
+  font-size: 1.15rem;
+}
+
+.note p {
+  margin: 0;
+  color: #75634d;
+  font-size: .9rem;
+  line-height: 1.7;
+}
+
+.infoCard {
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
+  gap: 20px;
+  margin: 48px 0;
+  padding: clamp(22px, 4vw, 36px);
+  border: 1px solid #f0e2dc;
+  border-radius: 17px;
+  background: #fff8f5;
+}
+
+.infoIcon,
+.refundIcon {
+  display: grid;
+  width: 54px;
+  height: 54px;
+  place-items: center;
+  border-radius: 16px;
+  background: #f8e8e2;
+  font-size: 1.55rem;
+}
+
+.infoCard h2 {
+  margin: 8px 0 12px;
+}
+
+.infoCard p,
+.refund p {
+  margin: 0 0 11px;
+  color: var(--text-secondary, #6f6663);
+  font-size: .96rem;
+  line-height: 1.8;
+}
+
+.infoCard p:last-child,
+.refund p:last-child {
+  margin-bottom: 0;
+}
+
+.contactCard {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+  padding: 22px;
+  border: 1px solid #eee2dd;
+  border-radius: 14px;
+  background: #fffaf8;
+}
+
+.contactCard > div {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.contactLabel {
+  color: #a16a63;
+  font-size: .7rem;
+  font-weight: 750;
+  letter-spacing: .12em;
+}
+
+.contactCard strong,
+.contactCard a {
+  color: #51413d;
+  font-size: .98rem;
+  font-weight: 650;
+  overflow-wrap: anywhere;
+}
+
+.contactCard a {
+  color: #a65f59;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.refund {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  gap: 18px;
+  margin-top: 12px;
+  padding: 24px;
+  border: 1px solid #eee2dd;
+  border-radius: 15px;
+  background: #fff;
+}
+
+.refund h2 {
+  font-size: 1.15rem;
+}
+
+.thanks {
+  margin: 40px 0 0;
+  color: #95615b;
+  font-size: .98rem;
+  font-weight: 650;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.thanks span {
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    min-height: 215px;
+    padding: 45px 18px;
+  }
+
+  .content {
+    width: calc(100% - 30px);
+    padding: 32px 0 48px;
+  }
+
+  .intro {
+    margin-bottom: 30px;
+    font-size: .96rem;
+  }
+
+  .policySection {
+    margin-bottom: 34px;
+  }
+
+  .sectionHeading {
+    gap: 12px;
+  }
+
+  .number {
+    width: 37px;
+    height: 37px;
+    flex-basis: 37px;
+    border-radius: 11px;
+  }
+
+  .tableWrap {
+    overflow: visible;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .rateTable,
+  .rateTable tbody {
+    display: block;
+    width: 100%;
+  }
+
+  .rateTable thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+
+  .rateTable tbody {
+    display: grid;
+    gap: 10px;
+  }
+
+  .rateTable tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(105px, auto);
+    align-items: center;
+    gap: 10px;
+    padding: 13px 15px;
+    border: 1px solid #eee2dd;
+    border-radius: 12px;
+    background: #fff;
+  }
+
+  .rateTable td {
+    display: block;
+    padding: 0;
+    border: 0;
+    font-size: .9rem;
+  }
+
+  .rateTable td::before {
+    display: block;
+    margin-bottom: 4px;
+    color: #9b8983;
+    content: attr(data-label);
+    font-size: .66rem;
+    font-weight: 750;
+    letter-spacing: .07em;
+    text-transform: uppercase;
+  }
+
+  .rateTable td:last-child {
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  .infoCard {
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin: 36px 0;
+    padding: 22px 18px;
+  }
+
+  .contactCard {
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 19px;
+  }
+
+  .refund {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding: 20px 18px;
+  }
+}
+
+@media (max-width: 360px) {
+  .rateTable tr {
+    grid-template-columns: minmax(0, 1fr) minmax(88px, auto);
+    padding: 12px;
+  }
+
+  .rateTable td,
+  .infoCard p,
+  .refund p {
+    font-size: .87rem;
+  }
+
+  .rateTable td:last-child {
+    font-size: .84rem;
+  }
+}

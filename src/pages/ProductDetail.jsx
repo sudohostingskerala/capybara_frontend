@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { getProductBySlug, getProducts } from "../services/productService";
 import {
@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import styles from "./ProductDetail.module.css";
 
 import SizeChart from "../components/SizeChart";
+
 
 export default function ProductDetail() {
   const { slug } = useParams();
@@ -41,6 +42,8 @@ export default function ProductDetail() {
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
   const [editingReview, setEditingReview] = useState(null);
+  // Store the starting touch position for image swiping
+  const touchStartX = useRef(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -278,6 +281,42 @@ export default function ProductDetail() {
     }
   };
 
+  // Store the starting touch position for image swiping
+
+const showPreviousImage = () => {
+  if (images.length <= 1) return;
+
+  setSelImg((current) =>
+    current === 0 ? images.length - 1 : current - 1
+  );
+};
+
+const showNextImage = () => {
+  if (images.length <= 1) return;
+
+  setSelImg((current) =>
+    current === images.length - 1 ? 0 : current + 1
+  );
+};
+
+const handleTouchStart = (e) => {
+  touchStartX.current = e.touches[0].clientX;
+};
+
+const handleTouchEnd = (e) => {
+  const touchEndX = e.changedTouches[0].clientX;
+  const difference = touchStartX.current - touchEndX;
+
+  // Ignore small movements
+  if (Math.abs(difference) < 50) return;
+
+  if (difference > 0) {
+    showNextImage(); // Swipe left
+  } else {
+    showPreviousImage(); // Swipe right
+  }
+};
+
   return (
     <div className={styles["product-detail"]}>
       <div className="container">
@@ -290,24 +329,66 @@ export default function ProductDetail() {
         </nav>
         <div className={styles["pd-layout"]}>
           {/* Gallery */}
-          <div className={styles["pd-gallery"]}>
-            <div className={styles["pd-main-img"]}>
-              {images[selImg] && (
-                <img src={images[selImg].image} alt={product.name} />
-              )}
-            </div>
-            <div className={styles["pd-thumbs"]}>
-              {images.map((img, i) => (
-                <button
-                  key={img.id || i}
-                  className={`${styles["pd-thumb"]} ${selImg === i ? styles.active : ""}`}
-                  onClick={() => setSelImg(i)}
-                >
-                  <img src={img.image} alt="" />
-                </button>
-              ))}
-            </div>
-          </div>
+<div className={styles["pd-gallery"]}>
+  <div
+    className={styles["pd-main-img"]}
+    onTouchStart={handleTouchStart}
+    onTouchEnd={handleTouchEnd}
+  >
+    {images[selImg] && (
+      <img
+        src={images[selImg].image}
+        alt={product.name}
+        draggable="false"
+      />
+    )}
+
+    {/* Previous Image Button */}
+    {images.length > 1 && (
+      <>
+        <button
+          type="button"
+          className={`${styles["pd-image-nav"]} ${styles["pd-image-prev"]}`}
+          onClick={showPreviousImage}
+          aria-label="Previous image"
+        >
+          &#10094;
+        </button>
+
+        {/* Next Image Button */}
+        <button
+          type="button"
+          className={`${styles["pd-image-nav"]} ${styles["pd-image-next"]}`}
+          onClick={showNextImage}
+          aria-label="Next image"
+        >
+          &#10095;
+        </button>
+
+        {/* Image Counter */}
+        <div className={styles["pd-image-counter"]}>
+          {selImg + 1} / {images.length}
+        </div>
+      </>
+    )}
+  </div>
+
+  {/* Image Thumbnails */}
+  <div className={styles["pd-thumbs"]}>
+    {images.map((img, i) => (
+      <button
+        type="button"
+        key={img.id || i}
+        className={`${styles["pd-thumb"]} ${
+          selImg === i ? styles.active : ""
+        }`}
+        onClick={() => setSelImg(i)}
+      >
+        <img src={img.image} alt={`Product view ${i + 1}`} />
+      </button>
+    ))}
+  </div>
+</div>
           {/* Info */}
           <div className={styles["pd-info"]}>
             <h1>{product.name}</h1>

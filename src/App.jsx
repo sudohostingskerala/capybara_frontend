@@ -16,6 +16,10 @@ import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
 import OrderSuccess from './pages/OrderSuccess';
 import GuestOrderStatus from './pages/GuestOrderStatus';
+import AboutUs from "./pages/AboutUs";
+import ShippingPolicy from "./pages/ShippingPolicy";
+import ContactUs from "./pages/ContactUs";
+import Reviews from "./pages/Reviews"
 
 import Account from './pages/Account';
 import OrderHistory from './pages/OrderHistory';
@@ -27,6 +31,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import WhatsAppButton from './components/WhatsAppButton';
 
 import { Toaster } from 'react-hot-toast';
 
@@ -43,6 +48,7 @@ function Layout({ children }) {
       <Navbar />
       <main style={{ flex: 1 }}>{children}</main>
       <Footer />
+      <WhatsAppButton />
     </div>
   );
 }
@@ -93,6 +99,41 @@ export default function App() {
               <Route path="/cart" element={<Layout><Cart /></Layout>} />
               <Route path="/guest-checkout" element={<Layout><Checkout /></Layout>} />
               <Route path="/guest-order-status" element={<Layout><GuestOrderStatus /></Layout>} />
+              <Route
+  path="/about-us"
+  element={
+    <Layout>
+      <AboutUs />
+    </Layout>
+  }
+/>
+
+<Route
+  path="/shipping-policy"
+  element={
+    <Layout>
+      <ShippingPolicy />
+    </Layout>
+  }
+/>
+
+<Route
+  path="/contact-us"
+  element={
+    <Layout>
+      <ContactUs />
+    </Layout>
+  }
+/>
+
+<Route
+  path="/Reviews"
+  element={
+    <Layout>
+      <Reviews />
+    </Layout>
+  }
+/>
 
               {/* Protected Checkout */}
               <Route

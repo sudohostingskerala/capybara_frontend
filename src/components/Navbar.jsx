@@ -198,7 +198,7 @@ useEffect(() => {
           ANNOUNCEMENT BAR
       ===================================================== */}
 
-      <div
+      {/* <div
         className={
           styles['announcement-bar']
         }
@@ -236,7 +236,7 @@ useEffect(() => {
 
         </div>
 
-      </div>
+      </div> */}
 
 
       {/* =====================================================
@@ -255,11 +255,11 @@ useEffect(() => {
           }
         >
 
-          <Link to="">
+          {/* <Link to="">
             Exchange Orders
-          </Link>
+          </Link> */}
 
-          <Link to="">
+          <Link to="/shipping-policy">
             Shipping Charges
           </Link>
 
@@ -267,7 +267,7 @@ useEffect(() => {
             Exchange &amp; Cancellation
           </Link>
 
-          <Link to="">
+          <Link to="/Reviews">
             Reviews
           </Link>
 
@@ -279,7 +279,7 @@ useEffect(() => {
             Brand Story
           </Link>
 
-          <Link to="">
+          <Link to="/contact-us">
             Contact Us
           </Link>
 
@@ -718,7 +718,7 @@ useEffect(() => {
 
 
           <Link
-            to=""
+            to="/contact-us"
             onClick={closeMenus}
           >
             Contact Us
@@ -726,7 +726,7 @@ useEffect(() => {
 
 
           <Link
-            to=""
+            to="/about-us"
             onClick={closeMenus}
           >
             About
