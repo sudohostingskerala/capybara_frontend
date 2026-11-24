@@ -1,4 +1,5 @@
 import api from './api';
+import { getGuestCartRequestHeaders, getGuestCartToken } from './guestCartToken';
 
 const GUEST_ORDER_KEY = 'capybara_guest_order';
 
@@ -42,6 +43,14 @@ export const buyNow = async (address_id, product_variant, quantity) => {
 
 export const createGuestBuyNowOrder = async (details) => {
   const { data } = await api.post('/orders/buy-now/', details, { skipUserAuth: true });
+  return data;
+};
+
+export const createGuestCartOrder = async (shippingDetails) => {
+  const token = getGuestCartToken();
+  const { data } = await api.post('/orders/guest/create-from-cart/', shippingDetails, {
+    headers: getGuestCartRequestHeaders(token),
+  });
   return data;
 };
 

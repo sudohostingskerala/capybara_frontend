@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { getProductBySlug, getProducts } from "../services/productService";
 import {
   getProductReviews,
@@ -175,14 +175,8 @@ export default function ProductDetail() {
       toast.error("Selected combination not available");
       return;
     }
-    if (!isAuthenticated) {
-      toast.error("Please login to add to cart");
-      navigate("/login");
-      return;
-    }
-
     setAdding(true);
-    const success = await addToCart(selectedVariant.id, qty);
+    await addToCart(selectedVariant.id, qty);
     setAdding(false);
   };
 

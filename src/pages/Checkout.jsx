@@ -9,19 +9,22 @@ import {
   createRazorpayOrder,
   verifyRazorpayPayment,
   createGuestBuyNowOrder,
+  createGuestCartOrder,
   saveGuestOrder,
 } from "../services/orderService";
 import Spinner from "../components/Spinner";
 import toast from "react-hot-toast";
+import { clearGuestCartToken } from "../services/guestCartToken";
 import styles from "./Checkout.module.css";
 
 export default function Checkout() {
-  const { cartItems, totalAmount, fetchCart, clearCartLocal } = useCart();
+  const { cartItems, totalAmount, fetchCart, clearCartLocal, loading: cartLoading } = useCart();
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const buyNowData = location.state?.buyNow ? location.state : null;
   const guestCheckout = location.pathname === "/guest-checkout";
+  const guestCartCheckout = guestCheckout && !buyNowData;
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddr, setSelectedAddr] = useState(null);
@@ -47,7 +50,7 @@ export default function Checkout() {
 
   useEffect(() => {
     if (guestCheckout) {
-      if (!buyNowData?.product_variant || !buyNowData?.quantity) {
+      if (buyNowData && (!buyNowData.product_variant || !buyNowData.quantity)) {
         navigate("/shop", { replace: true });
         return;
       }
@@ -76,7 +79,7 @@ export default function Checkout() {
       setSelectedAddr(created.id);
       setShowNewAddr(false);
       toast.success("Address added!");
-    } catch (err) {
+    } catch {
       toast.error("Failed to save address");
     }
   };
@@ -144,7 +147,7 @@ export default function Checkout() {
 
   const handleGuestCheckout = async (event) => {
     event.preventDefault();
-    if (!buyNowData?.product_variant || !buyNowData?.quantity) {
+    if (buyNowData && (!buyNowData.product_variant || !buyNowData.quantity)) {
       toast.error("Please select a product before continuing.");
       navigate("/shop", { replace: true });
       return;
@@ -152,15 +155,21 @@ export default function Checkout() {
     setPlacing(true);
     let localOrder = null;
     try {
-      const order = await createGuestBuyNowOrder({
-        ...guestDetails,
-        product_variant: buyNowData.product_variant,
-        quantity: buyNowData.quantity,
-      });
+      const order = buyNowData
+        ? await createGuestBuyNowOrder({
+            ...guestDetails,
+            product_variant: buyNowData.product_variant,
+            quantity: buyNowData.quantity,
+          })
+        : await createGuestCartOrder(guestDetails);
       localOrder = order;
       const token = order.guest_access_token;
       if (!order.id || !token) throw new Error("Guest order credentials were not returned.");
       saveGuestOrder(order.id, token);
+      if (guestCartCheckout) {
+        clearGuestCartToken();
+        clearCartLocal();
+      }
       const razorpayOrder = await createRazorpayOrder(order.id, token);
       const checkout = new window.Razorpay({
         key: razorpayOrder.key_id,
@@ -211,9 +220,9 @@ export default function Checkout() {
     }
   };
 
-  if (loading) return <Spinner />;
+  if (loading || (guestCartCheckout && cartLoading)) return <Spinner />;
 
-  if (guestCheckout && (!buyNowData?.product_variant || !buyNowData?.quantity)) {
+  if (guestCheckout && buyNowData && (!buyNowData.product_variant || !buyNowData.quantity)) {
     return <div className="container" style={{ padding: "48px 20px", textAlign: "center" }}>Returning to the shop…</div>;
   }
 
@@ -250,9 +259,13 @@ export default function Checkout() {
           </form>
           <div className={styles["checkout-summary"]}>
             <h2>Order Summary</h2>
-            <p>{buyNowData.productName}</p>
-            <p>{buyNowData.color} • {buyNowData.size} · Qty: {buyNowData.quantity}</p>
-            <div className="summary-total">₹{(Number(buyNowData.price) * buyNowData.quantity).toLocaleString()}</div>
+            {guestCartCheckout ? cartItems.map((item) => (
+              <p key={item.id}>{item.product_name} · Qty: {item.quantity}</p>
+            )) : <>
+              <p>{buyNowData.productName}</p>
+              <p>{buyNowData.color} • {buyNowData.size} · Qty: {buyNowData.quantity}</p>
+            </>}
+            <div className="summary-total">₹{(guestCartCheckout ? totalAmount : Number(buyNowData.price) * buyNowData.quantity).toLocaleString()}</div>
           </div>
         </div>
       </div>

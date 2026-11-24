@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import Spinner from '../components/Spinner';
@@ -7,19 +7,6 @@ import styles from './Cart.module.css';
 export default function Cart() {
   const { cartItems, totalAmount, updateQty, removeFromCart, itemCount, loading } = useCart();
   const { isAuthenticated } = useAuth();
-  const navigate = useNavigate();
-
-  if (!isAuthenticated) {
-    return (
-      <div className={`${styles['cart-empty']} container`}>
-        <div className={styles['cart-empty-icon']}>🛒</div>
-        <h2>Please login to view your cart</h2>
-        <p>You need to be logged in to manage your cart.</p>
-        <Link to="/login" className="btn-primary">Login</Link>
-      </div>
-    );
-  }
-
   if (loading) return <Spinner />;
 
   if (cartItems.length === 0) return (
@@ -64,7 +51,7 @@ export default function Cart() {
         <div className={styles['cart-summary']}>
           <h2>Order Summary</h2>
           <div className="summary-row"><span>Total</span><span>₹{totalAmount.toLocaleString()}</span></div>
-          <Link to="/checkout" className={`btn-accent ${styles['checkout-btn']}`}>Proceed to Checkout</Link>
+          <Link to={isAuthenticated ? "/checkout" : "/guest-checkout"} className={`btn-accent ${styles['checkout-btn']}`}>Proceed to Checkout</Link>
           <p className={styles['secure-checkout']}>🔒 Secure Checkout</p>
           <div className={styles['cart-trust']}>
             <div><span>🚚</span><small>Fast Delivery</small></div>
