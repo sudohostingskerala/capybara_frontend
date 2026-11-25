@@ -18,6 +18,11 @@ import toast from "react-hot-toast";
 import styles from "./ProductDetail.module.css";
 
 import SizeChart from "../components/SizeChart";
+import {
+  findSelectedVariant,
+  getInitialProductSelection,
+  getUniqueColors,
+} from "../utils/productSelection";
 
 
 export default function ProductDetail() {
@@ -51,6 +56,9 @@ export default function ProductDetail() {
       try {
         const data = await getProductBySlug(slug);
         setProduct(data);
+        const initialSelection = getInitialProductSelection(data);
+        setSelColor(initialSelection.color);
+        setSelSize(initialSelection.size);
 
         // Fetch reviews
         if (data.id) {
@@ -86,12 +94,7 @@ export default function ProductDetail() {
 
   // Derive unique colors and sizes from variants
   const uniqueColors = useMemo(() => {
-    if (!product?.variants) return [];
-    const map = new Map();
-    product.variants.forEach((v) => {
-      if (v.color && !map.has(v.color.name)) map.set(v.color.name, v.color);
-    });
-    return Array.from(map.values());
+    return getUniqueColors(product);
   }, [product]);
 
   const uniqueSizes = useMemo(() => {
@@ -108,12 +111,7 @@ export default function ProductDetail() {
 
   // Find selected variant
   const selectedVariant = useMemo(() => {
-    if (!product?.variants || !selColor || !selSize) return null;
-    return (
-      product.variants.find(
-        (v) => v.color?.name === selColor && v.size?.name === selSize,
-      ) || null
-    );
+    return findSelectedVariant(product, selColor, selSize);
   }, [product, selColor, selSize]);
 
   // Images for selected variant or first variant
@@ -163,7 +161,7 @@ export default function ProductDetail() {
     );
 
   const handleAddToCart = async () => {
-    if (!selColor) {
+    if (uniqueColors.length > 0 && !selColor) {
       toast.error("Please select a color");
       return;
     }
@@ -181,7 +179,7 @@ export default function ProductDetail() {
   };
 
   const handleBuyNow = () => {
-    if (!selColor || !selSize || !selectedVariant) {
+    if ((uniqueColors.length > 0 && !selColor) || !selSize || !selectedVariant) {
       toast.error("Select color & size");
       return;
     }
@@ -246,7 +244,7 @@ export default function ProductDetail() {
   };
 
   const handleAddToWishlist = async () => {
-    if (!selColor) {
+    if (uniqueColors.length > 0 && !selColor) {
       toast.error("Please select a color");
       return;
     }
