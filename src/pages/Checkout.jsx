@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthContext";
@@ -11,11 +11,23 @@ import {
   createGuestBuyNowOrder,
   createGuestCartOrder,
   saveGuestOrder,
+  getOrderDetail,
+  getGuestOrderStatus,
+  updateOrderDeliveryAddress,
 } from "../services/orderService";
 import Spinner from "../components/Spinner";
 import toast from "react-hot-toast";
 import { clearGuestCartToken } from "../services/guestCartToken";
 import styles from "./Checkout.module.css";
+import { isCompleteOrderSummary, sameOrderSummary, verifyUpdatedOrderSummary, paymentAmountMatchesSummary, acquireSubmissionLock, checkoutErrorMessage } from "../utils/checkoutOrder";
+
+const inr = (value) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(Number(value || 0));
+
+function SummaryRow({ label, value, strong = false }) {
+  return <div className={`${styles["review-row"]} ${strong ? styles["review-total"] : ""}`}>
+    <span>{label}</span><strong>{value}</strong>
+  </div>;
+}
 
 export default function Checkout() {
   const { cartItems, totalAmount, fetchCart, clearCartLocal, loading: cartLoading } = useCart();
@@ -30,6 +42,14 @@ export default function Checkout() {
   const [selectedAddr, setSelectedAddr] = useState(null);
   const [loading, setLoading] = useState(!guestCheckout);
   const [placing, setPlacing] = useState(false);
+  const [reviewOrder, setReviewOrder] = useState(null);
+  const [reviewGuestToken, setReviewGuestToken] = useState(null);
+  const [paymentStarting, setPaymentStarting] = useState(false);
+  const [editingReviewAddress, setEditingReviewAddress] = useState(false);
+  const [updatingAddress, setUpdatingAddress] = useState(false);
+  const paymentLock = useRef(false);
+  const addressUpdateLock = useRef(false);
+  const [reviewAddress, setReviewAddress] = useState(null);
   const [showNewAddr, setShowNewAddr] = useState(false);
   const [newAddr, setNewAddr] = useState({
     full_name: "",
@@ -89,6 +109,7 @@ export default function Checkout() {
       toast.error("Please select a shipping address");
       return;
     }
+    if (placing || reviewOrder) return;
     setPlacing(true);
     try {
       let order;
@@ -100,10 +121,46 @@ export default function Checkout() {
         );
       } else {
         order = await createOrder(selectedAddr);
-        clearCartLocal();
-        fetchCart();
       }
-      const razorpayOrder = await createRazorpayOrder(order.id);
+      setReviewOrder(order);
+      setReviewGuestToken(null);
+    } catch (err) {
+      const msg = err.response?.data?.detail || "Failed to prepare order review";
+      toast.error(msg);
+    } finally {
+      setPlacing(false);
+    }
+  };
+
+  const startPayment = async () => {
+    if (!reviewOrder || !acquireSubmissionLock(paymentLock)) return;
+    setPaymentStarting(true);
+    let razorpayOpened = false;
+    try {
+      const latest = reviewGuestToken
+        ? await getGuestOrderStatus(reviewOrder.id, reviewGuestToken)
+        : await getOrderDetail(reviewOrder.id);
+      if (!isCompleteOrderSummary(latest)) throw new Error("The latest persisted order summary could not be verified. Please retry.");
+      if (!sameOrderSummary(reviewOrder, latest)) {
+        setReviewOrder(latest);
+        toast.error("Your order details changed. Review the updated total before paying.");
+        return;
+      }
+      const razorpayOrder = await createRazorpayOrder(reviewOrder.id, reviewGuestToken);
+      if (!isCompleteOrderSummary(razorpayOrder.summary)) {
+        toast.error("Payment service did not return the persisted order summary. Please retry after refreshing the review.");
+        return;
+      }
+      if (!sameOrderSummary(latest, razorpayOrder.summary)) {
+        setReviewOrder(razorpayOrder.summary);
+        toast.error("The order changed before payment. Review the refreshed totals before continuing.");
+        return;
+      }
+      if (!paymentAmountMatchesSummary(razorpayOrder.amount, latest)) {
+        setReviewOrder(razorpayOrder.summary);
+        toast.error("The payable amount changed. Please review the updated order.");
+        return;
+      }
       const options = {
         key: razorpayOrder.key_id, // Enter the Key ID generated from the Dashboard
         amount: razorpayOrder.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
@@ -113,36 +170,96 @@ export default function Checkout() {
         order_id: razorpayOrder.razorpay_order_id, //This is a sample Order ID. Pass the `id` obtained in the response of createOrder().
         handler: async function (response) {
           try {
-            await verifyRazorpayPayment(order.id, response);
-            navigate("/order-success", { state: { order } });
+            await verifyRazorpayPayment(reviewOrder.id, reviewGuestToken
+              ? { ...response, guest_access_token: reviewGuestToken }
+              : response);
+            if (reviewGuestToken) navigate("/guest-order-status", { state: { paymentSubmitted: true } });
+            else navigate("/order-success", { state: { order: reviewOrder } });
           } catch {
-            navigate("/order-success", { state: { order } });
+            if (reviewGuestToken) navigate("/guest-order-status", { state: { paymentSubmitted: true } });
+            else navigate("/order-success", { state: { order: reviewOrder } });
           }
         },
         modal: {
           ondismiss: function () {
-            // The order remains pending until Razorpay's signed webhook arrives.
+            paymentLock.current = false;
+            setPaymentStarting(false);
           },
         },
         prefill: {
-          name: "",
-          email: "",
-          contact: "",
+          name: reviewOrder.full_name || "",
+          email: reviewOrder.email || "",
+          contact: reviewOrder.phone_number || "",
         },
         theme: {
           color: "#3399cc",
         },
       };
       const razorpay = new window.Razorpay(options);
+      razorpay.on("payment.failed", () => {
+        paymentLock.current = false;
+        setPaymentStarting(false);
+      });
+      razorpay.on("payment.failed", async () => {
+        try { await refreshReview(); } catch { /* Retain the current review on transient read failure. */ }
+      });
       razorpay.open();
-      // toast.success('Order placed successfully!');
-      // navigate('/order-success', { state: { order } });
+      razorpayOpened = true;
+      clearCartLocal();
+      fetchCart();
+      if (reviewGuestToken && guestCartCheckout) clearGuestCartToken();
     } catch (err) {
-      const msg = err.response?.data?.detail || "Failed to place order";
-      toast.error(msg);
+      paymentLock.current = false;
+      toast.error(!err.response && err.message !== "Network Error" ? err.message : checkoutErrorMessage(err, "payment"));
     } finally {
-      setPlacing(false);
+      if (!razorpayOpened) {
+        paymentLock.current = false;
+        setPaymentStarting(false);
+      }
     }
+  };
+
+  const beginAddressEdit = () => {
+    const fields = ["full_name", "email", "phone_number", "house_name", "street", "landmark", "city", "district", "state", "pincode"];
+    setReviewAddress(Object.fromEntries(fields.map((field) => [field, reviewOrder[field] || ""])));
+    if (!reviewGuestToken) {
+      const current = addresses.find((address) => address.full_name === reviewOrder.full_name && address.pincode === reviewOrder.pincode && address.house_name === reviewOrder.house_name);
+      if (current) setSelectedAddr(current.id);
+    }
+    setEditingReviewAddress(true);
+  };
+
+  const submitAddressUpdate = async (event) => {
+    event.preventDefault();
+    if (!reviewOrder || !acquireSubmissionLock(addressUpdateLock)) return;
+    setUpdatingAddress(true);
+    try {
+      let payload;
+      if (reviewGuestToken) payload = reviewAddress;
+      else if (reviewAddress?.createNew) {
+        const addressPayload = Object.fromEntries(Object.entries(reviewAddress).filter(([field]) => !["createNew", "email"].includes(field)));
+        const savedAddress = await createAddress(addressPayload);
+        payload = { address_id: savedAddress.id };
+      } else payload = { address_id: selectedAddr };
+      if (!reviewGuestToken && !payload.address_id) throw new Error("Select a saved delivery address or add a new one first.");
+      const updated = await updateOrderDeliveryAddress(reviewOrder.id, payload, reviewGuestToken);
+      const verifiedSummary = verifyUpdatedOrderSummary(reviewOrder, updated);
+      setReviewOrder(verifiedSummary);
+      setEditingReviewAddress(false);
+      toast.success("Delivery address and order totals updated.");
+    } catch (error) {
+      toast.error(error.message && !error.response ? error.message : checkoutErrorMessage(error, "address"));
+    } finally {
+      addressUpdateLock.current = false;
+      setUpdatingAddress(false);
+    }
+  };
+
+  const refreshReview = async () => {
+    const latest = reviewGuestToken
+      ? await getGuestOrderStatus(reviewOrder.id, reviewGuestToken)
+      : await getOrderDetail(reviewOrder.id);
+    setReviewOrder(latest);
   };
 
   const handleGuestCheckout = async (event) => {
@@ -152,8 +269,8 @@ export default function Checkout() {
       navigate("/shop", { replace: true });
       return;
     }
+    if (placing || reviewOrder) return;
     setPlacing(true);
-    let localOrder = null;
     try {
       const order = buyNowData
         ? await createGuestBuyNowOrder({
@@ -162,59 +279,13 @@ export default function Checkout() {
             quantity: buyNowData.quantity,
           })
         : await createGuestCartOrder(guestDetails);
-      localOrder = order;
       const token = order.guest_access_token;
       if (!order.id || !token) throw new Error("Guest order credentials were not returned.");
       saveGuestOrder(order.id, token);
-      if (guestCartCheckout) {
-        clearGuestCartToken();
-        clearCartLocal();
-      }
-      const razorpayOrder = await createRazorpayOrder(order.id, token);
-      const checkout = new window.Razorpay({
-        key: razorpayOrder.key_id,
-        amount: razorpayOrder.amount,
-        currency: razorpayOrder.currency,
-        name: "Capybara",
-        description: "Order Payment",
-        order_id: razorpayOrder.razorpay_order_id,
-        prefill: {
-          name: guestDetails.full_name,
-          email: guestDetails.email,
-          contact: guestDetails.phone_number,
-        },
-        theme: { color: "#3399cc" },
-        handler: async (response) => {
-          // LOCAL DEBUG ONLY: remove after capturing the Razorpay TEST response.
-          if (
-            import.meta.env.DEV &&
-            ["localhost", "127.0.0.1"].includes(window.location.hostname) &&
-            razorpayOrder.key_id?.startsWith("rzp_test_")
-          ) {
-            console.info("Local Razorpay TEST checkout response", {
-              razorpay_payment_id: response?.razorpay_payment_id,
-              razorpay_order_id: response?.razorpay_order_id,
-              razorpay_signature: response?.razorpay_signature,
-            });
-          }
-          try {
-            await verifyRazorpayPayment(order.id, {
-              ...response,
-              guest_access_token: token,
-            });
-          } catch {
-            // The signed backend webhook remains authoritative even if this call fails.
-          }
-          navigate("/guest-order-status", { state: { paymentSubmitted: true } });
-        },
-        modal: {
-          ondismiss: () => navigate("/guest-order-status"),
-        },
-      });
-      checkout.open();
+      setReviewOrder(order);
+      setReviewGuestToken(token);
     } catch (error) {
       toast.error(error.response?.data?.detail || error.message || "Unable to start checkout.");
-      if (localOrder?.id) navigate("/guest-order-status");
     } finally {
       setPlacing(false);
     }
@@ -224,6 +295,63 @@ export default function Checkout() {
 
   if (guestCheckout && buyNowData && (!buyNowData.product_variant || !buyNowData.quantity)) {
     return <div className="container" style={{ padding: "48px 20px", textAlign: "center" }}>Returning to the shop…</div>;
+  }
+
+  if (reviewOrder) {
+    const itemTaxes = reviewOrder.items || [];
+    const cgst = itemTaxes.reduce((sum, item) => sum + Number(item.cgst_amount || 0), 0);
+    const sgst = itemTaxes.reduce((sum, item) => sum + Number(item.sgst_amount || 0), 0);
+    const igst = itemTaxes.reduce((sum, item) => sum + Number(item.igst_amount || 0), 0);
+    return <main className={`${styles["checkout-page"]} container`}>
+      <h1>Review Order &amp; Confirm</h1>
+      <div className={styles["review-layout"]}>
+        <section className={styles["checkout-form"]}>
+          <h2>Items</h2>
+          {itemTaxes.map((item) => <article className={styles["review-item"]} key={item.id}>
+            <div><strong>{item.product_name}</strong><p>{item.size} · {item.color} · Qty {item.quantity}</p>
+              <p>₹{item.unit_price} each · Taxable value {inr(item.taxable_value)} · GST {(Number(item.gst_rate) * 100).toFixed(0)}%</p></div>
+            <span>{inr(item.taxable_value)}</span>
+          </article>)}
+          <h2>Delivery address</h2>
+          <p>{reviewOrder.full_name}<br />{reviewOrder.house_name}{reviewOrder.street ? `, ${reviewOrder.street}` : ""}<br />{reviewOrder.city}, {reviewOrder.district}, {reviewOrder.state} — {reviewOrder.pincode}<br />{reviewOrder.phone_number}</p>
+          {!editingReviewAddress ? <button type="button" className="btn-secondary" onClick={beginAddressEdit} disabled={paymentStarting}>Edit address</button> : <form className={styles["address-edit-form"]} onSubmit={submitAddressUpdate}>
+            <h3>Edit delivery address</h3>
+            {reviewGuestToken ? <>
+              {[["full_name", "Full name"], ["email", "Email"], ["phone_number", "Phone"], ["house_name", "House / Building"], ["street", "Street"], ["landmark", "Landmark"], ["city", "City"], ["district", "District"], ["state", "State"], ["pincode", "PIN code"]].map(([field, label]) => <div className="form-group" key={field}>
+                <label htmlFor={`review-${field}`}>{label}</label>
+                <input id={`review-${field}`} required={!(["street", "landmark"].includes(field))} type={field === "email" ? "email" : "text"} value={reviewAddress?.[field] || ""} onChange={(event) => setReviewAddress((current) => ({ ...current, [field]: event.target.value }))} />
+              </div>)}
+            </> : <>
+              <div className={styles["address-list"]}>{addresses.map((address) => <label key={address.id} className={`${styles["address-option"]} ${selectedAddr === address.id ? styles.selected : ""}`}>
+                <input type="radio" name="review-address" checked={selectedAddr === address.id} onChange={() => { setSelectedAddr(address.id); setReviewAddress((current) => ({ ...current, createNew: false })); }} />
+                <span><strong>{address.full_name}</strong><br />{address.house_name}, {address.city}, {address.district}, {address.state} — {address.pincode}</span>
+              </label>)}</div>
+              <button type="button" className="btn-secondary" onClick={() => { setReviewAddress({ ...newAddr, createNew: true }); setSelectedAddr(null); }}>+ Add a different address</button>
+              {reviewAddress?.createNew && [["full_name", "Full name"], ["phone_number", "Phone"], ["house_name", "House / Building"], ["street", "Street"], ["landmark", "Landmark"], ["city", "City"], ["district", "District"], ["state", "State"], ["pincode", "PIN code"]].map(([field, label]) => <div className="form-group" key={field}>
+                <label htmlFor={`review-${field}`}>{label}</label>
+                <input id={`review-${field}`} required={!(["street", "landmark"].includes(field))} value={reviewAddress?.[field] || ""} onChange={(event) => setReviewAddress((current) => ({ ...current, [field]: event.target.value }))} />
+              </div>)}
+            </>}
+            <button className={`btn-accent ${styles["checkout-continue"]}`} disabled={updatingAddress}>{updatingAddress ? "Recalculating order…" : "Save address & refresh totals"}</button>
+            <button type="button" className={`btn-secondary ${styles["checkout-continue"]}`} onClick={() => setEditingReviewAddress(false)} disabled={updatingAddress}>Cancel</button>
+          </form>}
+        </section>
+        <aside className={styles["checkout-summary"]}>
+          <h2>Payment summary</h2>
+          <SummaryRow label="Taxable value" value={inr(reviewOrder.subtotal)} />
+          {Number(reviewOrder.discount) > 0 && <SummaryRow label="Discount" value={`−${inr(reviewOrder.discount)}`} />}
+          <SummaryRow label="Shipping" value={inr(reviewOrder.shipping_charge)} />
+          <SummaryRow label="CGST" value={inr(cgst)} />
+          <SummaryRow label="SGST" value={inr(sgst)} />
+          <SummaryRow label="IGST" value={inr(igst)} />
+          <SummaryRow label="GST total" value={inr(reviewOrder.gst_total)} />
+          <SummaryRow label="Final payable" value={inr(reviewOrder.total_amount)} strong />
+          <button className={`btn-accent ${styles["checkout-continue"]}`} onClick={startPayment} disabled={paymentStarting}>
+            {paymentStarting ? "Checking order…" : `Confirm & Pay ${inr(reviewOrder.total_amount)}`}
+          </button>
+        </aside>
+      </div>
+    </main>;
   }
 
   if (guestCheckout) {

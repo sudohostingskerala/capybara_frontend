@@ -1,5 +1,6 @@
-import api from './api';
-import { getGuestCartRequestHeaders, getGuestCartToken } from './guestCartToken';
+import api from './api.js';
+import { getGuestCartRequestHeaders, getGuestCartToken } from './guestCartToken.js';
+import { deliveryAddressUpdateRequest } from '../utils/checkoutOrder.js';
 
 const GUEST_ORDER_KEY = 'capybara_guest_order';
 
@@ -26,6 +27,16 @@ export const getOrderDetail = async (pk) => {
   const { data } = await api.get(`/orders/${pk}/`);
   return data;
 };
+
+// Authenticated requests use the normal api interceptor. Guest updates attach
+// the order credential as Authorization: Bearer <token>.
+export const updateOrderDeliveryAddress = async (orderId, address, guestToken) => {
+  const request = deliveryAddressUpdateRequest(orderId, address, guestToken);
+  const { data } = await api.patch(request.url, request.payload, request.config);
+  return data;
+};
+
+export const refreshOrderSummary = getOrderDetail;
 
 export const createOrder = async (address_id) => {
   const { data } = await api.post('/orders/create/', { address_id });

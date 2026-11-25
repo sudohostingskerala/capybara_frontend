@@ -31,4 +31,13 @@
 .address-option { display: flex; align-items: flex-start; gap: 12px; padding: 16px; border: 1.5px solid var(--border); border-radius: var(--radius-md); cursor: pointer; transition: all var(--transition); }
 .address-option.selected { border-color: var(--accent); background: rgba(196,98,45,0.04); }
 .address-option input[type="radio"] { margin-top: 4px; accent-color: var(--accent); }
+.review-layout { display: grid; grid-template-columns: minmax(0, 1fr) 360px; gap: 24px; align-items: start; }
+.review-layout .checkout-form, .review-layout .checkout-summary { position: static; }
+.review-item { display: flex; justify-content: space-between; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--border-light); }
+.review-item p { margin-top: 6px; color: var(--text-muted); font-size: .9rem; }
+.review-row { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border-light); }
+.review-total { margin-top: 8px; padding-top: 16px; font-size: 1.08rem; border-bottom: 0; color: var(--primary); }
+.address-edit-form { margin-top: 20px; padding: 20px; background: var(--bg-secondary); border-radius: var(--radius-sm); }
+.address-edit-form h3 { margin-bottom: 16px; }
+@media (max-width: 900px) { .review-layout { grid-template-columns: 1fr; } }
 
