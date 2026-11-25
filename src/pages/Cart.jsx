@@ -50,7 +50,7 @@ export default function Cart() {
         </div>
         <div className={styles['cart-summary']}>
           <h2>Order Summary</h2>
-          <div className="summary-row"><span>Total</span><span>₹{totalAmount.toLocaleString()}</span></div>
+          <div className="summary-row"><span>Total </span><span>₹{totalAmount.toLocaleString()}</span></div>
           <Link to={isAuthenticated ? "/checkout" : "/guest-checkout"} className={`btn-accent ${styles['checkout-btn']}`}>Proceed to Checkout</Link>
           <p className={styles['secure-checkout']}>🔒 Secure Checkout</p>
           <div className={styles['cart-trust']}>
