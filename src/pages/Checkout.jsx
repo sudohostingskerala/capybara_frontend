@@ -7,6 +7,7 @@ import {
   createOrder,
   buyNow,
   createRazorpayOrder,
+  cancelRazorpayAttempt,
   verifyRazorpayPayment,
   createGuestBuyNowOrder,
   createGuestCartOrder,
@@ -49,6 +50,10 @@ export default function Checkout() {
   const [updatingAddress, setUpdatingAddress] = useState(false);
   const paymentLock = useRef(false);
   const addressUpdateLock = useRef(false);
+  const cancellationLock = useRef(false);
+  const paymentSucceeded = useRef(false);
+  const [paymentNeedsVerification, setPaymentNeedsVerification] = useState(false);
+  const [paymentMessage, setPaymentMessage] = useState("");
   const [reviewAddress, setReviewAddress] = useState(null);
   const [showNewAddr, setShowNewAddr] = useState(false);
   const [newAddr, setNewAddr] = useState({
@@ -135,6 +140,8 @@ export default function Checkout() {
   const startPayment = async () => {
     if (!reviewOrder || !acquireSubmissionLock(paymentLock)) return;
     setPaymentStarting(true);
+    paymentSucceeded.current = false;
+    cancellationLock.current = false;
     let razorpayOpened = false;
     try {
       const latest = reviewGuestToken
@@ -170,9 +177,13 @@ export default function Checkout() {
         order_id: razorpayOrder.razorpay_order_id, //This is a sample Order ID. Pass the `id` obtained in the response of createOrder().
         handler: async function (response) {
           try {
+            paymentSucceeded.current = true;
             await verifyRazorpayPayment(reviewOrder.id, reviewGuestToken
               ? { ...response, guest_access_token: reviewGuestToken }
               : response);
+            clearCartLocal();
+            fetchCart();
+            if (reviewGuestToken && guestCartCheckout) clearGuestCartToken();
             if (reviewGuestToken) navigate("/guest-order-status", { state: { paymentSubmitted: true } });
             else navigate("/order-success", { state: { order: reviewOrder } });
           } catch {
@@ -181,9 +192,34 @@ export default function Checkout() {
           }
         },
         modal: {
-          ondismiss: function () {
-            paymentLock.current = false;
-            setPaymentStarting(false);
+          ondismiss: async function () {
+            if (paymentSucceeded.current || cancellationLock.current) return;
+            cancellationLock.current = true;
+            try {
+              const result = await cancelRazorpayAttempt(reviewOrder.id, reviewGuestToken);
+              if (result.order) setReviewOrder(result.order);
+              if (result.cancellation_confirmed) {
+                setPaymentNeedsVerification(false);
+                setPaymentMessage("Payment was cancelled and the order was cancelled. You can start checkout again.");
+                toast.success("Payment was cancelled. Your order reservation has been released.");
+              } else {
+                setPaymentNeedsVerification(true);
+                setPaymentMessage("Payment status is being verified. Please wait before trying again.");
+                toast("Payment status is being verified. Please wait before trying again.");
+              }
+            } catch (error) {
+              const result = error.response?.data;
+              if (result?.order) setReviewOrder(result.order);
+              setPaymentNeedsVerification(true);
+              const message = result?.order?.payment_status === "PAID"
+                ? "Payment is confirmed. Check your order status for the latest update."
+                : result?.detail || "We could not confirm the payment outcome. Please check your order status before trying again.";
+              setPaymentMessage(message);
+              toast(message);
+            } finally {
+              paymentLock.current = false;
+              setPaymentStarting(false);
+            }
           },
         },
         prefill: {
@@ -196,18 +232,9 @@ export default function Checkout() {
         },
       };
       const razorpay = new window.Razorpay(options);
-      razorpay.on("payment.failed", () => {
-        paymentLock.current = false;
-        setPaymentStarting(false);
-      });
-      razorpay.on("payment.failed", async () => {
-        try { await refreshReview(); } catch { /* Retain the current review on transient read failure. */ }
-      });
       razorpay.open();
       razorpayOpened = true;
-      clearCartLocal();
-      fetchCart();
-      if (reviewGuestToken && guestCartCheckout) clearGuestCartToken();
+      // Keep the cart available until payment success; a dismissed modal is not a failure.
     } catch (err) {
       paymentLock.current = false;
       toast.error(!err.response && err.message !== "Network Error" ? err.message : checkoutErrorMessage(err, "payment"));
@@ -255,13 +282,6 @@ export default function Checkout() {
     }
   };
 
-  const refreshReview = async () => {
-    const latest = reviewGuestToken
-      ? await getGuestOrderStatus(reviewOrder.id, reviewGuestToken)
-      : await getOrderDetail(reviewOrder.id);
-    setReviewOrder(latest);
-  };
-
   const handleGuestCheckout = async (event) => {
     event.preventDefault();
     if (buyNowData && (!buyNowData.product_variant || !buyNowData.quantity)) {
@@ -304,6 +324,9 @@ export default function Checkout() {
     const igst = itemTaxes.reduce((sum, item) => sum + Number(item.igst_amount || 0), 0);
     return <main className={`${styles["checkout-page"]} container`}>
       <h1>Review Order &amp; Confirm</h1>
+      {paymentMessage && <p role="status">{paymentMessage}</p>}
+      {paymentNeedsVerification && <p role="status">Do not retry payment until the order status is confirmed.</p>}
+      {reviewOrder.status === "CANCELLED" && !paymentMessage && <p role="status">This order was cancelled. Start checkout again to create a new order.</p>}
       <div className={styles["review-layout"]}>
         <section className={styles["checkout-form"]}>
           <h2>Items</h2>
@@ -346,7 +369,7 @@ export default function Checkout() {
           <SummaryRow label="IGST" value={inr(igst)} />
           <SummaryRow label="GST total" value={inr(reviewOrder.gst_total)} />
           <SummaryRow label="Final payable" value={inr(reviewOrder.total_amount)} strong />
-          <button className={`btn-accent ${styles["checkout-continue"]}`} onClick={startPayment} disabled={paymentStarting}>
+          <button className={`btn-accent ${styles["checkout-continue"]}`} onClick={startPayment} disabled={paymentStarting || paymentNeedsVerification || reviewOrder.status === "CANCELLED"}>
             {paymentStarting ? "Checking order…" : `Confirm & Pay ${inr(reviewOrder.total_amount)}`}
           </button>
         </aside>

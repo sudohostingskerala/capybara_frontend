@@ -70,6 +70,13 @@ export const cancelOrder = async (pk) => {
   return data;
 };
 
+export const cancelRazorpayAttempt = async (orderId, guestToken) => {
+  const payload = guestToken ? { guest_access_token: guestToken } : {};
+  const config = guestToken ? { guestBearerToken: guestToken } : {};
+  const { data } = await api.post(`/orders/${orderId}/razorpay-cancel/`, payload, config);
+  return data;
+};
+
 export const createRazorpayOrder = async (order_id, guestToken) => {
   const payload = guestToken ? { guest_access_token: guestToken } : {};
   const config = guestToken ? { skipUserAuth: true } : {};
