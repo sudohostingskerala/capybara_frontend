@@ -652,7 +652,7 @@ export default function Checkout() {
           ))}
           <div className={styles["checkout-totals"]}>
             <div className="summary-total">
-              <span>Total</span>
+              <span>Total </span>
               <span>
                 ₹
                 {buyNowData
