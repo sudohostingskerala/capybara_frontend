@@ -1,6 +1,7 @@
 import api from './api.js';
 import { getGuestCartRequestHeaders, getGuestCartToken } from './guestCartToken.js';
 import { deliveryAddressUpdateRequest } from '../utils/checkoutOrder.js';
+import { invoiceRequestConfig } from '../utils/invoiceDownload.js';
 
 const GUEST_ORDER_KEY = 'capybara_guest_order';
 
@@ -97,4 +98,9 @@ export const getGuestOrderStatus = async (orderId, token) => {
     guestBearerToken: token,
   });
   return data;
+};
+
+export const downloadOrderInvoice = async (orderId, guestToken) => {
+  const response = await api.get(`/orders/${orderId}/invoice/`, invoiceRequestConfig(guestToken));
+  return { data: response.data, status: response.status };
 };

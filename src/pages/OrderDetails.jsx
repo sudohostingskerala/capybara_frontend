@@ -5,6 +5,7 @@ import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
 import Return from '../components/Return';
 import styles from './OrderDetails.module.css';
+import InvoiceDownloadButton from '../components/InvoiceDownloadButton';
 
 const TIMELINE = ['PENDING', 'CONFIRMED', 'PACKED', 'SHIPPED', 'DELIVERED'];
 const TIMELINE_LABELS = { PENDING: 'Order Placed', CONFIRMED: 'Confirmed', PACKED: 'Packed', SHIPPED: 'Shipped', DELIVERED: 'Delivered' };
@@ -64,6 +65,7 @@ export default function OrderDetails() {
           <p className={styles['sub-date']}>Placed on {new Date(order.created_at).toLocaleDateString()}</p>
         </div>
         <div className={styles.actions}>
+          <InvoiceDownloadButton order={order} />
           {canCancel && (
             <button className={`btn-secondary ${styles['action-btn']}`} onClick={handleCancel} disabled={cancelling}>
               {cancelling ? 'Cancelling...' : '✕ Cancel Order'}

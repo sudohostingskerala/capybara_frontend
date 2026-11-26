@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getGuestOrderStatus, getSavedGuestOrder } from "../services/orderService";
 import Spinner from "../components/Spinner";
+import InvoiceDownloadButton from "../components/InvoiceDownloadButton";
 
 const POLL_INTERVAL_MS = 2500;
 const MAX_ATTEMPTS = 40;
@@ -85,6 +86,7 @@ export default function GuestOrderStatus() {
           </p>
           <p><strong>Order number:</strong> {order.order_number}</p>
           <p><strong>Order status:</strong> {order.status} · <strong>Payment status:</strong> {paymentStatus}</p>
+          <InvoiceDownloadButton order={order} guestToken={saved?.token} />
           {timedOut && !isPaid && !isCancelled && !isFailed && !isRefunded && (
             <p>Your payment is still being confirmed. You can check this page again later.</p>
           )}

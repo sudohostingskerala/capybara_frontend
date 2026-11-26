@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { getOrderDetail } from '../services/orderService';
 import styles from './OrderSuccess.module.css';
+import InvoiceDownloadButton from '../components/InvoiceDownloadButton';
 
 export default function OrderSuccess() {
   const location = useLocation();
@@ -11,7 +12,8 @@ export default function OrderSuccess() {
   const [timedOut, setTimedOut] = useState(false);
 
   useEffect(() => {
-    if (!order?.id || order.payment_status === 'PAID') return undefined;
+    if (!order?.id) return undefined;
+    const initiallyPaid = order.payment_status === 'PAID';
     let active = true;
     let timer;
     let attempts = 0;
@@ -26,6 +28,7 @@ export default function OrderSuccess() {
           return;
         }
       } catch {
+        if (initiallyPaid) return;
         // Keep checking; the client callback is not authoritative.
       }
       attempts += 1;
@@ -43,7 +46,7 @@ export default function OrderSuccess() {
       active = false;
       window.clearTimeout(timer);
     };
-  }, [order]);
+  }, [order?.id, order?.payment_status]);
 
   if (!currentOrder) return (
     <div className="container" style={{ textAlign: 'center', padding: '60px' }}>
@@ -113,6 +116,7 @@ export default function OrderSuccess() {
               <div className="summary-row"><span>Discount</span><span style={{ color: 'var(--success)' }}>-₹{parseFloat(paidOrder.discount).toLocaleString()}</span></div>
             )}
             <div className="summary-total"><span>Total</span><span>₹{parseFloat(paidOrder.total_amount).toLocaleString()}</span></div>
+            <InvoiceDownloadButton order={paidOrder} />
             <Link to={`/account/orders/${paidOrder.id}`} className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: '20px' }}>📦 View Order Status</Link>
             <Link to="/shop" className="btn-secondary" style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }}>Continue Shopping</Link>
             <div className={styles['eco-note']}>🌿 This order was packaged using 100% recyclable materials. Thank you for choosing sustainable baby wear!</div>
