@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { getGuestOrderStatus, getSavedGuestOrder } from "../services/orderService";
 import Spinner from "../components/Spinner";
 import InvoiceDownloadButton from "../components/InvoiceDownloadButton";
+import styles from "./GuestOrderStatus.module.css";
 
 const POLL_INTERVAL_MS = 2500;
 const MAX_ATTEMPTS = 40;
@@ -66,7 +67,7 @@ export default function GuestOrderStatus() {
   const isCancelled = order?.status === "CANCELLED";
 
   return (
-    <div className="container" style={{ maxWidth: 760, padding: "64px 20px", textAlign: "center" }}>
+    <div className={styles.page}>
       {loading && <Spinner />}
       {!loading && !saved && <><h1>Order status unavailable</h1><p>We could not find saved guest order access on this device.</p></>}
       {!loading && message && <><h1>Order status unavailable</h1><p>{message}</p></>}
@@ -86,18 +87,20 @@ export default function GuestOrderStatus() {
           </p>
           <p><strong>Order number:</strong> {order.order_number}</p>
           <p><strong>Order status:</strong> {order.status} · <strong>Payment status:</strong> {paymentStatus}</p>
-          <InvoiceDownloadButton order={order} guestToken={saved?.token} />
           {timedOut && !isPaid && !isCancelled && !isFailed && !isRefunded && (
             <p>Your payment is still being confirmed. You can check this page again later.</p>
           )}
           {order.items?.length > 0 && (
-            <div style={{ margin: "24px auto", maxWidth: 500, textAlign: "left" }}>
+            <div className={styles.items}>
               {order.items.map((item) => <p key={item.id}>{item.product_name} · Qty {item.quantity}</p>)}
             </div>
           )}
         </>
       )}
-      <Link to="/shop" className="btn-secondary" style={{ display: "inline-flex", marginTop: 20 }}>Continue Shopping</Link>
+      <div className={styles.actions}>
+        {!loading && !message && order && <InvoiceDownloadButton order={order} guestToken={saved?.token} className={styles.invoice} />}
+        <Link to="/shop" className={`btn-secondary ${styles.continue}`}>Continue Shopping</Link>
+      </div>
     </div>
   );
 }

@@ -3,7 +3,7 @@ import { downloadOrderInvoice } from '../services/orderService';
 import { canDownloadInvoice, invoiceDownloadMessage } from '../utils/invoiceDownload';
 import styles from './InvoiceDownloadButton.module.css';
 
-export default function InvoiceDownloadButton({ order, guestToken }) {
+export default function InvoiceDownloadButton({ order, guestToken, className = '' }) {
   const [downloading, setDownloading] = useState(false);
   const [message, setMessage] = useState('');
   const [hidden, setHidden] = useState(false);
@@ -46,7 +46,7 @@ export default function InvoiceDownloadButton({ order, guestToken }) {
   };
 
   return (
-    <div className={styles.wrap}>
+    <div className={`${styles.wrap} ${className}`}>
       <button type="button" className={styles.button} onClick={handleDownload} disabled={downloading}>
         {downloading ? 'Preparing invoice…' : 'Download Invoice'}
       </button>
