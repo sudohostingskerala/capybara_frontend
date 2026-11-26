@@ -72,9 +72,9 @@ export default function OrderDetails() {
   }
 
   return (
-    <div>
+    <div className={styles.page}>
       <div className={styles['top-bar']}>
-        <div>
+        <div className={styles['heading']}>
           <nav className="breadcrumb" style={{ padding: '0 0 8px' }}>{guestMode ? <><Link to="/track-order">Track Order</Link><span className="sep">›</span></> : <><Link to="/account">Account</Link><span className="sep">›</span><Link to="/account/orders">Orders</Link><span className="sep">›</span></>}<span className="current">#{order.order_number}</span></nav>
           <h2>Order Details</h2>
           <p className={styles['sub-date']}>Placed on {new Date(order.created_at).toLocaleDateString()}</p>
@@ -95,7 +95,7 @@ export default function OrderDetails() {
         </div>
       </div>
       <div className={styles.grid}>
-        <div>
+        <div className={styles['main-column']}>
           {/* Items */}
           <div className={styles.card}>
             <h3>Items Purchased ({order.items?.length || 0})</h3>
@@ -133,7 +133,7 @@ export default function OrderDetails() {
           orderNumber={order.order_number}
         />}
         {/* Right Panel */}
-        <div>
+        <div className={styles.sidebar}>
           {/* Order Status */}
           {order.status !== 'CANCELLED' && (
             <div className={styles['sidebar-card']}>
@@ -160,12 +160,12 @@ export default function OrderDetails() {
           {/* Summary */}
           <div className={styles['summary-card']}>
             <h3>Order Summary</h3>
-            <div className="summary-row"><span>Subtotal</span><span>₹{parseFloat(order.subtotal).toLocaleString()}</span></div>
-            <div className="summary-row"><span>Shipping</span><span>₹{parseFloat(order.shipping_charge).toLocaleString()}</span></div>
+            <div className={styles['summary-row']}><span>Subtotal</span><span>₹{parseFloat(order.subtotal).toLocaleString()}</span></div>
+            <div className={styles['summary-row']}><span>Shipping</span><span>₹{parseFloat(order.shipping_charge).toLocaleString()}</span></div>
             {parseFloat(order.discount) > 0 && (
-              <div className="summary-row"><span>Discount</span><span style={{ color: 'var(--success)' }}>-₹{parseFloat(order.discount).toLocaleString()}</span></div>
+              <div className={styles['summary-row']}><span>Discount</span><span style={{ color: 'var(--success)' }}>-₹{parseFloat(order.discount).toLocaleString()}</span></div>
             )}
-            <div className="summary-total"><span>Total Paid</span><span>₹{parseFloat(order.total_amount).toLocaleString()}</span></div>
+            <div className={styles['summary-total']}><span>Total Paid</span><span>₹{parseFloat(order.total_amount).toLocaleString()}</span></div>
           </div>
         </div>
       </div>
