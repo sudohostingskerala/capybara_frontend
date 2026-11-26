@@ -9,6 +9,8 @@ export const deliveryAddressUpdateRequest = (orderId, address, guestToken) => ({
   config: guestToken ? { guestBearerToken: guestToken } : {},
 });
 
+export const checkoutReviewPath = (isGuest) => isGuest ? "/guest-checkout/review" : "/checkout/review";
+
 export const isCompleteOrderSummary = (order) => Boolean(
   order && order.id && order.state && order.pincode && order.items?.length &&
   ["subtotal", "shipping_charge", "discount", "gst_total", "total_amount"].every((field) => order[field] !== undefined && order[field] !== null)

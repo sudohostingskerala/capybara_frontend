@@ -20,7 +20,7 @@ import Spinner from "../components/Spinner";
 import toast from "react-hot-toast";
 import { clearGuestCartToken } from "../services/guestCartToken";
 import styles from "./Checkout.module.css";
-import { isCompleteOrderSummary, sameOrderSummary, verifyUpdatedOrderSummary, paymentAmountMatchesSummary, acquireSubmissionLock, checkoutErrorMessage } from "../utils/checkoutOrder";
+import { isCompleteOrderSummary, sameOrderSummary, verifyUpdatedOrderSummary, paymentAmountMatchesSummary, acquireSubmissionLock, checkoutErrorMessage, checkoutReviewPath } from "../utils/checkoutOrder";
 
 const inr = (value) => new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR" }).format(Number(value || 0));
 
@@ -36,19 +36,20 @@ export default function Checkout() {
   const navigate = useNavigate();
   const location = useLocation();
   const buyNowData = location.state?.buyNow ? location.state : null;
-  const guestCheckout = location.pathname === "/guest-checkout";
+  const guestCheckout = location.pathname.startsWith("/guest-checkout");
   const guestCartCheckout = guestCheckout && !buyNowData;
 
   const [addresses, setAddresses] = useState([]);
   const [selectedAddr, setSelectedAddr] = useState(null);
-  const [loading, setLoading] = useState(!guestCheckout);
+  const [loading, setLoading] = useState(!guestCheckout && !location.state?.reviewOrder);
   const [placing, setPlacing] = useState(false);
-  const [reviewOrder, setReviewOrder] = useState(null);
-  const [reviewGuestToken, setReviewGuestToken] = useState(null);
+  const [reviewOrder, setReviewOrder] = useState(location.state?.reviewOrder || null);
+  const [reviewGuestToken, setReviewGuestToken] = useState(location.state?.reviewGuestToken || null);
   const [paymentStarting, setPaymentStarting] = useState(false);
   const [editingReviewAddress, setEditingReviewAddress] = useState(false);
   const [updatingAddress, setUpdatingAddress] = useState(false);
   const paymentLock = useRef(false);
+  const orderCreationLock = useRef(false);
   const addressUpdateLock = useRef(false);
   const cancellationLock = useRef(false);
   const paymentSucceeded = useRef(false);
@@ -114,7 +115,7 @@ export default function Checkout() {
       toast.error("Please select a shipping address");
       return;
     }
-    if (placing || reviewOrder) return;
+    if (placing || reviewOrder || !acquireSubmissionLock(orderCreationLock)) return;
     setPlacing(true);
     try {
       let order;
@@ -127,12 +128,18 @@ export default function Checkout() {
       } else {
         order = await createOrder(selectedAddr);
       }
-      setReviewOrder(order);
+      const persistedOrder = await getOrderDetail(order.id);
+      if (!isCompleteOrderSummary(persistedOrder)) throw new Error("The server did not return a complete order summary. Please retry.");
+      setReviewOrder(persistedOrder);
       setReviewGuestToken(null);
+      navigate(checkoutReviewPath(false), {
+        state: { reviewOrder: persistedOrder, buyNow: Boolean(buyNowData), ...(buyNowData || {}) },
+      });
     } catch (err) {
       const msg = err.response?.data?.detail || "Failed to prepare order review";
       toast.error(msg);
     } finally {
+      orderCreationLock.current = false;
       setPlacing(false);
     }
   };
@@ -289,7 +296,7 @@ export default function Checkout() {
       navigate("/shop", { replace: true });
       return;
     }
-    if (placing || reviewOrder) return;
+    if (placing || reviewOrder || !acquireSubmissionLock(orderCreationLock)) return;
     setPlacing(true);
     try {
       const order = buyNowData
@@ -302,11 +309,17 @@ export default function Checkout() {
       const token = order.guest_access_token;
       if (!order.id || !token) throw new Error("Guest order credentials were not returned.");
       saveGuestOrder(order.id, token);
-      setReviewOrder(order);
+      const persistedOrder = await getGuestOrderStatus(order.id, token);
+      if (!isCompleteOrderSummary(persistedOrder)) throw new Error("The server did not return a complete order summary. Please retry.");
+      setReviewOrder(persistedOrder);
       setReviewGuestToken(token);
+      navigate(checkoutReviewPath(true), {
+        state: { reviewOrder: persistedOrder, reviewGuestToken: token, ...(buyNowData || {}) },
+      });
     } catch (error) {
       toast.error(error.response?.data?.detail || error.message || "Unable to start checkout.");
     } finally {
+      orderCreationLock.current = false;
       setPlacing(false);
     }
   };

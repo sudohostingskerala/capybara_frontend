@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { decimalToPaise, deliveryAddressUpdateRequest, isCompleteOrderSummary, sameOrderSummary, verifyUpdatedOrderSummary, paymentAmountMatchesSummary, acquireSubmissionLock, checkoutErrorMessage } from "./checkoutOrder.js";
+import { decimalToPaise, deliveryAddressUpdateRequest, checkoutReviewPath, isCompleteOrderSummary, sameOrderSummary, verifyUpdatedOrderSummary, paymentAmountMatchesSummary, acquireSubmissionLock, checkoutErrorMessage } from "./checkoutOrder.js";
 
 const summary = (overrides = {}) => ({
   id: 12, full_name: "Buyer", phone_number: "1234567890", house_name: "House",
@@ -23,6 +23,11 @@ test("address update targets the existing order with auth or guest bearer conven
   assert.deepEqual(deliveryAddressUpdateRequest(42, { state: "Tamil Nadu" }, "guest-secret"), {
     url: "/orders/42/delivery-address/", payload: { state: "Tamil Nadu" }, config: { guestBearerToken: "guest-secret" },
   });
+});
+
+test("both checkout types transition to their shared review page before payment", () => {
+  assert.equal(checkoutReviewPath(false), "/checkout/review");
+  assert.equal(checkoutReviewPath(true), "/guest-checkout/review");
 });
 
 test("replaced backend GST and payable values are detected after destination state changes", () => {

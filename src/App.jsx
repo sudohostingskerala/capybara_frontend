@@ -98,6 +98,7 @@ export default function App() {
               <Route path="/product/:slug" element={<Layout><ProductDetail /></Layout>} />
               <Route path="/cart" element={<Layout><Cart /></Layout>} />
               <Route path="/guest-checkout" element={<Layout><Checkout /></Layout>} />
+              <Route path="/guest-checkout/review" element={<Layout><Checkout /></Layout>} />
               <Route path="/guest-order-status" element={<Layout><GuestOrderStatus /></Layout>} />
               <Route
   path="/about-us"
@@ -138,6 +139,17 @@ export default function App() {
               {/* Protected Checkout */}
               <Route
                 path="/checkout"
+                element={
+                  <ProtectedRoute>
+                    <Layout>
+                      <Checkout />
+                    </Layout>
+                  </ProtectedRoute>
+                }
+              />
+
+              <Route
+                path="/checkout/review"
                 element={
                   <ProtectedRoute>
                     <Layout>
