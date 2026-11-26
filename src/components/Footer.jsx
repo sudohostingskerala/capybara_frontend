@@ -31,6 +31,7 @@ export default function Footer() {
             <li><Link to="/About-us">About Us</Link></li>
             <li><Link to="/Contact-us">Contact Us</Link></li>
             <li><Link to="/shipping-policy">Shipping charges</Link></li>
+            <li><Link to="/track-order">Track Order</Link></li>
           </ul>
         </div>
         {/* <div className={styles['footer-col']}>

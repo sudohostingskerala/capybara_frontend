@@ -16,6 +16,7 @@ import Checkout from './pages/Checkout';
 import Payment from './pages/Payment';
 import OrderSuccess from './pages/OrderSuccess';
 import GuestOrderStatus from './pages/GuestOrderStatus';
+import TrackOrder from './pages/TrackOrder';
 import AboutUs from "./pages/AboutUs";
 import ShippingPolicy from "./pages/ShippingPolicy";
 import ContactUs from "./pages/ContactUs";
@@ -100,6 +101,8 @@ export default function App() {
               <Route path="/guest-checkout" element={<Layout><Checkout /></Layout>} />
               <Route path="/guest-checkout/review" element={<Layout><Checkout /></Layout>} />
               <Route path="/guest-order-status" element={<Layout><GuestOrderStatus /></Layout>} />
+              <Route path="/track-order" element={<Layout><TrackOrder /></Layout>} />
+              <Route path="/guest-order/:id" element={<Layout><OrderDetails /></Layout>} />
               <Route
   path="/about-us"
   element={

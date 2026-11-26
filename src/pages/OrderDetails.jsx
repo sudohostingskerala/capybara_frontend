@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useMatch, useNavigate } from 'react-router-dom';
 import { getOrderDetail, cancelOrder } from '../services/orderService';
+import { clearGuestRecovery, getGuestRecovery } from '../services/guestOrderRecovery';
+import { getGuestOrderStatus } from '../services/orderService';
 import Spinner from '../components/Spinner';
 import toast from 'react-hot-toast';
 import Return from '../components/Return';
@@ -12,6 +14,11 @@ const TIMELINE_LABELS = { PENDING: 'Order Placed', CONFIRMED: 'Confirmed', PACKE
 
 export default function OrderDetails() {
   const { id } = useParams();
+  const guestRoute = useMatch('/guest-order/:id');
+  const navigate = useNavigate();
+  const isGuestRoute = Boolean(guestRoute);
+  const guestAccess = guestRoute ? getGuestRecovery() : null;
+  const guestMode = Boolean(guestAccess && String(guestAccess.orderId) === String(id));
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [cancelling, setCancelling] = useState(false);
@@ -19,18 +26,26 @@ export default function OrderDetails() {
 
 
   useEffect(() => {
-    getOrderDetail(id)
+    const request = guestMode
+      ? getGuestOrderStatus(guestAccess.orderId, guestAccess.token)
+      : isGuestRoute ? Promise.reject(new Error('Guest access unavailable')) : getOrderDetail(id);
+    request
       .then(data => setOrder(data))
-      .catch(() => setOrder(null))
+      .catch((error) => {
+        setOrder(null);
+        if (guestMode && [400, 401, 403, 404].includes(error.response?.status)) {
+          clearGuestRecovery();
+        }
+      })
       .finally(() => setLoading(false));
-  }, [id]);
+  }, [id, guestMode, guestAccess?.token, guestAccess?.orderId, isGuestRoute]);
 
   if (loading) return <Spinner />;
 
   if (!order) return (
     <div className={styles['not-found']}>
       <h2>Order not found</h2>
-      <Link to="/account/orders" className={`btn-primary ${styles['not-found-btn']}`}>Back to Orders</Link>
+      <Link to={isGuestRoute ? '/track-order' : '/account/orders'} className={`btn-primary ${styles['not-found-btn']}`}>{isGuestRoute ? 'Track another order' : 'Back to Orders'}</Link>
     </div>
   );
 
@@ -60,18 +75,19 @@ export default function OrderDetails() {
     <div>
       <div className={styles['top-bar']}>
         <div>
-          <nav className="breadcrumb" style={{ padding: '0 0 8px' }}><Link to="/account">Account</Link><span className="sep">›</span><Link to="/account/orders">Orders</Link><span className="sep">›</span><span className="current">#{order.order_number}</span></nav>
+          <nav className="breadcrumb" style={{ padding: '0 0 8px' }}>{guestMode ? <><Link to="/track-order">Track Order</Link><span className="sep">›</span></> : <><Link to="/account">Account</Link><span className="sep">›</span><Link to="/account/orders">Orders</Link><span className="sep">›</span></>}<span className="current">#{order.order_number}</span></nav>
           <h2>Order Details</h2>
           <p className={styles['sub-date']}>Placed on {new Date(order.created_at).toLocaleDateString()}</p>
         </div>
         <div className={styles.actions}>
-          <InvoiceDownloadButton order={order} />
-          {canCancel && (
+          <InvoiceDownloadButton order={order} guestToken={guestMode ? guestAccess.token : undefined} />
+          {guestMode && <button className={`btn-secondary ${styles['action-btn']}`} onClick={() => { clearGuestRecovery(); navigate('/track-order'); }}>Exit guest order</button>}
+          {!guestMode && canCancel && (
             <button className={`btn-secondary ${styles['action-btn']}`} onClick={handleCancel} disabled={cancelling}>
               {cancelling ? 'Cancelling...' : '✕ Cancel Order'}
             </button>
           )}
-          {order.status === 'DELIVERED' && (
+          {!guestMode && order.status === 'DELIVERED' && (
             <button className={`btn-secondary ${styles['action-btn']}`} onClick={handleReturn}>
               {' Return Order'}
             </button>
@@ -111,11 +127,11 @@ export default function OrderDetails() {
             </div>
           </div>
         </div>
-        <Return
+        {!guestMode && <Return
           isOpen={showReturnModal}
           onClose={() => setShowReturnModal(false)}
           orderNumber={order.order_number}
-        />
+        />}
         {/* Right Panel */}
         <div>
           {/* Order Status */}

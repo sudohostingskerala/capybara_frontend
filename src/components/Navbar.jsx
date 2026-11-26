@@ -6,12 +6,6 @@ import styles from './Navbar.module.css';
 import { getCategories } from '../services/categoryService';
 
 
-const birthdayItems = [
-  { label: 'All Birthday Dresses', to: '/shop' },
-  { label: 'First Birthday', to: '/shop' },
-  { label: 'Theme Made Frocks', to: '/shop' },
-];
-
 export default function Navbar() {
 
   const { itemCount } = useCart();
@@ -723,6 +717,8 @@ useEffect(() => {
           >
             Contact Us
           </Link>
+
+          <Link to="/track-order" onClick={closeMenus}>Track Order</Link>
 
 
           <Link

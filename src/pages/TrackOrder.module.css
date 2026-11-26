@@ -1,0 +1,12 @@
+.page { padding-top: 56px; padding-bottom: 72px; }
+.panel { max-width: 520px; margin: 0 auto; padding: 36px; background: var(--bg-card); border: 1px solid var(--border-light); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+.eyebrow { color: var(--accent); font-weight: 700; font-size: .75rem; letter-spacing: .1em; margin-bottom: 8px; }
+.panel h1 { font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 8px; }
+.intro { color: var(--text-secondary); margin-bottom: 24px; }
+.panel form { display: grid; gap: 18px; }
+.panel form button[type='submit'] { justify-content: center; }
+.panel button:disabled { opacity: .65; cursor: wait; }
+.error { color: var(--error); font-size: .875rem; }
+.notice { color: var(--text-secondary); font-size: .9rem; }
+.resend { color: var(--primary); background: none; font-weight: 600; padding: 8px; }
+@media (max-width: 520px) { .page { padding-top: 32px; padding-bottom: 48px; } .panel { padding: 24px 20px; } .panel h1 { font-size: 1.65rem; } }
