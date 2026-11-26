@@ -22,4 +22,10 @@
 .success-shipping p { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.6; }
 .success-price h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
 .eco-note { margin-top: 16px; padding: 12px; background: #F1F8E9; border-radius: var(--radius-sm); font-size: 0.78rem; color: #33691E; }
-@media (max-width: 768px) { .success-layout { grid-template-columns: 1fr; } .success-shipping { grid-template-columns: 1fr; } }
+.success-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 220px)); justify-content: center; gap: 12px; margin: 24px auto 0; }
+.success-actions > div { width: 100%; align-items: stretch; }
+.success-actions > div button { width: 100%; min-height: 44px; border-radius: 8px; }
+.action-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; width: 100%; padding: 10px 16px; border: 1px solid var(--primary); border-radius: 8px; background: var(--primary); color: #fff; font: inherit; font-weight: 600; text-align: center; }
+.action-link:hover { background: var(--primary-dark); }
+@media (max-width: 768px) { .success-layout { grid-template-columns: 1fr; } .success-shipping { grid-template-columns: 1fr; } .success-actions { grid-template-columns: minmax(0, 320px); } }
+@media (max-width: 380px) { .success-actions { grid-template-columns: minmax(0, 1fr); } }

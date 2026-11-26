@@ -116,11 +116,13 @@ export default function OrderSuccess() {
               <div className="summary-row"><span>Discount</span><span style={{ color: 'var(--success)' }}>-₹{parseFloat(paidOrder.discount).toLocaleString()}</span></div>
             )}
             <div className="summary-total"><span>Total</span><span>₹{parseFloat(paidOrder.total_amount).toLocaleString()}</span></div>
-            <InvoiceDownloadButton order={paidOrder} />
-            <Link to={`/account/orders/${paidOrder.id}`} className="btn-primary" style={{ width: '100%', justifyContent: 'center', marginTop: '20px' }}>📦 View Order Status</Link>
-            <Link to="/shop" className="btn-secondary" style={{ width: '100%', justifyContent: 'center', marginTop: '10px' }}>Continue Shopping</Link>
             <div className={styles['eco-note']}>🌿 This order was packaged using 100% recyclable materials. Thank you for choosing sustainable baby wear!</div>
           </div>
+        </div>
+        <div className={styles['success-actions']} aria-label="Order actions">
+          <InvoiceDownloadButton order={paidOrder} />
+          <Link to={`/account/orders/${paidOrder.id}`} className={styles['action-link']}>📦 View Order Status</Link>
+          <Link to="/shop" className={styles['action-link']}>Continue Shopping</Link>
         </div>
       </div>
     </div>
