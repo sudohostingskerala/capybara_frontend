@@ -18,6 +18,11 @@ import toast from "react-hot-toast";
 import styles from "./ProductDetail.module.css";
 
 import SizeChart from "../components/SizeChart";
+import {
+  getPurchasableVariant,
+  isVariantAvailable,
+  reconcileProductSelection,
+} from "../utils/productSelection";
 
 
 export default function ProductDetail() {
@@ -46,42 +51,48 @@ export default function ProductDetail() {
   const touchStartX = useRef(0);
 
   useEffect(() => {
+    let active = true;
     const fetchProduct = async () => {
       setLoading(true);
+      setProduct(null);
+      setSelColor("");
+      setSelSize("");
+      setSelImg(0);
+      setQty(1);
       try {
         const data = await getProductBySlug(slug);
+        if (!active) return;
         setProduct(data);
 
         // Fetch reviews
         if (data.id) {
           getProductReviews(data.id)
-            .then((res) => setReviews(res.results || res || []))
-            .catch(() => setReviews([]));
+            .then((res) => active && setReviews(res.results || res || []))
+            .catch(() => active && setReviews([]));
         }
 
         // Fetch related
         if (data.variants?.[0]) {
           getProducts({ page_size: 4 })
             .then((res) => {
+              if (!active) return;
               const items = (res.results || res || []).filter(
                 (p) => p.slug !== slug,
               );
               setRelated(items.slice(0, 4));
             })
-            .catch(() => setRelated([]));
+            .catch(() => active && setRelated([]));
         }
       } catch {
+        if (!active) return;
         console.error("Product not found.");
         setProduct(null);
       } finally {
-        setLoading(false);
+        if (active) setLoading(false);
       }
     };
     fetchProduct();
-    setSelColor("");
-    setSelSize("");
-    setSelImg(0);
-    setQty(1);
+    return () => { active = false; };
   }, [slug]);
 
   // Derive unique colors and sizes from variants
@@ -94,27 +105,34 @@ export default function ProductDetail() {
     return Array.from(map.values());
   }, [product]);
 
+  const resolvedSelection = useMemo(
+    () => reconcileProductSelection(product, { color: selColor, size: selSize }),
+    [product, selColor, selSize],
+  );
+  const selectedColor = resolvedSelection.color;
+  const selectedSize = resolvedSelection.size;
+
   const uniqueSizes = useMemo(() => {
     if (!product?.variants) return [];
-    const filtered = selColor
-      ? product.variants.filter((v) => v.color?.name === selColor)
+    const filtered = selectedColor
+      ? product.variants.filter((v) => v.color?.name === selectedColor)
       : product.variants;
     const map = new Map();
     filtered.forEach((v) => {
       if (v.size && !map.has(v.size.name)) map.set(v.size.name, v.size);
     });
     return Array.from(map.values());
-  }, [product, selColor]);
+  }, [product, selectedColor]);
 
   // Find selected variant
   const selectedVariant = useMemo(() => {
-    if (!product?.variants || !selColor || !selSize) return null;
-    return (
-      product.variants.find(
-        (v) => v.color?.name === selColor && v.size?.name === selSize,
-      ) || null
-    );
-  }, [product, selColor, selSize]);
+    if (!product?.variants || !selectedSize) return null;
+    return product.variants.find(
+      (v) => (!uniqueColors.length || v.color?.name === selectedColor) && v.size?.name === selectedSize,
+    ) || null;
+  }, [product, selectedColor, selectedSize, uniqueColors.length]);
+
+  const purchasableVariant = getPurchasableVariant(product, selectedColor, selectedSize);
 
   // Images for selected variant or first variant
   // const images = useMemo(() => {
@@ -126,14 +144,14 @@ export default function ProductDetail() {
   const images = useMemo(() => {
     if (!product?.colors?.length) return [];
 
-    const selectedColor = product.colors.find(
-      (pc) => pc.color?.name == selColor,
+    const colorImages = product.colors.find(
+      (pc) => pc.color?.name == selectedColor,
     );
-    if (selectedColor?.images?.length) {
-      return selectedColor.images;
+    if (colorImages?.images?.length) {
+      return colorImages.images;
     }
     return product.colors[0]?.images || [];
-  }, [product, selColor]);
+  }, [product, selectedColor]);
 
   const displayPrice =
     selectedVariant?.selling_price ||
@@ -163,36 +181,36 @@ export default function ProductDetail() {
     );
 
   const handleAddToCart = async () => {
-    if (!selColor) {
+    if (uniqueColors.length > 0 && !selectedColor) {
       toast.error("Please select a color");
       return;
     }
-    if (!selSize) {
+    if (!selectedSize) {
       toast.error("Please select a size");
       return;
     }
-    if (!selectedVariant) {
+    if (!purchasableVariant) {
       toast.error("Selected combination not available");
       return;
     }
     setAdding(true);
-    await addToCart(selectedVariant.id, qty);
+    await addToCart(purchasableVariant.id, qty);
     setAdding(false);
   };
 
   const handleBuyNow = () => {
-    if (!selColor || !selSize || !selectedVariant) {
+    if (!selectedSize || !purchasableVariant || (uniqueColors.length > 0 && !selectedColor)) {
       toast.error("Select color & size");
       return;
     }
     const pendingBuyNow = {
         buyNow: true,
-        product_variant: selectedVariant.id,
-        variantId: selectedVariant.id,
+        product_variant: purchasableVariant.id,
+        variantId: purchasableVariant.id,
         quantity: qty,
         productName: product.name,
-        color: selColor,
-        size: selSize,
+        color: selectedColor,
+        size: selectedSize,
         price: displayPrice,
         image: images[0]?.image || "",
     };
@@ -246,12 +264,12 @@ export default function ProductDetail() {
   };
 
   const handleAddToWishlist = async () => {
-    if (!selColor) {
+    if (uniqueColors.length > 0 && !selectedColor) {
       toast.error("Please select a color");
       return;
     }
 
-    if (!selSize) {
+    if (!selectedSize) {
       toast.error("Please select a size");
       return;
     }
@@ -407,18 +425,18 @@ const handleTouchEnd = (e) => {
             {uniqueColors.length > 0 && (
               <div className={styles["pd-option"]}>
                 <label>
-                  Color: <strong>{selColor || "Select"}</strong>
+                  Color: <strong>{selectedColor || "Select"}</strong>
                 </label>
                 <div className={styles["color-options"]}>
                   {uniqueColors.map((c) => (
                     <button
                       key={c.id}
-                      className={`${styles["color-option"]} ${selColor === c.name ? styles.active : ""}`}
+                      className={`${styles["color-option"]} ${selectedColor === c.name ? styles.active : ""}`}
                       onClick={() => {
                         setSelColor(c.name);
-                        const firstSize =
-                          product.variants.find((v) => v.color?.name === c.name)
-                            ?.size?.name || "";
+                        const firstSize = product.variants.find(
+                          (v) => v.color?.name === c.name && isVariantAvailable(v),
+                        )?.size?.name || "";
                         setSelSize(firstSize);
                         setSelImg(0);
                       }}
@@ -426,12 +444,15 @@ const handleTouchEnd = (e) => {
                         c.hex_code
                           ? {
                               borderColor:
-                                selColor === c.name
+                                selectedColor === c.name
                                   ? c.hex_code
                                   : "transparent",
                             }
                           : {}
                       }
+                      disabled={!product.variants.some(
+                        (variant) => variant.color?.name === c.name && isVariantAvailable(variant),
+                      )}
                     >
                       {c.hex_code && (
                         <span
@@ -449,16 +470,16 @@ const handleTouchEnd = (e) => {
             {uniqueSizes.length > 0 && (
               <div className={styles["pd-option"]}>
                 <label>
-                  Size: <strong>{selSize || "Select"} </strong>
+                  Size: <strong>{selectedSize || "Select"} </strong>
                   <SizeChart />
                 </label>
                 <label>
                 </label>
                 <div className={styles["size-options"]}>
-                  {uniqueSizes.map((s) => (
+                    {uniqueSizes.map((s) => (
                     <button
                       key={s.id}
-                      className={`${styles["size-option"]} ${selSize === s.name ? styles.active : ""}`}
+                      className={`${styles["size-option"]} ${selectedSize === s.name ? styles.active : ""}`}
                       onClick={() => setSelSize(s.name)}
                     >
                       {s.name}
@@ -469,6 +490,11 @@ const handleTouchEnd = (e) => {
             )}
 
             {/* Stock */}
+            {product.variants?.length > 0 && !product.variants.some(isVariantAvailable) && (
+              <p className={styles["pd-stock"]} style={{ color: "var(--error)" }}>
+                ● Out of Stock
+              </p>
+            )}
             {selectedVariant && (
               <p
                 className={styles["pd-stock"]}
