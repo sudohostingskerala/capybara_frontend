@@ -628,7 +628,7 @@ export default function Checkout() {
             onClick={handlePlaceOrder}
             disabled={placing}
           >
-            {placing ? "Placing Order..." : "Place Order"}
+            {placing ? "Just a Moment..." : "Continue to Review & Pay"}
           </button>
         </div>
         {/* Order Summary Sidebar */}
