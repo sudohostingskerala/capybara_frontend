@@ -476,16 +476,38 @@ const handleTouchEnd = (e) => {
                 <label>
                 </label>
                 <div className={styles["size-options"]}>
-                    {uniqueSizes.map((s) => (
-                    <button
-                      key={s.id}
-                      className={`${styles["size-option"]} ${selectedSize === s.name ? styles.active : ""}`}
-                      onClick={() => setSelSize(s.name)}
-                    >
-                      {s.name}
-                    </button>
-                  ))}
-                </div>
+  {uniqueSizes.map((s) => {
+    const variant = product.variants.find(
+      (v) =>
+        (!uniqueColors.length || v.color?.name === selectedColor) &&
+        v.size?.name === s.name,
+    );
+    const isOutOfStock = !variant || !isVariantAvailable(variant);
+    const isActive = !isOutOfStock && selectedSize === s.name;
+
+    return (
+      <button
+        key={s.id}
+        type="button"
+        className={`${styles["size-option"]} ${
+          isOutOfStock
+            ? styles["size-option-outof-stock"]
+            : isActive
+              ? styles.active
+              : ""
+        }`}
+        onClick={() => {
+          setSelSize(s.name);
+          setQty(1);
+        }}
+        disabled={isOutOfStock}
+        title={isOutOfStock ? "Out of stock" : undefined}
+      >
+        {s.name}
+      </button>
+    );
+  })}
+</div>
               </div>
             )}
 
