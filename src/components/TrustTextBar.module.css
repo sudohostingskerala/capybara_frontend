@@ -8,7 +8,7 @@
   background: var(--blush);
   border-top: 1px solid #f6cdd5;
   color: var(--cocoa);
-  filter: drop-shadow(0 6px 8px rgb(238, 98, 122));
+  filter: drop-shadow(0 6px 8px rgba(238, 98, 121, 0.825));
 }
 
 .bar::after {
@@ -21,7 +21,6 @@
   background: radial-gradient(circle at 8px 0, var(--blush) 8px, transparent 8.5px)
     0 0 / 16px 8px repeat-x;
   pointer-events: none;
-  filter: drop-shadow(0 6px 8px rgb(238, 98, 122));
 }
 
 .viewport {
@@ -91,7 +90,7 @@
 
 @media (max-width: 640px) {
   .viewport { height: 43px; }
-  .item { gap: 8px; font-size: 0.75rem; }
+  .item { gap: 8px; font-size: 0.95rem; }
   .badge { width: 24px; height: 24px; }
   .icon { width: 13px; height: 13px; }
   .divider { width: 10px; height: 10px; margin: 0 18px 0 10px; }
