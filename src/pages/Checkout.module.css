@@ -681,3 +681,123 @@
         padding: 16px;
     }
 }
+
+/* ==========================================
+   REVIEW ORDER - REDESIGN
+========================================== */
+
+.review-layout .checkout-form h2 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+}
+
+.review-layout .checkout-form h2::before {
+    content: "";
+    width: 4px;
+    height: 20px;
+    border-radius: 4px;
+    background: #B85C2B;
+}
+
+/* Product card */
+
+.review-layout .review-item {
+    margin-bottom: 12px;
+    padding: 18px;
+    background: #fff;
+    border: 1px solid #EAE2DC;
+    border-radius: 14px;
+}
+
+.review-layout .review-item p:first-of-type {
+    display: inline-block;
+    margin: 8px 0 2px;
+    padding: 3px 11px;
+    background: #F9ECE8;
+    border-radius: 999px;
+    color: #7A4A38;
+    font-weight: 600;
+}
+
+.review-layout .review-item > span {
+    color: #B85C2B;
+    font-size: 18px;
+}
+
+/* Delivery address card */
+
+.review-layout .checkout-form > p {
+    margin: 0;
+    padding: 18px 20px;
+    background: #fff;
+    border: 1px solid #EAE2DC;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #6F5D54;
+    overflow-wrap: anywhere;
+}
+
+.review-layout .checkout-form > p::first-line {
+    font-size: 16px;
+    font-weight: 700;
+    color: #17100D;
+}
+
+.review-layout .checkout-form > button:global(.btn-secondary) {
+    margin-top: 14px;
+    padding: 11px 20px;
+    border: 1px solid #B85C2B;
+    border-radius: 10px;
+    background: transparent;
+    color: #B85C2B;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.review-layout .checkout-form > button:global(.btn-secondary):hover:not(:disabled) {
+    background: #FDF5F0;
+}
+
+/* Payment summary */
+
+.review-layout .review-row {
+    padding: 8px 0;
+}
+
+.review-layout .review-total {
+    margin-top: 12px;
+    padding: 20px 0 6px;
+    border-top: 1px dashed #DCCFC6;
+}
+
+.review-layout .checkout-summary::after {
+    content: "🔒 Secure checkout";
+    display: block;
+    margin-top: 14px;
+    text-align: center;
+    font-size: 12px;
+    color: #4E6B5C;
+}
+
+@media (max-width: 600px) {
+    .review-layout .review-item {
+        padding: 14px;
+    }
+
+    .review-layout .review-item > span {
+        font-size: 14px;
+    }
+
+    .review-layout .checkout-form > p {
+        padding: 15px;
+    }
+}
+
+.review-layout .review-item strong {
+    display: block;
+}
