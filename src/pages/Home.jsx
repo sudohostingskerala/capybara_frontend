@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getBanners } from '../services/bannerService';
 import { getCategories } from '../services/categoryService';
-import { getFeaturedProducts, getProducts } from '../services/productService';
+import { getProducts } from '../services/productService';
 import ProductCard from '../components/ProductCard';
 import Spinner from '../components/Spinner';
 import styles from './Home.module.css';
@@ -37,9 +37,10 @@ export default function Home() {
 
   const [banners, setBanners] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [featured, setFeatured] = useState([]);
-  const [newArrivals, setNewArrivals] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
+  const [lehengaProducts, setLehengaProducts] = useState([]);
+  const [frockProducts, setFrockProducts] = useState([]);
+  const [hotProducts, setHotProducts] = useState([]);
+  const [festivalProducts, setFestivalProducts] = useState([]);
   const [activeBanner, setActiveBanner] = useState(0);
   const [loading, setLoading] = useState(true);
 
@@ -69,8 +70,10 @@ export default function Home() {
         const [
           bannersRes,
           catsRes,
-          featuredRes,
-          productsRes
+          lehengaRes,
+          frockRes,
+          hotRes,
+          festivalRes
         ] = await Promise.all([
 
           getBanners().catch(() => ({
@@ -81,16 +84,29 @@ export default function Home() {
             results: []
           })),
 
-          getFeaturedProducts().catch(() => ({
-            results: []
-          })),
+          getProducts({
+            search: 'lehenga',
+            page: 1,
+            page_size: 6
+          }).catch(() => ({ results: [] })),
+
+          getProducts({
+            search: 'frock',
+            page: 1,
+            page_size: 6
+          }).catch(() => ({ results: [] })),
 
           getProducts({
             ordering: '-created_at',
-            page_size: 24
-          }).catch(() => ({
-            results: []
-          })),
+            page: 1,
+            page_size: 6
+          }).catch(() => ({ results: [] })),
+
+          getProducts({
+            search: 'festival',
+            page: 1,
+            page_size: 6
+          }).catch(() => ({ results: [] })),
 
         ]);
 
@@ -105,28 +121,20 @@ export default function Home() {
           catsRes ||
           [];
 
-        const featuredData =
-          featuredRes.results ||
-          featuredRes ||
-          [];
-
-        const productData =
-          productsRes.results ||
-          productsRes ||
-          [];
+        const lehengaData = lehengaRes.results || lehengaRes || [];
+        const frockData = frockRes.results || frockRes || [];
+        const hotData = hotRes.results || hotRes || [];
+        const festivalData = festivalRes.results || festivalRes || [];
 
 
         setBanners(bannerData);
 
         setCategories(categoryData);
 
-        setFeatured(featuredData);
-
-        setAllProducts(productData);
-
-        setNewArrivals(
-          productData.slice(0, 6)
-        );
+        setLehengaProducts(lehengaData.slice(0, 6));
+        setFrockProducts(frockData.slice(0, 6));
+        setHotProducts(hotData.slice(0, 6));
+        setFestivalProducts(festivalData.slice(0, 6));
 
       } catch {
 
@@ -370,52 +378,9 @@ export default function Home() {
   };
 
 
-  // =========================================================
-  // PRODUCT DATA
-  // =========================================================
-
-  const productPool = useMemo(
-    () =>
-      allProducts.length > 0
-        ? allProducts
-        : [
-            ...featured,
-            ...newArrivals
-          ],
-    [
-      allProducts,
-      featured,
-      newArrivals
-    ]
-  );
-
-
-  const ethnicProducts =
-    featured.slice(0, 6);
-
-
-  const birthdayProducts =
-    productPool.slice(0, 6);
-
-
-  const hotProducts =
-    productPool.slice(6, 12).length >= 3
-      ? productPool.slice(6, 12)
-      : productPool.slice(0, 6);
-
-
-  const dealProducts =
-    productPool.slice(12, 18).length >= 3
-      ? productPool.slice(12, 18)
-      : featured.slice(0, 6);
-
-
-  const collectionCards =
-    categories.slice(0, 6);
-
-
-  const featuredCollections =
-    categories.slice(0, 3);
+  // Homepage category cards remain unchanged.
+  const collectionCards = categories.slice(0, 6);
+  const featuredCollections = categories.slice(0, 3);
 
 
   // =========================================================
@@ -712,136 +677,62 @@ export default function Home() {
 
 
       {/* =====================================================
-          ETHNIC COLLECTIONS
+          LEHENGA COLLECTION
       ===================================================== */}
 
-      {ethnicProducts.length > 0 && (
-
-        <section
-          className={`${styles['product-section']} container`}
-        >
-
-          <div
-            className={
-              styles['section-header']
-            }
-          >
-
-            <h2
-              className={
-                styles['home-section-title']
-              }
-            >
-              Ethnic Collections 
-            </h2>
-
+      {lehengaProducts.length > 0 && (
+        <section className={`${styles['product-section']} container`}>
+          <div className={styles['section-header']}>
+            <h2 className={styles['home-section-title']}>Lehenga Collection</h2>
             <Link
-              to="/shop"
-              className={
-                styles['view-all']
-              }
+              to={`/shop?search=lehenga`}
+              className={styles['view-all']}
             >
               View All
             </Link>
-
           </div>
 
-
-          <div
-            className={
-              styles['products-grid']
-            }
-          >
-
-            {ethnicProducts.map(
-              product => (
-
-                <div
-                  className={
-                    styles['product-scroll-item']
-                  }
-                  key={product.id}
-                >
-                  <ProductCard
-                    product={product}
-                  />
-                </div>
-
-              )
-            )}
-
+          <div className={styles['products-grid']}>
+            {lehengaProducts.map(product => (
+              <div
+                className={styles['product-scroll-item']}
+                key={product.id}
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
           </div>
-
         </section>
-
       )}
-
 
       {/* =====================================================
-          BIRTHDAY DRESSES
+          FROCK COLLECTION
       ===================================================== */}
 
-      {birthdayProducts.length > 0 && (
-
-        <section
-          className={`${styles['product-section']} container`}
-        >
-
-          <div
-            className={
-              styles['section-header']
-            }
-          >
-
-            <h2
-              className={
-                styles['home-section-title']
-              }
-            >
-              Birthday Dresses 
-            </h2>
-
+      {frockProducts.length > 0 && (
+        <section className={`${styles['product-section']} container`}>
+          <div className={styles['section-header']}>
+            <h2 className={styles['home-section-title']}>Frock Collection</h2>
             <Link
-              to="/shop"
-              className={
-                styles['view-all']
-              }
+              to={`/shop?search=frock`}
+              className={styles['view-all']}
             >
               View All
             </Link>
-
           </div>
 
-
-          <div
-            className={
-              styles['products-grid']
-            }
-          >
-
-            {birthdayProducts.map(
-              product => (
-
-                <div
-                  className={
-                    styles['product-scroll-item']
-                  }
-                  key={product.id}
-                >
-                  <ProductCard
-                    product={product}
-                  />
-                </div>
-
-              )
-            )}
-
+          <div className={styles['products-grid']}>
+            {frockProducts.map(product => (
+              <div
+                className={styles['product-scroll-item']}
+                key={product.id}
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
           </div>
-
         </section>
-
       )}
-
 
       {/* =====================================================
           SHOP BY COLLECTION
@@ -928,132 +819,58 @@ export default function Home() {
       ===================================================== */}
 
       {hotProducts.length > 0 && (
-
-        <section
-          className={`${styles['product-section']} container`}
-        >
-
-          <div
-            className={
-              styles['section-header']
-            }
-          >
-
-            <h2
-              className={
-                styles['home-section-title']
-              }
-            >
-              Hot New Arrivals
-            </h2>
-
+        <section className={`${styles['product-section']} container`}>
+          <div className={styles['section-header']}>
+            <h2 className={styles['home-section-title']}>Hot New Arrivals</h2>
             <Link
               to="/shop"
-              className={
-                styles['view-all']
-              }
+              className={styles['view-all']}
             >
               View All
             </Link>
-
           </div>
 
-
-          <div
-            className={
-              styles['products-grid']
-            }
-          >
-
-            {hotProducts.map(
-              product => (
-
-                <div
-                  className={
-                    styles['product-scroll-item']
-                  }
-                  key={product.id}
-                >
-                  <ProductCard
-                    product={product}
-                  />
-                </div>
-
-              )
-            )}
-
+          <div className={styles['products-grid']}>
+            {hotProducts.map(product => (
+              <div
+                className={styles['product-scroll-item']}
+                key={product.id}
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
           </div>
-
         </section>
-
       )}
-
 
       {/* =====================================================
-          BEST DEALS
+          FESTIVAL COLLECTION
       ===================================================== */}
 
-      {dealProducts.length > 0 && (
-
-        <section
-          className={`${styles['product-section']} container`}
-        >
-
-          <div
-            className={
-              styles['section-header']
-            }
-          >
-
-            <h2
-              className={
-                styles['home-section-title']
-              }
-            >
-              Best Deals
-            </h2>
-
+      {festivalProducts.length > 0 && (
+        <section className={`${styles['product-section']} container`}>
+          <div className={styles['section-header']}>
+            <h2 className={styles['home-section-title']}>Festival Collection</h2>
             <Link
-              to="/shop"
-              className={
-                styles['view-all']
-              }
+              to={`/shop?search=festival`}
+              className={styles['view-all']}
             >
               View All
             </Link>
-
           </div>
 
-
-          <div
-            className={
-              styles['products-grid']
-            }
-          >
-
-            {dealProducts.map(
-              product => (
-
-                <div
-                  className={
-                    styles['product-scroll-item']
-                  }
-                  key={product.id}
-                >
-                  <ProductCard
-                    product={product}
-                  />
-                </div>
-
-              )
-            )}
-
+          <div className={styles['products-grid']}>
+            {festivalProducts.map(product => (
+              <div
+                className={styles['product-scroll-item']}
+                key={product.id}
+              >
+                <ProductCard product={product} />
+              </div>
+            ))}
           </div>
-
         </section>
-
       )}
-
 
       {/* =====================================================
           FEATURED COLLECTIONS
