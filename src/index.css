@@ -32,7 +32,7 @@
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Quicksand', 'Nunito', system-ui, sans-serif;
   background-color: var(--bg);
   color: var(--text-primary);
   line-height: 1.6;
