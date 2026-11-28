@@ -21,6 +21,7 @@
   background: radial-gradient(circle at 8px 0, var(--blush) 8px, transparent 8.5px)
     0 0 / 16px 8px repeat-x;
   pointer-events: none;
+  filter: drop-shadow(0 6px 8px rgb(238, 98, 122));
 }
 
 .viewport {
