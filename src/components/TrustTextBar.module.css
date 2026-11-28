@@ -1,7 +1,7 @@
 .bar {
   --blush: #fff0f3;
   --cocoa: #6b3a2c;
-  --rose: #e37f8d;
+  --rose: #ff7083;
   position: relative;
   z-index: 1; /* lets the scalloped edge sit over the hero banner */
   width: 100%;
@@ -53,6 +53,7 @@
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.02em;
+  padding:1rem;
 }
 
 .badge {
