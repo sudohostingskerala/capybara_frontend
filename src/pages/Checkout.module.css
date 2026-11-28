@@ -1,5 +1,11 @@
+
+/* =========================================
+   CHECKOUT PAGE
+========================================= */
+
 .checkout-page {
     padding: 32px 24px;
+    font-family: 'DM Sans', sans-serif;
 }
 
 .checkout-page h1 {
@@ -8,6 +14,10 @@
     text-align: center;
     margin-bottom: 28px;
 }
+
+/* =========================================
+   CHECKOUT STEPPER
+========================================= */
 
 .stepper {
     display: flex;
@@ -68,6 +78,10 @@
     margin: 0 8px;
 }
 
+/* =========================================
+   CHECKOUT LAYOUT
+========================================= */
+
 .checkout-layout {
     display: grid;
     grid-template-columns: 1fr 360px;
@@ -109,21 +123,89 @@
     margin-top: 8px;
 }
 
+/* =========================================
+   ORDER SUMMARY - CAPYBARA DESIGN
+========================================= */
+
 .checkout-summary {
-    background: var(--bg-card);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-md);
-    padding: 24px;
+    font-family: 'DM Sans', sans-serif;
+    background: #FFFCF9;
+    border: 1px solid #F0E5DE;
+    border-radius: 20px;
+    padding: 28px;
     height: fit-content;
     position: sticky;
     top: 90px;
+    color: #382219;
+    box-shadow: 0 5px 20px rgba(75, 43, 29, 0.045);
 }
 
 .checkout-summary h2 {
-    font-size: 1.1rem;
+    font-size: 23px;
     font-weight: 700;
-    margin-bottom: 20px;
+    letter-spacing: -0.6px;
+    color: #382219;
+    margin: 0 0 24px;
 }
+
+/* Product List */
+
+.summary-items {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.summary-item {
+    padding-bottom: 18px;
+    border-bottom: 1px solid #EFE5DF;
+}
+
+/* Product Name */
+
+.summary-product-name {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.55;
+    color: #493027;
+    margin: 0 0 8px;
+    text-transform: none;
+    letter-spacing: -0.2px;
+}
+
+/* Product Details */
+
+.summary-product-details {
+    font-size: 13px;
+    font-weight: 500;
+    color: #907C71;
+    margin: 0;
+    line-height: 1.7;
+}
+
+/* Total Amount */
+
+.summary-total {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 22px;
+    padding-top: 2px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #493027;
+}
+
+.summary-total span:last-child {
+    font-size: 23px;
+    font-weight: 800;
+    color: #BD602E;
+    white-space: nowrap;
+    letter-spacing: -0.5px;
+}
+
+/* Existing Checkout Items */
 
 .checkout-item {
     display: flex;
@@ -141,7 +223,7 @@
     flex-shrink: 0;
 }
 
-.checkout-item>div {
+.checkout-item > div {
     flex: 1;
 }
 
@@ -155,7 +237,7 @@
     color: var(--text-muted);
 }
 
-.checkout-item>span {
+.checkout-item > span {
     font-size: 0.9rem;
     font-weight: 600;
     color: var(--primary);
@@ -174,31 +256,9 @@
     color: var(--text-muted);
 }
 
-@media (max-width: 900px) {
-    .checkout-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .checkout-summary {
-        position: static;
-    }
-}
-
-@media (max-width: 480px) {
-
-    .form-row,
-    .form-row-3 {
-        grid-template-columns: 1fr;
-    }
-
-    .stepper {
-        gap: 4px;
-    }
-
-    .step-line {
-        width: 40px;
-    }
-}
+/* =========================================
+   ADDRESS SELECTION
+========================================= */
 
 .address-list {
     display: flex;
@@ -226,6 +286,10 @@
     margin-top: 4px;
     accent-color: var(--accent);
 }
+
+/* =========================================
+   REVIEW LAYOUT
+========================================= */
 
 .review-layout {
     display: grid;
@@ -280,8 +344,77 @@
     margin-bottom: 16px;
 }
 
+/* =========================================
+   RESPONSIVE DESIGN
+========================================= */
+
 @media (max-width: 900px) {
+    .checkout-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-summary {
+        position: static;
+    }
+
     .review-layout {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .checkout-page {
+        padding: 24px 16px;
+    }
+
+    .checkout-summary {
+        padding: 22px 18px;
+        border-radius: 16px;
+        margin-top: 20px;
+    }
+
+    .checkout-summary h2 {
+        font-size: 21px;
+        margin-bottom: 20px;
+    }
+
+    .summary-items {
+        gap: 15px;
+    }
+
+    .summary-item {
+        padding-bottom: 15px;
+    }
+
+    .summary-product-name {
+        font-size: 15px;
+    }
+
+    .summary-product-details {
+        font-size: 13px;
+    }
+
+    .summary-total {
+        font-size: 15px;
+        margin-top: 18px;
+    }
+
+    .summary-total span:last-child {
+        font-size: 21px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-row,
+    .form-row-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .stepper {
+        gap: 4px;
+    }
+
+    .step-line {
+        width: 40px;
     }
 }
