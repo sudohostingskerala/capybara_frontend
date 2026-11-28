@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import Return from '../components/Return';
 import styles from './OrderDetails.module.css';
 import InvoiceDownloadButton from '../components/InvoiceDownloadButton';
+import OrderItemReview from '../components/OrderItemReview';
 
 const TIMELINE = ['PENDING', 'CONFIRMED', 'PACKED', 'SHIPPED', 'DELIVERED'];
 const TIMELINE_LABELS = { PENDING: 'Order Placed', CONFIRMED: 'Confirmed', PACKED: 'Packed', SHIPPED: 'Shipped', DELIVERED: 'Delivered' };
@@ -99,7 +100,7 @@ export default function OrderDetails() {
           {/* Items */}
           <div className={styles.card}>
             <h3>Items Purchased ({order.items?.length || 0})</h3>
-            {order.items?.map((item, i) => (
+            {/* {order.items?.map((item, i) => (
               <div key={i} className={styles['item-row']}>
                 <div className={styles['item-info']}>
                   <p>{item.product_name}</p>
@@ -108,7 +109,27 @@ export default function OrderDetails() {
                 </div>
                 <span className={styles['item-price']}>₹{parseFloat(item.subtotal).toLocaleString()}</span>
               </div>
-            ))}
+            ))} */}
+            {order.items?.map((item, i) => (
+  <div key={i}>
+    <div className={styles['item-row']}>
+      <div className={styles['item-info']}>
+        <p>{item.product_name}</p>
+        <span className={styles['item-meta']}>Color: {item.color} • Size: {item.size}</span>
+        <span className={styles['item-meta']}>Qty: {item.quantity}</span>
+      </div>
+      <span className={styles['item-price']}>₹{parseFloat(item.subtotal).toLocaleString()}</span>
+    </div>
+
+    {/* one review box per product, even if ordered in two sizes */}
+    {!guestMode &&
+      order.status === 'DELIVERED' &&
+      item.product_id &&
+      order.items.findIndex((x) => x.product_id === item.product_id) === i && (
+        <OrderItemReview productId={item.product_id} />
+      )}
+  </div>
+))}
           </div>
           {/* Shipping & Payment */}
           <div className={styles['info-grid']}>

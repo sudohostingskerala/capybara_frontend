@@ -1,0 +1,61 @@
+.summary {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 4px 0 12px;
+}
+
+.stars {
+    color: #f59e0b;
+}
+
+.link {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.form {
+    padding: 16px;
+    margin: 4px 0 12px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+}
+
+.form textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 8px;
+    padding: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font: inherit;
+    resize: vertical;
+}
+
+.starOn,
+.starOff {
+    background: none;
+    border: none;
+    padding: 0 2px;
+    font-size: 1.4rem;
+    cursor: pointer;
+}
+
+.starOn {
+    color: #f59e0b;
+}
+
+.starOff {
+    color: #d1c5bf;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}

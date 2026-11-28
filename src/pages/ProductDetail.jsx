@@ -638,6 +638,9 @@ const handleTouchEnd = (e) => {
           )}
           {tab === "reviews" && (
             <div className={styles["pd-reviews"]}>
+
+              /*review*/
+
               {/* Review Form */}
               {isAuthenticated && (
                 <form
@@ -708,6 +711,7 @@ const handleTouchEnd = (e) => {
                     )}
                   </div>
                 </form>
+                
               )}
 
               {reviews.length === 0 && (
