@@ -8,6 +8,7 @@
   background: var(--blush);
   border-top: 1px solid #f6cdd5;
   color: var(--cocoa);
+  filter: drop-shadow(0 6px 8px rgb(238, 98, 122));
 }
 
 .bar::after {
