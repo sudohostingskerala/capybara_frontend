@@ -1,16 +1,37 @@
 .bar {
+  --blush: #fff0f3;
+  --cocoa: #6b3a2c;
+  --rose: #e37f8d;
+  position: relative;
+  z-index: 1; /* lets the scalloped edge sit over the hero banner */
   width: 100%;
+  background: var(--blush);
+  border-top: 1px solid #f6cdd5;
+  color: var(--cocoa);
+}
+
+.bar::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 8px;
+  background: radial-gradient(circle at 8px 0, var(--blush) 8px, transparent 8.5px)
+    0 0 / 16px 8px repeat-x;
+  pointer-events: none;
+}
+
+.viewport {
+  display: flex;
+  align-items: center;
+  height: 53px;
   overflow: hidden;
-  padding: 10px 0;
-  background: var(--primary);
-  border-bottom: 1px solid var(--border);
-  color: #fff;
 }
 
 .track {
   display: flex;
   width: max-content;
-  align-items: center;
 }
 
 .track.scrolling {
@@ -21,8 +42,6 @@
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: clamp(24px, 4vw, 52px);
-  padding-right: clamp(24px, 4vw, 52px);
   white-space: nowrap;
 }
 
@@ -30,28 +49,64 @@
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: 8px;
-  font-size: 0.8rem;
+  gap: 10px;
+  font-size: 0.875rem;
   font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.badge {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--tint);
 }
 
 .icon {
   width: 16px;
   height: 16px;
-  flex: 0 0 auto;
+}
+
+.divider {
+  width: 12px;
+  height: 12px;
+  margin: 0 28px 0 18px;
+  color: var(--rose);
 }
 
 @keyframes trustMarquee {
   to { transform: translateX(var(--marquee-distance)); }
 }
 
-@media (max-width: 640px) {
-  .bar { padding: 8px 0; }
-  .group { gap: 24px; padding-right: 24px; }
-  .item { gap: 6px; font-size: 0.68rem; }
-  .icon { width: 14px; height: 14px; }
+/* Pause on hover, only on devices that have a real pointer */
+@media (hover: hover) {
+  .bar:hover .track { animation-play-state: paused; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .track.scrolling { animation: none; }
+@media (max-width: 640px) {
+  .viewport { height: 43px; }
+  .item { gap: 8px; font-size: 0.75rem; }
+  .badge { width: 24px; height: 24px; }
+  .icon { width: 13px; height: 13px; }
+  .divider { width: 10px; height: 10px; margin: 0 18px 0 10px; }
 }
+
+/* No motion: show each message once, centred and wrapped */
+@media (prefers-reduced-motion: reduce) {
+  .viewport { height: auto; min-height: 53px; }
+  .track,
+  .track.scrolling { width: 100%; animation: none; }
+  .group { flex: 1 1 auto; flex-wrap: wrap; justify-content: center; row-gap: 8px; padding: 8px 0; white-space: normal; }
+  .group[aria-hidden='true'] { display: none; }
+}
+
+/* Long admin-entered messages wrap instead of being cut off when motion is off */
+@media (prefers-reduced-motion: reduce) {
+  .item { flex: 0 1 auto; min-width: 0; max-width: 100%; padding: 0 8px; }
+}
+
+/* Keep the badge and heart their full size next to long text */
+.badge,
+.divider { flex-shrink: 0; }
