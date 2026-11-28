@@ -1,7 +1,7 @@
 .bar {
   --blush: #fff0f3;
-  --cocoa: #6b3a2c;
-  --rose: #ff7083;
+  --cocoa: #2e160f;
+  --rose: #fb6176;
   position: relative;
   z-index: 1; /* lets the scalloped edge sit over the hero banner */
   width: 100%;
