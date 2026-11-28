@@ -50,10 +50,11 @@
   flex: 0 0 auto;
   align-items: center;
   gap: 10px;
-  font-size: 0.875rem;
+  font-size: 0.975rem;
   font-weight: 600;
   letter-spacing: 0.02em;
-  padding:1rem;
+  padding:0.5rem;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .badge {
