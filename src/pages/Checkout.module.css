@@ -418,3 +418,249 @@
         width: 40px;
     }
 }
+
+/* ==========================================
+   CAPYBARA PREMIUM ORDER SUMMARY
+========================================== */
+
+.checkout-summary {
+    background: #FFFCF9;
+    border: 1px solid #F0E5DE;
+    border-radius: 20px;
+    padding: 28px;
+    height: fit-content;
+    position: sticky;
+    top: 90px;
+    color: #3D261D;
+    box-shadow: 0 8px 30px rgba(75, 43, 29, 0.06);
+    font-family: 'DM Sans', sans-serif;
+    overflow: hidden;
+}
+
+/* Heading */
+
+.checkout-summary h2 {
+    font-size: 23px;
+    font-weight: 700;
+    color: #3D261D;
+    letter-spacing: -0.6px;
+    margin: 0 0 25px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid #F0E5DE;
+}
+
+/* ==========================================
+   PRODUCT ROW - MAIN CHECKOUT
+========================================== */
+
+.checkout-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 0;
+    border-bottom: 1px solid #F0E5DE;
+}
+
+.checkout-item img {
+    width: 76px;
+    height: 92px;
+    object-fit: cover;
+    border-radius: 12px;
+    flex-shrink: 0;
+    background: #F7EEE9;
+    border: 1px solid #F0E5DE;
+}
+
+.checkout-item > div {
+    flex: 1;
+    min-width: 0;
+}
+
+.checkout-item p:first-child {
+    font-size: 14px;
+    line-height: 1.5;
+    font-weight: 650;
+    color: #493027;
+    margin: 0 0 7px;
+    text-transform: none;
+}
+
+.checkout-item small {
+    display: block;
+    font-size: 12px;
+    color: #907C71;
+    font-weight: 500;
+    margin-bottom: 7px;
+}
+
+.checkout-item p:last-child {
+    font-size: 12px;
+    color: #907C71;
+    font-weight: 500;
+    margin: 0;
+}
+
+.checkout-item > span {
+    font-size: 14px;
+    font-weight: 700;
+    color: #493027;
+    white-space: nowrap;
+}
+
+/* ==========================================
+   TOTAL SECTION
+========================================== */
+
+.checkout-totals {
+    margin-top: 20px;
+    padding-top: 4px;
+}
+
+/* summary-total is a global class in your JSX */
+
+.checkout-summary :global(.summary-total) {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 0;
+    margin: 0;
+    border-top: 1px dashed #E6D6CC;
+    font-size: 16px;
+    font-weight: 600;
+    color: #493027;
+}
+
+.checkout-summary :global(.summary-total) span:last-child {
+    font-size: 25px;
+    font-weight: 800;
+    color: #C46432;
+    letter-spacing: -0.6px;
+    white-space: nowrap;
+}
+
+/* ==========================================
+   SECURE CHECKOUT
+========================================== */
+
+.secure-note {
+    margin-top: 14px;
+    padding: 13px 14px;
+    background: #F5F0EA;
+    border: 1px solid #EBE0D7;
+    border-radius: 12px;
+    font-size: 12px;
+    line-height: 1.6;
+    font-weight: 500;
+    color: #806B60;
+}
+
+/* ==========================================
+   GUEST CHECKOUT SUMMARY
+========================================== */
+
+.checkout-summary > p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #493027;
+    font-weight: 600;
+    padding: 14px 0;
+    margin: 0;
+    border-bottom: 1px solid #F0E5DE;
+    text-transform: none;
+}
+
+.checkout-summary > p + p {
+    font-size: 12px;
+    font-weight: 500;
+    color: #907C71;
+}
+
+/* ==========================================
+   REVIEW / PAYMENT SUMMARY
+========================================== */
+
+.checkout-summary .review-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 0;
+    border-bottom: 1px solid #F0E5DE;
+    font-size: 14px;
+    color: #806B60;
+}
+
+.checkout-summary .review-row strong {
+    font-size: 14px;
+    font-weight: 650;
+    color: #493027;
+    white-space: nowrap;
+}
+
+.checkout-summary .review-total {
+    margin-top: 8px;
+    padding: 19px 0;
+    border-top: 1px dashed #E6D6CC;
+    border-bottom: none;
+    color: #3D261D;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.checkout-summary .review-total strong {
+    font-size: 24px;
+    font-weight: 800;
+    color: #C46432;
+}
+
+/* ==========================================
+   MOBILE RESPONSIVE
+========================================== */
+
+@media (max-width: 900px) {
+    .checkout-summary {
+        position: static;
+    }
+}
+
+@media (max-width: 600px) {
+    .checkout-summary {
+        padding: 21px 18px;
+        border-radius: 17px;
+        margin-top: 18px;
+    }
+
+    .checkout-summary h2 {
+        font-size: 21px;
+        margin-bottom: 18px;
+        padding-bottom: 15px;
+    }
+
+    .checkout-item {
+        gap: 12px;
+        padding: 13px 0;
+    }
+
+    .checkout-item img {
+        width: 68px;
+        height: 82px;
+        border-radius: 10px;
+    }
+
+    .checkout-item p:first-child {
+        font-size: 13px;
+    }
+
+    .checkout-item > span {
+        font-size: 13px;
+    }
+
+    .checkout-summary :global(.summary-total) span:last-child {
+        font-size: 22px;
+    }
+
+    .checkout-summary .review-total strong {
+        font-size: 21px;
+    }
+}
