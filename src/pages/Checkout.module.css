@@ -1,110 +1,122 @@
 
-/* =========================================
-   CHECKOUT PAGE
-========================================= */
+/* ==========================================
+   CAPYBARA BABY - PREMIUM CHECKOUT
+========================================== */
 
 .checkout-page {
-    padding: 32px 24px;
+    padding: 42px 24px 60px;
     font-family: 'DM Sans', sans-serif;
+    color: #402A21;
 }
 
 .checkout-page h1 {
-    font-size: 1.8rem;
-    font-weight: 700;
     text-align: center;
-    margin-bottom: 28px;
+    font-size: 32px;
+    font-weight: 750;
+    letter-spacing: -1px;
+    color: #402A21;
+    margin-bottom: 36px;
 }
 
-/* =========================================
+/* ==========================================
    CHECKOUT STEPPER
-========================================= */
+========================================== */
 
 .stepper {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0;
-    margin-bottom: 40px;
+    margin-bottom: 45px;
 }
 
 .step {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 }
 
 .step-num {
-    width: 34px;
-    height: 34px;
+    width: 36px;
+    height: 36px;
     border-radius: 50%;
-    border: 2px solid var(--border);
+    border: 1.5px solid #E8D9CF;
     background: #fff;
-    color: var(--text-muted);
+    color: #9A8275;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.875rem;
+    font-size: 13px;
     font-weight: 700;
-    transition: all var(--transition);
+    transition: all 0.25s ease;
 }
 
 .step.active .step-num {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: #fff;
+    background: #B9673F;
+    border-color: #B9673F;
+    color: white;
+    box-shadow: 0 4px 12px rgba(185, 103, 63, 0.2);
 }
 
 .step.done .step-num {
-    border-color: var(--success);
-    background: var(--success);
-    color: #fff;
+    background: #62866A;
+    border-color: #62866A;
+    color: white;
 }
 
 .step span {
-    font-size: 0.875rem;
-    color: var(--text-muted);
+    font-size: 13px;
+    color: #9A8275;
     font-weight: 500;
 }
 
 .step.active span {
-    color: var(--accent);
-    font-weight: 600;
+    color: #A95732;
+    font-weight: 700;
 }
 
 .step-line {
-    width: 80px;
-    height: 2px;
-    background: var(--border);
-    margin: 0 8px;
+    width: 75px;
+    height: 1px;
+    background: #E8D9CF;
+    margin: 0 14px;
 }
 
-/* =========================================
-   CHECKOUT LAYOUT
-========================================= */
+/* ==========================================
+   MAIN LAYOUT
+========================================== */
 
 .checkout-layout {
     display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 32px;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 30px;
+    align-items: start;
 }
 
 .checkout-form {
-    background: var(--bg-card);
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-md);
+    background: #FFFFFF;
+    border: 1px solid #F0E7E0;
+    border-radius: 22px;
     padding: 32px;
+    box-shadow: 0 5px 25px rgba(69, 43, 29, 0.035);
+    min-width: 0;
 }
 
 .checkout-form h2 {
-    font-size: 1.2rem;
+    font-size: 20px;
     font-weight: 700;
-    margin-bottom: 24px;
+    letter-spacing: -0.4px;
+    color: #402A21;
+    margin-bottom: 25px;
 }
+
+/* ==========================================
+   FORM ELEMENTS
+========================================== */
 
 .form-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 16px;
+    gap: 18px;
 }
 
 .form-row-3 {
@@ -112,362 +124,118 @@
 }
 
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 18px;
 }
+
+.checkout-form label,
+.address-edit-form label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #60483D;
+    margin-bottom: 8px;
+}
+
+.checkout-form input:not([type="radio"]),
+.address-edit-form input {
+    width: 100%;
+    min-height: 46px;
+    border: 1px solid #E9DED6;
+    border-radius: 10px;
+    padding: 11px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    color: #402A21;
+    background: #FFFEFC;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.checkout-form input:focus,
+.address-edit-form input:focus {
+    border-color: #BD754F;
+    box-shadow: 0 0 0 3px rgba(189, 117, 79, 0.10);
+}
+
+.checkout-form input::placeholder,
+.address-edit-form input::placeholder {
+    color: #B5A59B;
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
 
 .checkout-continue {
     width: 100%;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
     justify-content: center;
-    padding: 14px;
-    font-size: 1rem;
-    margin-top: 8px;
-}
-
-/* =========================================
-   ORDER SUMMARY - CAPYBARA DESIGN
-========================================= */
-
-.checkout-summary {
-    font-family: 'DM Sans', sans-serif;
-    background: #FFFCF9;
-    border: 1px solid #F0E5DE;
-    border-radius: 20px;
-    padding: 28px;
-    height: fit-content;
-    position: sticky;
-    top: 90px;
-    color: #382219;
-    box-shadow: 0 5px 20px rgba(75, 43, 29, 0.045);
-}
-
-.checkout-summary h2 {
-    font-size: 23px;
+    padding: 14px 20px;
+    font-family: inherit;
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: -0.6px;
-    color: #382219;
-    margin: 0 0 24px;
+    border-radius: 11px;
+    margin-top: 15px;
+    transition: all 0.25s ease;
 }
 
-/* Product List */
-
-.summary-items {
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
+.checkout-continue:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(185, 103, 63, 0.16);
 }
 
-.summary-item {
-    padding-bottom: 18px;
-    border-bottom: 1px solid #EFE5DF;
-}
-
-/* Product Name */
-
-.summary-product-name {
-    font-size: 16px;
-    font-weight: 600;
-    line-height: 1.55;
-    color: #493027;
-    margin: 0 0 8px;
-    text-transform: none;
-    letter-spacing: -0.2px;
-}
-
-/* Product Details */
-
-.summary-product-details {
-    font-size: 13px;
-    font-weight: 500;
-    color: #907C71;
-    margin: 0;
-    line-height: 1.7;
-}
-
-/* Total Amount */
-
-.summary-total {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    margin-top: 22px;
-    padding-top: 2px;
-    font-size: 15px;
-    font-weight: 600;
-    color: #493027;
-}
-
-.summary-total span:last-child {
-    font-size: 23px;
-    font-weight: 800;
-    color: #BD602E;
-    white-space: nowrap;
-    letter-spacing: -0.5px;
-}
-
-/* Existing Checkout Items */
-
-.checkout-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.checkout-item img {
-    width: 56px;
-    height: 70px;
-    object-fit: cover;
-    border-radius: var(--radius-sm);
-    flex-shrink: 0;
-}
-
-.checkout-item > div {
-    flex: 1;
-}
-
-.checkout-item p {
-    font-size: 0.875rem;
-    font-weight: 500;
-}
-
-.checkout-item small {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-}
-
-.checkout-item > span {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--primary);
-}
-
-.checkout-totals {
-    margin-top: 16px;
-}
-
-.secure-note {
-    margin-top: 16px;
-    padding: 12px;
-    background: var(--bg-secondary);
-    border-radius: var(--radius-sm);
-    font-size: 0.78rem;
-    color: var(--text-muted);
-}
-
-/* =========================================
-   ADDRESS SELECTION
-========================================= */
-
-.address-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.address-option {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px;
-    border: 1.5px solid var(--border);
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all var(--transition);
-}
-
-.address-option.selected {
-    border-color: var(--accent);
-    background: rgba(196, 98, 45, 0.04);
-}
-
-.address-option input[type="radio"] {
-    margin-top: 4px;
-    accent-color: var(--accent);
-}
-
-/* =========================================
-   REVIEW LAYOUT
-========================================= */
-
-.review-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 360px;
-    gap: 24px;
-    align-items: start;
-}
-
-.review-layout .checkout-form,
-.review-layout .checkout-summary {
-    position: static;
-}
-
-.review-item {
-    display: flex;
-    justify-content: space-between;
-    gap: 16px;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.review-item p {
-    margin-top: 6px;
-    color: var(--text-muted);
-    font-size: .9rem;
-}
-
-.review-row {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border-light);
-}
-
-.review-total {
-    margin-top: 8px;
-    padding-top: 16px;
-    font-size: 1.08rem;
-    border-bottom: 0;
-    color: var(--primary);
-}
-
-.address-edit-form {
-    margin-top: 20px;
-    padding: 20px;
-    background: var(--bg-secondary);
-    border-radius: var(--radius-sm);
-}
-
-.address-edit-form h3 {
-    margin-bottom: 16px;
-}
-
-/* =========================================
-   RESPONSIVE DESIGN
-========================================= */
-
-@media (max-width: 900px) {
-    .checkout-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .checkout-summary {
-        position: static;
-    }
-
-    .review-layout {
-        grid-template-columns: 1fr;
-    }
-}
-
-@media (max-width: 600px) {
-    .checkout-page {
-        padding: 24px 16px;
-    }
-
-    .checkout-summary {
-        padding: 22px 18px;
-        border-radius: 16px;
-        margin-top: 20px;
-    }
-
-    .checkout-summary h2 {
-        font-size: 21px;
-        margin-bottom: 20px;
-    }
-
-    .summary-items {
-        gap: 15px;
-    }
-
-    .summary-item {
-        padding-bottom: 15px;
-    }
-
-    .summary-product-name {
-        font-size: 15px;
-    }
-
-    .summary-product-details {
-        font-size: 13px;
-    }
-
-    .summary-total {
-        font-size: 15px;
-        margin-top: 18px;
-    }
-
-    .summary-total span:last-child {
-        font-size: 21px;
-    }
-}
-
-@media (max-width: 480px) {
-    .form-row,
-    .form-row-3 {
-        grid-template-columns: 1fr;
-    }
-
-    .stepper {
-        gap: 4px;
-    }
-
-    .step-line {
-        width: 40px;
-    }
+.checkout-continue:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
 }
 
 /* ==========================================
-   CAPYBARA PREMIUM ORDER SUMMARY
+   ORDER SUMMARY
 ========================================== */
 
 .checkout-summary {
     background: #FFFCF9;
-    border: 1px solid #F0E5DE;
-    border-radius: 20px;
-    padding: 28px;
+    border: 1px solid #EFE3DA;
+    border-radius: 22px;
+    padding: 26px;
     height: fit-content;
     position: sticky;
     top: 90px;
-    color: #3D261D;
-    box-shadow: 0 8px 30px rgba(75, 43, 29, 0.06);
-    font-family: 'DM Sans', sans-serif;
+    box-shadow: 0 8px 28px rgba(69, 43, 29, 0.055);
+    min-width: 0;
     overflow: hidden;
 }
 
-/* Heading */
-
 .checkout-summary h2 {
-    font-size: 23px;
-    font-weight: 700;
-    color: #3D261D;
-    letter-spacing: -0.6px;
-    margin: 0 0 25px;
+    font-size: 21px;
+    font-weight: 750;
+    letter-spacing: -0.5px;
+    color: #402A21;
+    margin: 0 0 22px;
     padding-bottom: 18px;
     border-bottom: 1px solid #F0E5DE;
 }
 
-/* ==========================================
-   PRODUCT ROW - MAIN CHECKOUT
-========================================== */
+/* Product card */
 
 .checkout-item {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 16px 0;
+    gap: 14px;
+    padding: 15px 0;
     border-bottom: 1px solid #F0E5DE;
 }
 
 .checkout-item img {
-    width: 76px;
-    height: 92px;
+    width: 82px;
+    height: 100px;
     object-fit: cover;
-    border-radius: 12px;
+    object-position: center;
+    border-radius: 13px;
     flex-shrink: 0;
-    background: #F7EEE9;
+    background: #F6ECE6;
     border: 1px solid #F0E5DE;
 }
 
@@ -478,163 +246,322 @@
 
 .checkout-item p:first-child {
     font-size: 14px;
-    line-height: 1.5;
     font-weight: 650;
+    line-height: 1.5;
     color: #493027;
     margin: 0 0 7px;
     text-transform: none;
+    overflow-wrap: anywhere;
 }
 
 .checkout-item small {
     display: block;
     font-size: 12px;
-    color: #907C71;
     font-weight: 500;
+    color: #927C70;
     margin-bottom: 7px;
 }
 
 .checkout-item p:last-child {
     font-size: 12px;
-    color: #907C71;
     font-weight: 500;
+    color: #927C70;
     margin: 0;
 }
 
 .checkout-item > span {
     font-size: 14px;
-    font-weight: 700;
+    font-weight: 750;
     color: #493027;
     white-space: nowrap;
+    align-self: center;
 }
 
-/* ==========================================
-   TOTAL SECTION
-========================================== */
+/* Summary total */
 
 .checkout-totals {
-    margin-top: 20px;
-    padding-top: 4px;
+    margin-top: 18px;
 }
-
-/* summary-total is a global class in your JSX */
 
 .checkout-summary :global(.summary-total) {
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    padding: 18px 0;
+    padding: 19px 0;
     margin: 0;
-    border-top: 1px dashed #E6D6CC;
-    font-size: 16px;
-    font-weight: 600;
+    border-top: 1px dashed #E5D5CA;
     color: #493027;
+    font-size: 15px;
+    font-weight: 650;
 }
 
 .checkout-summary :global(.summary-total) span:last-child {
     font-size: 25px;
     font-weight: 800;
-    color: #C46432;
-    letter-spacing: -0.6px;
+    color: #BC643A;
+    letter-spacing: -0.7px;
     white-space: nowrap;
 }
 
-/* ==========================================
-   SECURE CHECKOUT
-========================================== */
+/* Secure payment note */
 
 .secure-note {
-    margin-top: 14px;
-    padding: 13px 14px;
-    background: #F5F0EA;
-    border: 1px solid #EBE0D7;
+    margin-top: 12px;
+    padding: 14px;
+    background: #F5F1EB;
+    border: 1px solid #ECE3D9;
     border-radius: 12px;
-    font-size: 12px;
-    line-height: 1.6;
+    font-size: 11px;
     font-weight: 500;
+    line-height: 1.7;
     color: #806B60;
 }
 
-/* ==========================================
-   GUEST CHECKOUT SUMMARY
-========================================== */
+/* Guest checkout fallback */
 
 .checkout-summary > p {
     font-size: 14px;
     line-height: 1.6;
-    color: #493027;
     font-weight: 600;
-    padding: 14px 0;
+    color: #493027;
+    padding: 12px 0;
     margin: 0;
     border-bottom: 1px solid #F0E5DE;
-    text-transform: none;
-}
-
-.checkout-summary > p + p {
-    font-size: 12px;
-    font-weight: 500;
-    color: #907C71;
 }
 
 /* ==========================================
-   REVIEW / PAYMENT SUMMARY
+   ADDRESS SELECTION
 ========================================== */
 
-.checkout-summary .review-row {
+.address-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.address-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 13px;
+    padding: 18px;
+    border: 1px solid #EAE0D8;
+    border-radius: 13px;
+    background: #FFFEFC;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.address-option:hover {
+    border-color: #D4A58C;
+    background: #FFFBF8;
+}
+
+.address-option.selected {
+    border-color: #B9673F;
+    background: #FCF5F0;
+    box-shadow: 0 0 0 2px rgba(185, 103, 63, 0.07);
+}
+
+.address-option input[type="radio"] {
+    margin-top: 4px;
+    accent-color: #B9673F;
+    flex-shrink: 0;
+}
+
+.address-option strong {
+    font-size: 14px;
+    color: #493027;
+}
+
+.address-option p {
+    margin-top: 7px;
+    line-height: 1.7;
+}
+
+/* ==========================================
+   REVIEW ORDER LAYOUT
+========================================== */
+
+.review-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 380px;
+    gap: 30px;
+    align-items: start;
+}
+
+.review-layout .checkout-form,
+.review-layout .checkout-summary {
+    position: static;
+}
+
+/* Review products */
+
+.review-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
-    padding: 13px 0;
-    border-bottom: 1px solid #F0E5DE;
-    font-size: 14px;
-    color: #806B60;
+    gap: 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid #F0E7E0;
 }
 
-.checkout-summary .review-row strong {
+.review-item strong {
     font-size: 14px;
-    font-weight: 650;
+    font-weight: 700;
+    color: #493027;
+    line-height: 1.5;
+}
+
+.review-item p {
+    margin-top: 6px;
+    color: #927C70;
+    font-size: 12px;
+    line-height: 1.7;
+}
+
+.review-item > span {
+    font-size: 14px;
+    font-weight: 700;
     color: #493027;
     white-space: nowrap;
 }
 
-.checkout-summary .review-total {
-    margin-top: 8px;
-    padding: 19px 0;
-    border-top: 1px dashed #E6D6CC;
-    border-bottom: none;
-    color: #3D261D;
-    font-size: 16px;
-    font-weight: 700;
+.review-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #F0E5DE;
+    font-size: 13px;
+    color: #806B60;
 }
 
-.checkout-summary .review-total strong {
+.review-row strong {
+    color: #493027;
+    font-weight: 650;
+    white-space: nowrap;
+}
+
+.review-total {
+    margin-top: 8px;
+    padding: 19px 0;
+    border-top: 1px dashed #E5D5CA;
+    border-bottom: none;
+    font-size: 15px;
+    font-weight: 700;
+    color: #402A21;
+}
+
+.review-total strong {
     font-size: 24px;
     font-weight: 800;
-    color: #C46432;
+    color: #BC643A;
+}
+
+/*newly added*/
+.review-product {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    min-width: 0;
+}
+
+.review-product img {
+    width: 75px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #F0E5DE;
+    flex-shrink: 0;
+}
+
+.review-product > div {
+    min-width: 0;
 }
 
 /* ==========================================
-   MOBILE RESPONSIVE
+   ADDRESS EDIT FORM
 ========================================== */
 
-@media (max-width: 900px) {
+.address-edit-form {
+    margin-top: 20px;
+    padding: 22px;
+    background: #FBF7F3;
+    border: 1px solid #EFE5DE;
+    border-radius: 14px;
+}
+
+.address-edit-form h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #493027;
+    margin-bottom: 18px;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media (max-width: 1000px) {
+    .checkout-layout,
+    .review-layout {
+        grid-template-columns: minmax(0, 1fr) 340px;
+        gap: 20px;
+    }
+
+    .checkout-form {
+        padding: 25px;
+    }
+
     .checkout-summary {
+        padding: 22px;
+    }
+}
+
+@media (max-width: 800px) {
+    .checkout-layout,
+    .review-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .checkout-summary {
+        position: static;
+        width: 100%;
+    }
+
+    .review-layout .checkout-summary {
         position: static;
     }
 }
 
 @media (max-width: 600px) {
+    .checkout-page {
+        padding: 25px 14px 40px;
+    }
+
+    .checkout-page h1 {
+        font-size: 25px;
+        margin-bottom: 28px;
+    }
+
+    .checkout-form {
+        padding: 22px 17px;
+        border-radius: 16px;
+    }
+
+    .checkout-form h2 {
+        font-size: 18px;
+    }
+
     .checkout-summary {
-        padding: 21px 18px;
+        padding: 21px 17px;
         border-radius: 17px;
-        margin-top: 18px;
     }
 
     .checkout-summary h2 {
-        font-size: 21px;
-        margin-bottom: 18px;
-        padding-bottom: 15px;
+        font-size: 20px;
     }
 
     .checkout-item {
@@ -643,9 +570,8 @@
     }
 
     .checkout-item img {
-        width: 68px;
-        height: 82px;
-        border-radius: 10px;
+        width: 72px;
+        height: 88px;
     }
 
     .checkout-item p:first-child {
@@ -660,7 +586,44 @@
         font-size: 22px;
     }
 
-    .checkout-summary .review-total strong {
-        font-size: 21px;
+    .form-row,
+    .form-row-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .stepper {
+        gap: 4px;
+        margin-bottom: 30px;
+    }
+
+    .step {
+        gap: 5px;
+    }
+
+    .step-num {
+        width: 30px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .step span {
+        font-size: 11px;
+    }
+
+    .step-line {
+        width: 30px;
+        margin: 0 5px;
+    }
+
+    .review-item {
+        gap: 10px;
+    }
+
+    .review-item > span {
+        font-size: 12px;
+    }
+
+    .address-edit-form {
+        padding: 16px;
     }
 }

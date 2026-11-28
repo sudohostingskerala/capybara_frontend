@@ -343,11 +343,31 @@ export default function Checkout() {
       <div className={styles["review-layout"]}>
         <section className={styles["checkout-form"]}>
           <h2>Items</h2>
-          {itemTaxes.map((item) => <article className={styles["review-item"]} key={item.id}>
-            <div><strong>{item.product_name}</strong><p>{item.size} · {item.color} · Qty {item.quantity}</p>
-              <p>₹{item.unit_price} each · Taxable value {inr(item.taxable_value)} · GST {(Number(item.gst_rate) * 100).toFixed(0)}%</p></div>
-            <span>{inr(item.taxable_value)}</span>
-          </article>)}
+          {itemTaxes.map((item) => (
+  <article className={styles["review-item"]} key={item.id}>
+    <div className={styles["review-product"]}>
+      {(item.image || item.product_image) && (
+        <img
+          src={item.image || item.product_image}
+          alt={item.product_name}
+        />
+      )}
+
+      <div>
+        <strong>{item.product_name}</strong>
+
+        <p>{item.size} · {item.color} · Qty {item.quantity}</p>
+
+        <p>
+          ₹{item.unit_price} each · Taxable value {inr(item.taxable_value)}
+          · GST {(Number(item.gst_rate) * 100).toFixed(0)}%
+        </p>
+      </div>
+    </div>
+
+    <span>{inr(item.taxable_value)}</span>
+  </article>
+))}
           <h2>Delivery address</h2>
           <p>{reviewOrder.full_name}<br />{reviewOrder.house_name}{reviewOrder.street ? `, ${reviewOrder.street}` : ""}<br />{reviewOrder.city}, {reviewOrder.district}, {reviewOrder.state} — {reviewOrder.pincode}<br />{reviewOrder.phone_number}</p>
           {!editingReviewAddress ? <button type="button" className="btn-secondary" onClick={beginAddressEdit} disabled={paymentStarting}>Edit address</button> : <form className={styles["address-edit-form"]} onSubmit={submitAddressUpdate}>
@@ -421,16 +441,62 @@ export default function Checkout() {
               {placing ? "Preparing Payment..." : "Continue to Payment"}
             </button>
           </form>
+
           <div className={styles["checkout-summary"]}>
-            <h2>Order Summary</h2>
-            {guestCartCheckout ? cartItems.map((item) => (
-              <p key={item.id}>{item.product_name} · Qty: {item.quantity}</p>
-            )) : <>
-              <p>{buyNowData.productName}</p>
-              <p>{buyNowData.color} • {buyNowData.size} · Qty: {buyNowData.quantity}</p>
-            </>}
-            <div className="summary-total">₹{(guestCartCheckout ? totalAmount : Number(buyNowData.price) * buyNowData.quantity).toLocaleString()}</div>
+  <h2>Order Summary</h2>
+
+  <div className={styles["summary-items"]}>
+    {guestCartCheckout ? (
+      cartItems.map((item) => (
+        <div className={styles["checkout-item"]} key={item.id}>
+          {item.image && (
+            <img src={item.image} alt={item.product_name} />
+          )}
+
+          <div>
+            <p>{item.product_name}</p>
+            <small>{item.color} · {item.size}</small>
+            <p>Qty: {item.quantity}</p>
           </div>
+
+          <span>
+            ₹{(Number(item.unit_price) * item.quantity).toLocaleString("en-IN")}
+          </span>
+        </div>
+      ))
+    ) : (
+      <div className={styles["checkout-item"]}>
+        {buyNowData.image && (
+          <img src={buyNowData.image} alt={buyNowData.productName} />
+        )}
+
+        <div>
+          <p>{buyNowData.productName}</p>
+          <small>{buyNowData.color} · {buyNowData.size}</small>
+          <p>Qty: {buyNowData.quantity}</p>
+        </div>
+
+        <span>
+          ₹{(Number(buyNowData.price) * buyNowData.quantity).toLocaleString("en-IN")}
+        </span>
+      </div>
+    )}
+  </div>
+
+  <div className={styles["checkout-totals"]}>
+    <div className="summary-total">
+      <span>Total Amount</span>
+      <span>
+        ₹{Number(
+          guestCartCheckout
+            ? totalAmount
+            : Number(buyNowData.price) * buyNowData.quantity
+        ).toLocaleString("en-IN")}
+      </span>
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
     );
